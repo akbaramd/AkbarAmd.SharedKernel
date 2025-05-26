@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "bOT4QTasmKY=",
+  "dgSpecHash": "E6AQGDQJs5E=",
   "success": true,
   "projectFilePath": "E:\\projects\\CleanArchitecture\\src\\CleanArchitecture.Domain\\CleanArchitecture.Domain.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512"
+    "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
+    "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
   ],
   "logs": []
 }
