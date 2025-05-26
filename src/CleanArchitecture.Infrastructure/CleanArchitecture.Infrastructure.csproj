@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>AkbaAmd.CleanArchitecture.Infrastructure</PackageId>
+        <Version>1.0.1</Version>
+        <Authors>Akbar Ahmadi Saray</Authors>
+        <Company>AkbarAhmadi</Company>
+        <Description>Clean Architecture Infrastructure Layer - EF Core Integration and Repository Implementations</Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\CleanArchitecture.Domain\CleanArchitecture.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.16" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.16" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.16" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.16">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+    </ItemGroup>
+</Project>

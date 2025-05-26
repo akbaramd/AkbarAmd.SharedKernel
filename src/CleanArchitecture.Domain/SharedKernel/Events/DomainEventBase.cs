@@ -1,5 +1,11 @@
+/*
+ * Developed by Akbar Ahmadi Saray
+ * Clean Architecture Domain Shared Kernel - Events
+ * Base class for domain events implementing IDomainEvent with automatic Id and timestamp.
+ * Year: 2025
+ */
+
 using System;
-using MediatR;
 
 namespace CleanArchitecture.Domain.SharedKernel.Events
 {

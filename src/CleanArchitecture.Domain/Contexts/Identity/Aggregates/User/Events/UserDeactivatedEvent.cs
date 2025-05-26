@@ -1,4 +1,3 @@
-using System;
 using CleanArchitecture.Domain.SharedKernel.Events;
 
 namespace CleanArchitecture.Domain.Contexts.Identity.Aggregates.User.Events;

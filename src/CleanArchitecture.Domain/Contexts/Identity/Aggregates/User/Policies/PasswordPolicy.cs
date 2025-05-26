@@ -1,4 +1,3 @@
-using System;
 using System.Text.RegularExpressions;
 
 namespace CleanArchitecture.Domain.Contexts.Identity.Aggregates.User.Policies;

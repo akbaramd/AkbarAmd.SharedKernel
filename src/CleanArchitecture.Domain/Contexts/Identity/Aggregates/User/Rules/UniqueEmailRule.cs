@@ -3,21 +3,12 @@ using CleanArchitecture.Domain.Contexts.Identity.Interfaces;
 
 namespace CleanArchitecture.Domain.Contexts.Identity.Aggregates.User.Rules;
 
-public class UniqueEmailRule
+public class UniqueEmailRule(Email email, IUserRepository userRepository)
 {
-    private readonly Email _email;
-    private readonly IUserRepository _userRepository;
-
-    public UniqueEmailRule(Email email, IUserRepository userRepository)
-    {
-        _email = email;
-        _userRepository = userRepository;
-    }
-
     public bool IsSatisfied()
     {
-        return !_userRepository.ExistsByEmail(_email);
+        return !userRepository.ExistsAsync(x=>x.Email == email && x.IsActive).GetAwaiter().GetResult();
     }
 
-    public string Message => $"Email {_email.Value} is already in use";
+    public string Message => $"Email {email.Value} is already in use";
 } 

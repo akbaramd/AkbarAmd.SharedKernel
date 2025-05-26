@@ -1,42 +1,37 @@
 {
   "format": 1,
   "restore": {
-    "E:\\projects\\CleanArchitecture\\src\\CleanArchitecture.Application\\CleanArchitecture.Application.csproj": {}
+    "C:\\Users\\ahmadi\\RiderProjects\\CleanArchitecture.V2\\src\\CleanArchitecture.Application\\CleanArchitecture.Application.csproj": {}
   },
   "projects": {
-    "E:\\projects\\CleanArchitecture\\src\\CleanArchitecture.Application\\CleanArchitecture.Application.csproj": {
+    "C:\\Users\\ahmadi\\RiderProjects\\CleanArchitecture.V2\\src\\CleanArchitecture.Application\\CleanArchitecture.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\projects\\CleanArchitecture\\src\\CleanArchitecture.Application\\CleanArchitecture.Application.csproj",
+        "projectUniqueName": "C:\\Users\\ahmadi\\RiderProjects\\CleanArchitecture.V2\\src\\CleanArchitecture.Application\\CleanArchitecture.Application.csproj",
         "projectName": "CleanArchitecture.Application",
-        "projectPath": "E:\\projects\\CleanArchitecture\\src\\CleanArchitecture.Application\\CleanArchitecture.Application.csproj",
-        "packagesPath": "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\",
-        "outputPath": "E:\\projects\\CleanArchitecture\\src\\CleanArchitecture.Application\\obj\\",
+        "projectPath": "C:\\Users\\ahmadi\\RiderProjects\\CleanArchitecture.V2\\src\\CleanArchitecture.Application\\CleanArchitecture.Application.csproj",
+        "packagesPath": "C:\\Users\\ahmadi\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ahmadi\\RiderProjects\\CleanArchitecture.V2\\src\\CleanArchitecture.Application\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\DevExpress 24.2\\Components\\Offline Packages",
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\ahmadi.UR-NEZAM\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 24.1.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 24.2.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\ahmadi\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net9.0"
+          "net8.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\DevExpress 24.2\\Components\\System\\Components\\Packages": {},
           "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
-            "projectReferences": {}
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\ahmadi\\RiderProjects\\CleanArchitecture.V2\\src\\CleanArchitecture.Domain\\CleanArchitecture.Domain.csproj": {
+                "projectPath": "C:\\Users\\ahmadi\\RiderProjects\\CleanArchitecture.V2\\src\\CleanArchitecture.Domain\\CleanArchitecture.Domain.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -49,11 +44,29 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.200"
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
+            "FluentValidation": {
+              "target": "Package",
+              "version": "[11.5.0, )"
+            },
+            "MediatR": {
+              "target": "Package",
+              "version": "[12.5.0, )"
+            },
+            "Microsoft.Extensions.Logging.Abstractions": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -70,7 +83,78 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.102/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.204/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\ahmadi\\RiderProjects\\CleanArchitecture.V2\\src\\CleanArchitecture.Domain\\CleanArchitecture.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\ahmadi\\RiderProjects\\CleanArchitecture.V2\\src\\CleanArchitecture.Domain\\CleanArchitecture.Domain.csproj",
+        "projectName": "AkbarAmd.CleanArchitecture.Domain",
+        "projectPath": "C:\\Users\\ahmadi\\RiderProjects\\CleanArchitecture.V2\\src\\CleanArchitecture.Domain\\CleanArchitecture.Domain.csproj",
+        "packagesPath": "C:\\Users\\ahmadi\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ahmadi\\RiderProjects\\CleanArchitecture.V2\\src\\CleanArchitecture.Domain\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\ahmadi\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "MediatR": {
+              "target": "Package",
+              "version": "[12.5.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.204/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

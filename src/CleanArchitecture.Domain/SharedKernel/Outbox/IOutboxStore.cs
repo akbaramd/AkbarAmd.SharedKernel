@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace CleanArchitecture.Domain.SeedWork.Outbox;
+namespace CleanArchitecture.Domain.SharedKernel.Outbox;
 
 public interface IOutboxStore
 {

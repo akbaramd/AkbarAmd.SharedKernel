@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>AkbarAmd.CleanArchitecture.Domain</id>
+    <version>1.0.1</version>
+    <authors>Akbar Ahmadi Saray</authors>
+    <description>Clean Architecture Domain Layer - Core Domain Models and Interfaces</description>
+    <repository type="git" commit="af91d59cfe4bf3b909f9d762b6cf4f5e05acb5d7" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="MediatR" version="12.5.0" exclude="Build,Analyzers" />
+        <dependency id="Newtonsoft.Json" version="13.0.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\bin\Release\net8.0\CleanArchitecture.Domain.dll" target="lib\net8.0\CleanArchitecture.Domain.dll" />
+  </files>
+</package>

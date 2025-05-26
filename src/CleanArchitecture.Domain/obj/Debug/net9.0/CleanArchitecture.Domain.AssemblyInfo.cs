@@ -10,10 +10,11 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("CleanArchitecture.Domain")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("AkbarAhmdi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
+[assembly: System.Reflection.AssemblyDescriptionAttribute("Clean Architecture Domain Layer - Core Domain Models and Interfaces")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+edc14c5d4c65461a4ddb24b9ae266ad6ad398d01")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+af91d59cfe4bf3b909f9d762b6cf4f5e05acb5d7")]
 [assembly: System.Reflection.AssemblyProductAttribute("CleanArchitecture.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CleanArchitecture.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

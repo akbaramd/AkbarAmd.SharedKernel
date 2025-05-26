@@ -1,12 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild> <!-- Optional: auto pack on build -->
+    <PackageId>AkbarAmd.CleanArchitecture.Domain</PackageId>
+    <Version>1.0.1</Version>
+    <Authors>Akbar Ahmadi Saray</Authors>
+    <Company>AkbarAhmdi</Company>
+    <Description>Clean Architecture Domain Layer - Core Domain Models and Interfaces</Description>
   </PropertyGroup>
   <ItemGroup>
     <!-- Only domain-related dependencies -->
-    <PackageReference Include="MediatR.Contracts" Version="2.0.1" />
+    <PackageReference Include="MediatR" Version="12.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 </Project>

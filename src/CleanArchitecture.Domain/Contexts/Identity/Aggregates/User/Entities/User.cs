@@ -1,4 +1,3 @@
-using System;
 using CleanArchitecture.Domain.Contexts.Identity.Aggregates.User.Events;
 using CleanArchitecture.Domain.Contexts.Identity.Aggregates.User.ValueObjects;
 using CleanArchitecture.Domain.Contexts.Identity.Aggregates.User.Policies;

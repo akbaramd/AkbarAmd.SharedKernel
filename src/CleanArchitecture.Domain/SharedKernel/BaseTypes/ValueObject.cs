@@ -1,10 +1,13 @@
-using System;
-using System.Collections.Generic;
+/*
+ * Developed by Akbar Ahmadi Saray
+ * Clean Architecture Domain Shared Kernel - Base Types
+ * ValueObject base class implementing equality, comparison, cloning, validation, and event notification.
+ * Year: 2025
+ */
+
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
-using System.Threading;
 using CleanArchitecture.Domain.SharedKernel.Rules;
 using CleanArchitecture.Domain.SharedKernel.Exceptions;
 

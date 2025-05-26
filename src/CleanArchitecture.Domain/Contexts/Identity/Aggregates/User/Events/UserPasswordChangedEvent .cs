@@ -1,11 +1,13 @@
 using CleanArchitecture.Domain.SharedKernel.Events;
 
-public sealed class UserPasswordChangedEvent : DomainEventBase
-    {
-        public Guid UserId { get; }
+namespace CleanArchitecture.Domain.Contexts.Identity.Aggregates.User.Events;
 
-        public UserPasswordChangedEvent(Guid userId)
-        {
-            UserId = userId;
-        }
+public sealed class UserPasswordChangedEvent : DomainEventBase
+{
+    public Guid UserId { get; }
+
+    public UserPasswordChangedEvent(Guid userId)
+    {
+        UserId = userId;
     }
+}

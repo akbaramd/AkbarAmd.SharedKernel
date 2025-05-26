@@ -1,4 +1,9 @@
-using System;
+/*
+ * Developed by Akbar Ahmadi Saray
+ * Clean Architecture Domain Shared Kernel - Base Types
+ * EntityBase class with generic identity, equality, versioning, and auditing support.
+ * Year: 2025
+ */
 
 namespace CleanArchitecture.Domain.SharedKernel.BaseTypes
 {

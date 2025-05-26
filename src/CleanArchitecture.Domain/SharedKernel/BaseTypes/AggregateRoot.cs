@@ -1,9 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using CleanArchitecture.Domain.SeedWork;
+/*
+ * Developed by Akbar Ahmadi Saray
+ * Clean Architecture Domain Shared Kernel - Base Types
+ * AggregateRoot base class supporting identity, domain events, versioning, snapshotting, and concurrency.
+ * Year: 2025
+ */
+
 using CleanArchitecture.Domain.SharedKernel.Events;
+using CleanArchitecture.Domain.SharedKernel.Interfaces;
 
 namespace CleanArchitecture.Domain.SharedKernel.BaseTypes
 {

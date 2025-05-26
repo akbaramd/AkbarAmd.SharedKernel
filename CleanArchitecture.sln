@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Domain", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Application", "src\CleanArchitecture.Application\CleanArchitecture.Application.csproj", "{2B4B0E33-8C43-4621-A6DF-0565B6291948}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Infrastructure", "src\CleanArchitecture.Infrastructure\CleanArchitecture.Infrastructure.csproj", "{FCC31DD0-64E6-4961-860F-DBF34E36D332}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,9 +28,14 @@ Global
 		{2B4B0E33-8C43-4621-A6DF-0565B6291948}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B4B0E33-8C43-4621-A6DF-0565B6291948}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B4B0E33-8C43-4621-A6DF-0565B6291948}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCC31DD0-64E6-4961-860F-DBF34E36D332}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCC31DD0-64E6-4961-860F-DBF34E36D332}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCC31DD0-64E6-4961-860F-DBF34E36D332}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCC31DD0-64E6-4961-860F-DBF34E36D332}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FE81A76E-DE4C-4EAB-A3B4-21D931C5A353} = {7CF9EFFF-DC24-4810-8936-85B7392D73D2}
 		{2B4B0E33-8C43-4621-A6DF-0565B6291948} = {7CF9EFFF-DC24-4810-8936-85B7392D73D2}
+		{FCC31DD0-64E6-4961-860F-DBF34E36D332} = {7CF9EFFF-DC24-4810-8936-85B7392D73D2}
 	EndGlobalSection
 EndGlobal

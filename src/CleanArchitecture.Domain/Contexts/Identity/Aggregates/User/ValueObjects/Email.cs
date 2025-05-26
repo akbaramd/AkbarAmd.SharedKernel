@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using CleanArchitecture.Domain.SharedKernel.BaseTypes;
 
 namespace CleanArchitecture.Domain.Contexts.Identity.Aggregates.User.ValueObjects;

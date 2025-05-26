@@ -1,0 +1,13 @@
+C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\bin\Release\net9.0\CleanArchitecture.Domain.deps.json
+C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\bin\Release\net9.0\CleanArchitecture.Domain.dll
+C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\bin\Release\net9.0\CleanArchitecture.Domain.pdb
+C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\obj\Release\net9.0\CleanArchitecture.Domain.csproj.AssemblyReference.cache
+C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\obj\Release\net9.0\CleanArchitecture.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\obj\Release\net9.0\CleanArchitecture.Domain.AssemblyInfoInputs.cache
+C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\obj\Release\net9.0\CleanArchitecture.Domain.AssemblyInfo.cs
+C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\obj\Release\net9.0\CleanArchitecture.Domain.csproj.CoreCompileInputs.cache
+C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\obj\Release\net9.0\CleanArchitecture.Domain.sourcelink.json
+C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\obj\Release\net9.0\CleanArchitecture.Domain.dll
+C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\obj\Release\net9.0\refint\CleanArchitecture.Domain.dll
+C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\obj\Release\net9.0\CleanArchitecture.Domain.pdb
+C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\obj\Release\net9.0\ref\CleanArchitecture.Domain.dll

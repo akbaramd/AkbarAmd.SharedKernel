@@ -1,5 +1,7 @@
 using CleanArchitecture.Domain.SharedKernel.Events;
 
+namespace CleanArchitecture.Domain.Contexts.Identity.Aggregates.User.Events;
+
 public class UserEmailChangedEvent : DomainEventBase
 {
     public Guid UserId { get; }

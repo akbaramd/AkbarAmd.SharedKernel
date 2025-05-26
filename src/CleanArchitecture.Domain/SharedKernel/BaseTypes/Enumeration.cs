@@ -1,11 +1,13 @@
-using System;
+/*
+ * Developed by Akbar Ahmadi Saray
+ * Clean Architecture Domain Shared Kernel - Base Types
+ * Enumeration base class for rich enums with enterprise features.
+ * Year: 2025
+ */
+
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 
 namespace CleanArchitecture.Domain.SharedKernel.BaseTypes
 {

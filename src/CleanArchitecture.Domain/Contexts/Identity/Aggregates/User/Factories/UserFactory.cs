@@ -1,4 +1,3 @@
-using System;
 using CleanArchitecture.Domain.Contexts.Identity.Aggregates.User.Entities;
 using CleanArchitecture.Domain.Contexts.Identity.Aggregates.User.Policies;
 using CleanArchitecture.Domain.Contexts.Identity.Aggregates.User.ValueObjects;
