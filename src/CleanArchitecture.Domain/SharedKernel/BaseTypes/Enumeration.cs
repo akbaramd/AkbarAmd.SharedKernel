@@ -149,12 +149,12 @@ namespace CleanArchitecture.Domain.SharedKernel.BaseTypes
         /// <summary>
         /// Equality comparison by Type and Id.
         /// </summary>
-        public override bool Equals(object obj) => Equals(obj as Enumeration);
+        public override bool Equals(object? obj) => Equals(obj as Enumeration);
 
         /// <summary>
         /// Equality comparison by Type and Id.
         /// </summary>
-        public bool Equals(Enumeration other)
+        public bool Equals(Enumeration? other)
         {
             if (other is null)
                 return false;
@@ -174,7 +174,7 @@ namespace CleanArchitecture.Domain.SharedKernel.BaseTypes
         /// Compares two Enumeration instances by Id.
         /// Requires same type.
         /// </summary>
-        public int CompareTo(object obj)
+        public int CompareTo(object? obj)
         {
             if (obj == null) return 1;
 
@@ -191,7 +191,7 @@ namespace CleanArchitecture.Domain.SharedKernel.BaseTypes
 
         #region Operators
 
-        public static bool operator ==(Enumeration left, Enumeration right)
+        public static bool operator ==(Enumeration? left, Enumeration? right)
         {
             if (ReferenceEquals(left, null))
                 return ReferenceEquals(right, null);
@@ -199,36 +199,36 @@ namespace CleanArchitecture.Domain.SharedKernel.BaseTypes
             return left.Equals(right);
         }
 
-        public static bool operator !=(Enumeration left, Enumeration right) => !(left == right);
+        public static bool operator !=(Enumeration? left, Enumeration? right) => !(left == right);
 
-        public static bool operator <(Enumeration left, Enumeration right)
+        public static bool operator <(Enumeration? left, Enumeration? right)
         {
-            if (left is null)
+            if (ReferenceEquals(left, null))
                 return right is not null;
 
             return left.CompareTo(right) < 0;
         }
 
-        public static bool operator <=(Enumeration left, Enumeration right)
+        public static bool operator <=(Enumeration? left, Enumeration? right)
         {
-            if (left is null)
+            if (ReferenceEquals(left, null))
                 return true;
 
             return left.CompareTo(right) <= 0;
         }
 
-        public static bool operator >(Enumeration left, Enumeration right)
+        public static bool operator >(Enumeration? left, Enumeration? right)
         {
-            if (left is null)
+            if (ReferenceEquals(left, null))
                 return false;
 
             return left.CompareTo(right) > 0;
         }
 
-        public static bool operator >=(Enumeration left, Enumeration right)
+        public static bool operator >=(Enumeration? left, Enumeration? right)
         {
-            if (left is null)
-                return right is null;
+            if (ReferenceEquals(left, null))
+                return ReferenceEquals(right, null);
 
             return left.CompareTo(right) >= 0;
         }

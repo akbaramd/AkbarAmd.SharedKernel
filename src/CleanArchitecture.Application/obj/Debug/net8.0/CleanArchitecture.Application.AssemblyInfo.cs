@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Clean Architecture Application Layer - Use Cases, CQRS, and Business Logic")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+af91d59cfe4bf3b909f9d762b6cf4f5e05acb5d7")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4dd1add5ebdbb45df46c5ee97ac765a892a49950")]
 [assembly: System.Reflection.AssemblyProductAttribute("CleanArchitecture.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CleanArchitecture.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

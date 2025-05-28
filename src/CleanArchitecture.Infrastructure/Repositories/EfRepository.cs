@@ -11,7 +11,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Domain.SharedKernel.BaseTypes;
 using CleanArchitecture.Domain.SharedKernel.Interfaces;
+using CleanArchitecture.Domain.SharedKernel.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -21,7 +23,7 @@ namespace CleanArchitecture.Infrastructure.Repositories
     /// Base read-only repository implementation using EF Core.
     /// </summary>
     public class ReadOnlyEfRepository<TDbContext, T, TKey> : IReadOnlyRepository<T, TKey>
-        where T : class, IAggregateRoot
+        where T :  EntityBase<TKey>
         where TKey : IEquatable<TKey>
         where TDbContext : DbContext
     {
@@ -163,6 +165,18 @@ namespace CleanArchitecture.Infrastructure.Repositories
             return await _dbSet.Select(selector).ToListAsync(cancellationToken);
         }
 
+        public virtual async Task<PaginatedResult<T>> GetPaginatedAsync(IPaginatedSpecification<T> specification, CancellationToken cancellationToken = default)
+        {
+            if (specification == null) throw new ArgumentNullException(nameof(specification));
+
+            var query = ApplySpecification(specification);
+            var totalCount = await query.CountAsync(cancellationToken);
+            var items = await query.Skip(specification.Skip).Take(specification.Take).ToListAsync(cancellationToken);
+
+            int pageNumber = specification.Skip / specification.Take + 1;
+
+            return new PaginatedResult<T>(items, totalCount, pageNumber, specification.Take);
+        }
         public virtual async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, bool asNoTracking, CancellationToken cancellationToken = default)
         {
             IQueryable<T> query = _dbSet;
@@ -206,7 +220,7 @@ namespace CleanArchitecture.Infrastructure.Repositories
     /// Full EF Core repository supporting write operations, inherits read-only repo.
     /// </summary>
     public class EfRepository<TDbContext, T, TKey> : ReadOnlyEfRepository<TDbContext, T, TKey>, IRepository<T, TKey>
-        where T : class, IAggregateRoot
+        where T :  EntityBase<TKey>
         where TKey : IEquatable<TKey>
         where TDbContext : DbContext
     {

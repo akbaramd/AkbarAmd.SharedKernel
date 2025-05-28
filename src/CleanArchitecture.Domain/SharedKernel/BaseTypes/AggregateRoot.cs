@@ -16,7 +16,7 @@ namespace CleanArchitecture.Domain.SharedKernel.BaseTypes
     /// Implements best practices for concurrency, event management, and infrastructure integration.
     /// </summary>
     /// <typeparam name="TId">Type of the AggregateRoot's identity (usually Guid, int, string, etc.)</typeparam>
-    public abstract class AggregateRoot<TId> : EntityBase<TId>, IAggregateRoot
+    public abstract class AggregateRoot<TId> : AuditableEntityBase<TId>, IAggregateRoot
         where TId : IEquatable<TId>
     {
         private readonly List<IDomainEvent> _domainEvents = new();
@@ -91,7 +91,7 @@ namespace CleanArchitecture.Domain.SharedKernel.BaseTypes
         /// <summary>
         /// Protected parameterless constructor for ORM/ODM.
         /// </summary>
-        protected AggregateRoot() : base()
+        protected AggregateRoot(TId id,string createdBy) : base(id,createdBy)
         {
             LastModifiedUtc = DateTimeOffset.UtcNow;
             _version = 1;

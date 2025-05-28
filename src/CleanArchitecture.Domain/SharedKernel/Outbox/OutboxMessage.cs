@@ -58,7 +58,7 @@ namespace CleanArchitecture.Domain.SharedKernel.Outbox
         /// Gets the UTC date/time when the message entity was created.
         /// Inherited from EntityBase.CreatedAt or explicitly overridden if needed.
         /// </summary>
-        public DateTime CreatedAtUtc => CreatedAt;
+        public DateTime CreatedAtUtc => CreatedAtUtc;
 
         /// <summary>
         /// Gets the UTC date/time when the message entity was last updated.

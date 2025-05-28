@@ -10,12 +10,14 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Domain.SharedKernel.BaseTypes;
 using CleanArchitecture.Domain.SharedKernel.Interfaces;
+using CleanArchitecture.Domain.SharedKernel.Models;
 
 namespace CleanArchitecture.Domain.SharedKernel.Interfaces
 {
     public interface IReadOnlyRepository<T, TKey>
-        where T : IAggregateRoot
+        where T : EntityBase<TKey>
         where TKey : IEquatable<TKey>
     {
         // Basic queries
@@ -53,7 +55,7 @@ namespace CleanArchitecture.Domain.SharedKernel.Interfaces
         Task<int> CountAsync(ISpecification<T> specification, CancellationToken cancellationToken = default);
 
         // Paging support
-
+        Task<PaginatedResult<T>> GetPaginatedAsync(IPaginatedSpecification<T> specification, CancellationToken cancellationToken = default);
         Task<IEnumerable<T>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default);
 
         Task<IEnumerable<T>> GetPagedAsync(int pageNumber, int pageSize, ISpecification<T> specification, CancellationToken cancellationToken = default);
@@ -84,7 +86,7 @@ namespace CleanArchitecture.Domain.SharedKernel.Interfaces
     }
 
     public interface IRepository<T, TKey> : IReadOnlyRepository<T, TKey>
-        where T : IAggregateRoot
+        where T : EntityBase<TKey>
         where TKey : IEquatable<TKey>
     {
         // Single entity modifications

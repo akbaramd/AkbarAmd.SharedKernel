@@ -1,84 +1,34 @@
-/*
- * Developed by Akbar Ahmadi Saray
- * Clean Architecture Domain Shared Kernel - Base Types
- * EntityBase class with generic identity, equality, versioning, and auditing support.
- * Year: 2025
- */
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+using CleanArchitecture.Domain.SharedKernel.Events;
 
 namespace CleanArchitecture.Domain.SharedKernel.BaseTypes
 {
     /// <summary>
-    /// Base class for entities with generic identity type.
-    /// Supports equality, hashing, versioning, auditing, and validation.
+    /// Base class for entities with a generic identity type.
     /// </summary>
-    /// <typeparam name="TId">Type of the entity's identifier.</typeparam>
-    public abstract class EntityBase<TId> : IEquatable<EntityBase<TId>>
-        where TId : IEquatable<TId>
+    public abstract class EntityBase<TId> : IEquatable<EntityBase<TId>> where TId : IEquatable<TId>
     {
-        /// <summary>
-        /// Gets the unique identifier for this entity.
-        /// Immutable after construction.
-        /// </summary>
-        public TId Id { get; }
+        // The entity's identifier (ensure it's never null)
+        public TId Id { get; protected set; }
 
-        /// <summary>
-        /// Version number for optimistic concurrency control.
-        /// </summary>
-        public long Version { get; private set; }
-
-        /// <summary>
-        /// UTC timestamp when the entity was created.
-        /// </summary>
-        public DateTime CreatedAt { get; private set; }
-
-        /// <summary>
-        /// UTC timestamp when the entity was last modified.
-        /// </summary>
-        public DateTime? ModifiedAt { get; private set; }
-
-        /// <summary>
-        /// Constructor with identity. Sets CreatedAt and initial Version.
-        /// </summary>
-        /// <param name="id">The entity ID</param>
+        // Constructor for setting up entity with ID (ID should always have a value)
         protected EntityBase(TId id)
         {
-            if (id == null)
-                throw new ArgumentNullException(nameof(id), "Entity ID cannot be null.");
-
+            if (id == null || EqualityComparer<TId>.Default.Equals(id, default(TId)))
+                throw new ArgumentNullException(nameof(id), "Entity ID cannot be null or default.");
             Id = id;
-            CreatedAt = DateTime.UtcNow;
-            Version = 1;
         }
 
-        /// <summary>
-        /// Protected parameterless constructor for ORM/ODM support.
-        /// </summary>
+        // Default constructor for ORM/ODM support
         protected EntityBase()
         {
-            // For ORM tools that require a parameterless constructor
         }
 
-        /// <summary>
-        /// Marks entity as modified by updating ModifiedAt and incrementing Version.
-        /// Call this method when entity state changes.
-        /// </summary>
-        public void MarkModified()
-        {
-            ModifiedAt = DateTime.UtcNow;
-            Version++;
-        }
-
-        /// <summary>
-        /// Validation hook for derived classes to implement entity-specific validation logic.
-        /// </summary>
-        public virtual void Validate()
-        {
-            // Override in derived classes for specific validation
-        }
-
-        #region Equality and Hashing
-
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
@@ -87,48 +37,131 @@ namespace CleanArchitecture.Domain.SharedKernel.BaseTypes
             return Equals(obj as EntityBase<TId>);
         }
 
-        public bool Equals(EntityBase<TId> other)
+        public bool Equals(EntityBase<TId>? other)
         {
             if (other is null) return false;
 
-            // If both have default IDs, they are not equal (transient entities)
-            if (IsTransient() && other.IsTransient())
-                return false;
-
-            // Entities are equal if they have the same Id and type
-            return Id.Equals(other.Id);
+            // Ensure that Id is not null or default value
+            return !EqualityComparer<TId>.Default.Equals(Id, default(TId)) && Id.Equals(other.Id);
         }
 
         public override int GetHashCode()
         {
-            return Id == null ? base.GetHashCode() : Id.GetHashCode();
+            // Ensure a valid Id is set, otherwise return default
+            return EqualityComparer<TId>.Default.Equals(Id, default(TId)) ? 0 : Id.GetHashCode();
         }
 
-        public static bool operator ==(EntityBase<TId> left, EntityBase<TId> right)
+        public static bool operator ==(EntityBase<TId>? left, EntityBase<TId>? right)
         {
-            if (ReferenceEquals(left, null)) return ReferenceEquals(right, null);
+            if (ReferenceEquals(left, null) && ReferenceEquals(right, null))
+                return true;
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+                return false;
             return left.Equals(right);
         }
 
-        public static bool operator !=(EntityBase<TId> left, EntityBase<TId> right) => !(left == right);
+        public static bool operator !=(EntityBase<TId>? left, EntityBase<TId>? right) => !(left == right);
+    }
 
-        #endregion
+    /// <summary>
+    /// Auditable base entity class with support for soft deletes, versioning, and metadata tracking.
+    /// </summary>
+    public abstract class AuditableEntityBase<TId> : EntityBase<TId> where TId : IEquatable<TId>
+    {
+        // Entity audit properties
+        public DateTime? CreatedAt { get; private set; }
+        public string? CreatedBy { get; private set; }
+        public DateTime? ModifiedAt { get; private set; }
+        public string? ModifiedBy { get; private set; }
+        public DateTime? DeletedAt { get; private set; }
+        public string? DeletedBy { get; private set; }
+        public bool IsDeleted { get; private set; }
+        public string? Metadata { get; private set; }
+        public long Version { get; private set; }  // Version for concurrency control
 
-        /// <summary>
-        /// Determines if entity is transient (Id is default value).
-        /// </summary>
-        /// <returns>True if entity is transient, else false.</returns>
-        public bool IsTransient()
+        // Constructor for setting up a new entity (with auditing)
+        protected AuditableEntityBase(TId id, string createdBy = "system")
+            : base(id)
         {
-            return EqualityComparer<TId>.Default.Equals(Id, default);
+            CreatedAt = DateTime.UtcNow;
+            CreatedBy = createdBy;
+            IsDeleted = false;
+            Version = 1;  // Initial versioning setup
         }
 
-        /// <summary>
-        /// Returns a string representation of the entity.
-        /// </summary>
-        public override string ToString()
+        // Default constructor for ORM/ODM support
+        protected AuditableEntityBase()
         {
-            return $"{GetType().Name} [Id={Id}]";
+            CreatedAt = DateTime.UtcNow;
+            IsDeleted = false;
+            Version = 1;
+        }
+
+        // Soft delete functionality
+        public void Delete(string deletedBy = "system")
+        {
+            if (IsDeleted) return;
+
+            IsDeleted = true;
+            DeletedAt = DateTime.UtcNow;
+            DeletedBy = deletedBy;
+            MarkModified(deletedBy);
+        }
+
+        // Restore functionality for soft-deleted entities
+        public void Restore(string restoredBy = "system")
+        {
+            if (!IsDeleted) return;
+
+            IsDeleted = false;
+            DeletedAt = null;
+            DeletedBy = null;
+            MarkModified(restoredBy);
+        }
+
+        // Update metadata and modify timestamp
+        public void UpdateMetadata(string metadata, string modifiedBy = "system")
+        {
+            Metadata = metadata;
+            MarkModified(modifiedBy);
+        }
+
+        // Mark the entity as modified (updating ModifiedAt and incrementing version)
+        public void MarkModified(string modifiedBy = "system")
+        {
+            ModifiedAt = DateTime.UtcNow;
+            ModifiedBy = modifiedBy;
+            Version++;  // Increment version for concurrency control
+        }
+    }
+
+    // Event raised when an entity is deleted
+    public class EntityDeletedEvent<T> : IDomainEvent
+    {
+        public T EntityId { get; }
+        public DateTime OccurredOn { get; }
+        public Guid Id { get; }
+
+        public EntityDeletedEvent(T entityId)
+        {
+            Id = Guid.NewGuid();
+            EntityId = entityId;
+            OccurredOn = DateTime.UtcNow;
+        }
+    }
+
+    // Event raised when an entity is restored
+    public class EntityRestoredEvent<T> : IDomainEvent
+    {
+        public T EntityId { get; }
+        public DateTime OccurredOn { get; }
+        public Guid Id { get; }
+
+        public EntityRestoredEvent(T entityId)
+        {
+            Id = Guid.NewGuid();
+            EntityId = entityId;
+            OccurredOn = DateTime.UtcNow;
         }
     }
 }

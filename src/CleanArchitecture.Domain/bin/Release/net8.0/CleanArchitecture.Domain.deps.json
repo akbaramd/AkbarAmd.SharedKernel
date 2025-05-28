@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v8.0": {
-      "CleanArchitecture.Domain/1.0.1": {
+      "CleanArchitecture.Domain/1.0.7": {
         "dependencies": {
           "MediatR": "12.5.0",
           "Newtonsoft.Json": "13.0.1"
@@ -54,7 +54,7 @@
     }
   },
   "libraries": {
-    "CleanArchitecture.Domain/1.0.1": {
+    "CleanArchitecture.Domain/1.0.7": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

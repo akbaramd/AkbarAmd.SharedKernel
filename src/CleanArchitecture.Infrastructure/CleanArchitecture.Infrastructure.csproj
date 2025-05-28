@@ -4,8 +4,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageId>AkbaAmd.CleanArchitecture.Infrastructure</PackageId>
-        <Version>1.0.1</Version>
+        <PackageId>AkbarAmd.CleanArchitecture.Infrastructure</PackageId>
+        <Version>1.0.7</Version>
         <Authors>Akbar Ahmadi Saray</Authors>
         <Company>AkbarAhmadi</Company>
         <Description>Clean Architecture Infrastructure Layer - EF Core Integration and Repository Implementations</Description>

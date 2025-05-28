@@ -53,7 +53,7 @@ namespace CleanArchitecture.Domain.SharedKernel.BaseTypes
 
         #region Equality and Hashing
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
@@ -66,7 +66,7 @@ namespace CleanArchitecture.Domain.SharedKernel.BaseTypes
             return EqualityComponents.SequenceEqual(other.EqualityComponents);
         }
 
-        public virtual bool Equals(ValueObject other)
+        public virtual bool Equals(ValueObject? other)
         {
             if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
@@ -147,31 +147,38 @@ namespace CleanArchitecture.Domain.SharedKernel.BaseTypes
 
         #region Operators
 
-        public static bool operator ==(ValueObject left, ValueObject right) => Equals(left, right);
-
-        public static bool operator !=(ValueObject left, ValueObject right) => !(left == right);
-
-        public static bool operator <(ValueObject left, ValueObject right)
+        public static bool operator ==(ValueObject? left, ValueObject? right)
         {
-            if (left is null) return right is not null;
+            if (ReferenceEquals(left, null) && ReferenceEquals(right, null))
+                return true;
+            if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+                return false;
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(ValueObject? left, ValueObject? right) => !(left == right);
+
+        public static bool operator <(ValueObject? left, ValueObject? right)
+        {
+            if (ReferenceEquals(left, null)) return right is not null;
             return left.CompareTo(right) < 0;
         }
 
-        public static bool operator <=(ValueObject left, ValueObject right)
+        public static bool operator <=(ValueObject? left, ValueObject? right)
         {
-            if (left is null) return true;
+            if (ReferenceEquals(left, null)) return true;
             return left.CompareTo(right) <= 0;
         }
 
-        public static bool operator >(ValueObject left, ValueObject right)
+        public static bool operator >(ValueObject? left, ValueObject? right)
         {
-            if (left is null) return false;
+            if (ReferenceEquals(left, null)) return false;
             return left.CompareTo(right) > 0;
         }
 
-        public static bool operator >=(ValueObject left, ValueObject right)
+        public static bool operator >=(ValueObject? left, ValueObject? right)
         {
-            if (left is null) return right is null;
+            if (ReferenceEquals(left, null)) return ReferenceEquals(right, null);
             return left.CompareTo(right) >= 0;
         }
 
