@@ -1,0 +1,6 @@
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Debug\net8.0\MCA.SharedKernel.Application.csproj.AssemblyReference.cache
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Debug\net8.0\MCA.SharedKernel.Application.GeneratedMSBuildEditorConfig.editorconfig
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Debug\net8.0\MCA.SharedKernel.Application.AssemblyInfoInputs.cache
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Debug\net8.0\MCA.SharedKernel.Application.AssemblyInfo.cs
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Debug\net8.0\MCA.SharedKernel.Application.csproj.CoreCompileInputs.cache
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Debug\net8.0\MCA.SharedKernel.Application.sourcelink.json

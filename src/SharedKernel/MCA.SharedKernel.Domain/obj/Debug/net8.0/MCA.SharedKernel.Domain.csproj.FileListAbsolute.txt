@@ -1,0 +1,13 @@
+E:\projects\CleanArchitecture\Src\SharedKernel\MCA.SharedKernel.Domain\bin\Debug\net8.0\MCA.SharedKernel.Domain.deps.json
+E:\projects\CleanArchitecture\Src\SharedKernel\MCA.SharedKernel.Domain\bin\Debug\net8.0\MCA.SharedKernel.Domain.dll
+E:\projects\CleanArchitecture\Src\SharedKernel\MCA.SharedKernel.Domain\bin\Debug\net8.0\MCA.SharedKernel.Domain.pdb
+E:\projects\CleanArchitecture\Src\SharedKernel\MCA.SharedKernel.Domain\obj\Debug\net8.0\MCA.SharedKernel.Domain.csproj.AssemblyReference.cache
+E:\projects\CleanArchitecture\Src\SharedKernel\MCA.SharedKernel.Domain\obj\Debug\net8.0\MCA.SharedKernel.Domain.GeneratedMSBuildEditorConfig.editorconfig
+E:\projects\CleanArchitecture\Src\SharedKernel\MCA.SharedKernel.Domain\obj\Debug\net8.0\MCA.SharedKernel.Domain.AssemblyInfoInputs.cache
+E:\projects\CleanArchitecture\Src\SharedKernel\MCA.SharedKernel.Domain\obj\Debug\net8.0\MCA.SharedKernel.Domain.AssemblyInfo.cs
+E:\projects\CleanArchitecture\Src\SharedKernel\MCA.SharedKernel.Domain\obj\Debug\net8.0\MCA.SharedKernel.Domain.csproj.CoreCompileInputs.cache
+E:\projects\CleanArchitecture\Src\SharedKernel\MCA.SharedKernel.Domain\obj\Debug\net8.0\MCA.SharedKernel.Domain.sourcelink.json
+E:\projects\CleanArchitecture\Src\SharedKernel\MCA.SharedKernel.Domain\obj\Debug\net8.0\MCA.SharedKernel.Domain.dll
+E:\projects\CleanArchitecture\Src\SharedKernel\MCA.SharedKernel.Domain\obj\Debug\net8.0\refint\MCA.SharedKernel.Domain.dll
+E:\projects\CleanArchitecture\Src\SharedKernel\MCA.SharedKernel.Domain\obj\Debug\net8.0\MCA.SharedKernel.Domain.pdb
+E:\projects\CleanArchitecture\Src\SharedKernel\MCA.SharedKernel.Domain\obj\Debug\net8.0\ref\MCA.SharedKernel.Domain.dll

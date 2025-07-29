@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>MCA.Identity.Application</id>
+    <version>1.0.0</version>
+    <authors>Akbar Ahmadi Saray</authors>
+    <description>Clean Architecture Application Layer - Use Cases, CQRS, and Business Logic</description>
+    <repository type="git" commit="b9951cde8aab8a957974d62fd1d68ef50b458e23" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="AkbarAmd.CleanArchitecture.Domain" version="1.0.7" exclude="Build,Analyzers" />
+        <dependency id="AutoMapper" version="12.0.1" exclude="Build,Analyzers" />
+        <dependency id="FluentValidation" version="11.5.0" exclude="Build,Analyzers" />
+        <dependency id="MediatR" version="12.5.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="8.0.3" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="E:\projects\CleanArchitecture\src\MCA.Identity.Application\bin\Debug\net8.0\MCA.Identity.Application.dll" target="lib\net8.0\MCA.Identity.Application.dll" />
+  </files>
+</package>
