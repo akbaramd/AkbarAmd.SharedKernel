@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace CleanArchitecture.Infrastructure.Authorization;
+namespace MCA.Context.Identity.Infrastructure.Authorization;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
 public sealed class AuthorizePermissionAttribute : Attribute, IAuthorizeData

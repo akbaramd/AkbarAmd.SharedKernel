@@ -5,7 +5,7 @@
   },
   "projects": {
     "E:\\projects\\CleanArchitecture\\src\\MCA.Context.Identity.Domain\\MCA.Context.Identity.Domain.csproj": {
-      "version": "1.0.7",
+      "version": "1.0.8",
       "restore": {
         "projectUniqueName": "E:\\projects\\CleanArchitecture\\src\\MCA.Context.Identity.Domain\\MCA.Context.Identity.Domain.csproj",
         "projectName": "AkbarAmd.CleanArchitecture.Domain",
@@ -97,10 +97,10 @@
       }
     },
     "E:\\projects\\CleanArchitecture\\Src\\SharedKernel\\MCA.SharedKernel.Domain\\MCA.SharedKernel.Domain.csproj": {
-      "version": "1.0.0",
+      "version": "1.0.10",
       "restore": {
         "projectUniqueName": "E:\\projects\\CleanArchitecture\\Src\\SharedKernel\\MCA.SharedKernel.Domain\\MCA.SharedKernel.Domain.csproj",
-        "projectName": "MCA.SharedKernel.Domain",
+        "projectName": "AkbarAmd.SharedKernel.Domain",
         "projectPath": "E:\\projects\\CleanArchitecture\\Src\\SharedKernel\\MCA.SharedKernel.Domain\\MCA.SharedKernel.Domain.csproj",
         "packagesPath": "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\",
         "outputPath": "E:\\projects\\CleanArchitecture\\Src\\SharedKernel\\MCA.SharedKernel.Domain\\obj\\",

@@ -8,11 +8,24 @@
 namespace MCA.SharedKernel.Domain.Contracts
 {
     /// <summary>
+    /// Base contract for all domain entities without generic constraints.
+    /// Provides common entity functionality for key management and comparison.
+    /// </summary>
+    public interface IEntity
+    {
+        /// <summary>
+        /// Gets the primary keys that identify this entity.
+        /// </summary>
+        /// <returns>Array of objects representing the entity's primary keys.</returns>
+        object[] GetKeys();
+    }
+
+    /// <summary>
     /// Contract for domain entities with a strongly-typed identity.
     /// Guarantees identity access and comparison without exposing implementation details.
     /// </summary>
     /// <typeparam name="TId">Identifier type (value object or primitive) implementing <see cref="IEquatable{T}"/>.</typeparam>
-    public interface IEntity<TId> : IEquatable<IEntity<TId>>
+    public interface IEntity<TId> : IEntity, IEquatable<IEntity<TId>>
         where TId : IEquatable<TId>
     {
         /// <summary>

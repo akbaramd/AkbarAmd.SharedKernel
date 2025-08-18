@@ -1,6 +1,6 @@
 using MCA.SharedKernel.Domain.Events;
 
-namespace MCA.Identity.Domain.User.Events;
+namespace MCA.Context.Identity.Domain.User.Events;
 
  public sealed class UserNameChangedEvent : DomainEvent
     {

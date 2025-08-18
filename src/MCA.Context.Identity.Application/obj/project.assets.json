@@ -1216,12 +1216,12 @@
           }
         }
       },
-      "AkbarAmd.CleanArchitecture.Domain/1.0.7": {
+      "AkbarAmd.CleanArchitecture.Domain/1.0.8": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
+          "AkbarAmd.SharedKernel.Domain": "1.0.10",
           "Bonyan": "1.5.6",
-          "MCA.SharedKernel.Domain": "1.0.0",
           "MediatR": "12.5.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.18",
           "Newtonsoft.Json": "13.0.3"
@@ -1233,25 +1233,25 @@
           "bin/placeholder/AkbarAmd.CleanArchitecture.Domain.dll": {}
         }
       },
-      "MCA.SharedKernel.Application/1.0.0": {
+      "AkbarAmd.SharedKernel.Application/1.0.10": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
+          "AkbarAmd.SharedKernel.Domain": "1.0.10",
           "AutoMapper": "12.0.1",
           "Bonyan": "1.5.6",
           "FluentValidation": "11.5.0",
-          "MCA.SharedKernel.Domain": "1.0.0",
           "MediatR": "12.5.0",
           "Microsoft.Extensions.Logging.Abstractions": "8.0.3"
         },
         "compile": {
-          "bin/placeholder/MCA.SharedKernel.Application.dll": {}
+          "bin/placeholder/AkbarAmd.SharedKernel.Application.dll": {}
         },
         "runtime": {
-          "bin/placeholder/MCA.SharedKernel.Application.dll": {}
+          "bin/placeholder/AkbarAmd.SharedKernel.Application.dll": {}
         }
       },
-      "MCA.SharedKernel.Domain/1.0.0": {
+      "AkbarAmd.SharedKernel.Domain/1.0.10": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
@@ -1259,10 +1259,10 @@
           "MediatR": "12.5.0"
         },
         "compile": {
-          "bin/placeholder/MCA.SharedKernel.Domain.dll": {}
+          "bin/placeholder/AkbarAmd.SharedKernel.Domain.dll": {}
         },
         "runtime": {
-          "bin/placeholder/MCA.SharedKernel.Domain.dll": {}
+          "bin/placeholder/AkbarAmd.SharedKernel.Domain.dll": {}
         }
       }
     }
@@ -3057,17 +3057,17 @@
         "system.linq.dynamic.core.nuspec"
       ]
     },
-    "AkbarAmd.CleanArchitecture.Domain/1.0.7": {
+    "AkbarAmd.CleanArchitecture.Domain/1.0.8": {
       "type": "project",
       "path": "../MCA.Context.Identity.Domain/MCA.Context.Identity.Domain.csproj",
       "msbuildProject": "../MCA.Context.Identity.Domain/MCA.Context.Identity.Domain.csproj"
     },
-    "MCA.SharedKernel.Application/1.0.0": {
+    "AkbarAmd.SharedKernel.Application/1.0.10": {
       "type": "project",
       "path": "../SharedKernel/MCA.SharedKernel.Application/MCA.SharedKernel.Application.csproj",
       "msbuildProject": "../SharedKernel/MCA.SharedKernel.Application/MCA.SharedKernel.Application.csproj"
     },
-    "MCA.SharedKernel.Domain/1.0.0": {
+    "AkbarAmd.SharedKernel.Domain/1.0.10": {
       "type": "project",
       "path": "../SharedKernel/MCA.SharedKernel.Domain/MCA.SharedKernel.Domain.csproj",
       "msbuildProject": "../SharedKernel/MCA.SharedKernel.Domain/MCA.SharedKernel.Domain.csproj"
@@ -3075,8 +3075,8 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "AkbarAmd.CleanArchitecture.Domain >= 1.0.7",
-      "MCA.SharedKernel.Application >= 1.0.0"
+      "AkbarAmd.CleanArchitecture.Domain >= 1.0.8",
+      "AkbarAmd.SharedKernel.Application >= 1.0.10"
     ]
   },
   "packageFolders": {
@@ -3085,7 +3085,7 @@
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
-    "version": "1.0.0",
+    "version": "1.0.8",
     "restore": {
       "projectUniqueName": "E:\\projects\\CleanArchitecture\\src\\MCA.Context.Identity.Application\\MCA.Context.Identity.Application.csproj",
       "projectName": "MCA.Identity.Application",

@@ -5,11 +5,11 @@
  * Year: 2025
  */
 
-using MCA.Identity.Domain.User.Constants;
-using MCA.SharedKernel.Domain.Contracts;
 using System.Text.RegularExpressions;
+using MCA.Context.Identity.Domain.User.Constants;
+using MCA.SharedKernel.Domain.Contracts;
 
-namespace MCA.Identity.Domain.User.BusinessRules;
+namespace MCA.Context.Identity.Domain.User.BusinessRules;
 
 /// <summary>
 /// Business rule for validating name format.

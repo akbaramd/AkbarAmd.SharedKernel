@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "nvlqKvQ1OtY=",
+  "dgSpecHash": "E64oADaF1+s=",
   "success": true,
   "projectFilePath": "E:\\projects\\CleanArchitecture\\src\\MCA.Context.Identity.Infrastructure\\MCA.Context.Identity.Infrastructure.csproj",
   "expectedPackageFiles": [
@@ -130,7 +130,7 @@
     "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\system.threading.channels\\6.0.0\\system.threading.channels.6.0.0.nupkg.sha512",
     "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
     "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
-    "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\akbaramd.cleanarchitecture.domain\\1.0.7\\akbaramd.cleanarchitecture.domain.1.0.7.nupkg.sha512"
+    "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\akbaramd.sharedkernel.domain\\1.0.10\\akbaramd.sharedkernel.domain.1.0.10.nupkg.sha512"
   ],
   "logs": []
 }

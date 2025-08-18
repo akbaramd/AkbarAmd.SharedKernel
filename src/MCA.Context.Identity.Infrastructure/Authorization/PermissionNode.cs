@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace CleanArchitecture.Infrastructure.Authorization;
+namespace MCA.Context.Identity.Infrastructure.Authorization;
 
 public sealed record PermissionNode(
     string Value,

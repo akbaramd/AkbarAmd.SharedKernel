@@ -1,8 +1,7 @@
-using MCA.Identity.Domain.User.Entities;
-using MCA.SharedKernel.Domain;
+using MCA.Context.Identity.Domain.User.Entities;
 using MCA.SharedKernel.Domain.Contracts;
 
-namespace MCA.Identity.Domain.User.Specifications;
+namespace MCA.Context.Identity.Domain.User.Specifications;
 
 public class ActiveUsersSpecification : ISpecification<UserEntity>
 {

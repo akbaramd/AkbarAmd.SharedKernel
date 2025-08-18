@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Infrastructure.Authorization;
+﻿namespace MCA.Context.Identity.Infrastructure.Authorization;
 
 /// <summary>
 ///  فرا‌متادیتا برای نمایـش در UI و ساخت درخت دسته‌بندی.

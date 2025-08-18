@@ -5,16 +5,11 @@
  * Year: 2025
  */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using MCA.SharedKernel.Domain.Contracts;
 using MCA.SharedKernel.Domain.Outbox;
 using Microsoft.EntityFrameworkCore;
 
-namespace CleanArchitecture.Infrastructure.Outbox
+namespace MCA.Context.Identity.Infrastructure.Outbox
 {
     public class EfOutboxStore<TDbContext> : IOutboxStore
         where TDbContext : DbContext

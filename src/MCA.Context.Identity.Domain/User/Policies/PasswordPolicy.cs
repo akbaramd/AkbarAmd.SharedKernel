@@ -5,11 +5,9 @@
  * Year: 2025
  */
 
-using MCA.Identity.Domain.User.BusinessRules;
-using MCA.Identity.Domain.User.Constants;
-using System.Text.RegularExpressions;
+using MCA.Context.Identity.Domain.User.Constants;
 
-namespace MCA.Identity.Domain.User.Policies;
+namespace MCA.Context.Identity.Domain.User.Policies;
 
 /// <summary>
 /// Policy for password validation that uses the same constants and rules as business rules.

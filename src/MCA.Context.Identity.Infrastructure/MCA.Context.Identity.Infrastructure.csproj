@@ -1,15 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageId>AkbarAmd.CleanArchitecture.Infrastructure</PackageId>
-        <Version>1.0.7</Version>
-        <Authors>Akbar Ahmadi Saray</Authors>
-        <Company>AkbarAhmadi</Company>
-        <Description>Clean Architecture Infrastructure Layer - EF Core Integration and Repository Implementations</Description>
-    </PropertyGroup>
+        <PropertyGroup>
+            <TargetFramework>net8.0</TargetFramework>
+            <ImplicitUsings>enable</ImplicitUsings>
+            <Nullable>enable</Nullable>
+            <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+            <PackageId>AkbarAmd.CleanArchitecture.Infrastructure</PackageId>
+            <Version>1.0.8</Version>
+            <Authors>Akbar Ahmadi Saray</Authors>
+            <Company>AkbarAhmadi</Company>
+            <Description>Clean Architecture Infrastructure Layer - EF Core Integration and Repository Implementations</Description>
+        </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\MCA.Context.Identity.Domain\MCA.Context.Identity.Domain.csproj" />

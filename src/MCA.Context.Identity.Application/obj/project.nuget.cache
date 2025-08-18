@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "sdM+Z0SNs14=",
+  "dgSpecHash": "kO4xxRfpl6o=",
   "success": true,
   "projectFilePath": "E:\\projects\\CleanArchitecture\\src\\MCA.Context.Identity.Application\\MCA.Context.Identity.Application.csproj",
   "expectedPackageFiles": [
@@ -71,7 +71,8 @@
     "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\system.diagnostics.diagnosticsource\\8.0.1\\system.diagnostics.diagnosticsource.8.0.1.nupkg.sha512",
     "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\system.diagnostics.eventlog\\8.0.1\\system.diagnostics.eventlog.8.0.1.nupkg.sha512",
     "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\system.linq.dynamic.core\\1.4.6\\system.linq.dynamic.core.1.4.6.nupkg.sha512",
-    "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\akbaramd.cleanarchitecture.domain\\1.0.7\\akbaramd.cleanarchitecture.domain.1.0.7.nupkg.sha512"
+    "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\akbaramd.sharedkernel.application\\1.0.10\\akbaramd.sharedkernel.application.1.0.10.nupkg.sha512",
+    "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\akbaramd.sharedkernel.domain\\1.0.10\\akbaramd.sharedkernel.domain.1.0.10.nupkg.sha512"
   ],
   "logs": []
 }

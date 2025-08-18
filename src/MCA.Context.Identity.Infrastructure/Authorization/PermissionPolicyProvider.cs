@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 
-namespace CleanArchitecture.Infrastructure.Authorization;
+namespace MCA.Context.Identity.Infrastructure.Authorization;
 
 public sealed class PermissionPolicyProvider(
     IOptions<AuthorizationOptions> opts,

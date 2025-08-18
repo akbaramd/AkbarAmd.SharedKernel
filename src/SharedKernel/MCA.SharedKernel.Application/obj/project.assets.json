@@ -1031,7 +1031,7 @@
           }
         }
       },
-      "MCA.SharedKernel.Domain/1.0.0": {
+      "AkbarAmd.SharedKernel.Domain/1.0.10": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
@@ -1039,10 +1039,10 @@
           "MediatR": "12.5.0"
         },
         "compile": {
-          "bin/placeholder/MCA.SharedKernel.Domain.dll": {}
+          "bin/placeholder/AkbarAmd.SharedKernel.Domain.dll": {}
         },
         "runtime": {
-          "bin/placeholder/MCA.SharedKernel.Domain.dll": {}
+          "bin/placeholder/AkbarAmd.SharedKernel.Domain.dll": {}
         }
       }
     }
@@ -2625,7 +2625,7 @@
         "system.linq.dynamic.core.nuspec"
       ]
     },
-    "MCA.SharedKernel.Domain/1.0.0": {
+    "AkbarAmd.SharedKernel.Domain/1.0.10": {
       "type": "project",
       "path": "../MCA.SharedKernel.Domain/MCA.SharedKernel.Domain.csproj",
       "msbuildProject": "../MCA.SharedKernel.Domain/MCA.SharedKernel.Domain.csproj"
@@ -2633,10 +2633,10 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "AkbarAmd.SharedKernel.Domain >= 1.0.10",
       "AutoMapper >= 12.0.1",
       "Bonyan >= 1.5.6",
       "FluentValidation >= 11.5.0",
-      "MCA.SharedKernel.Domain >= 1.0.0",
       "MediatR >= 12.5.0",
       "Microsoft.Extensions.Logging.Abstractions >= 8.0.3"
     ]
@@ -2647,10 +2647,10 @@
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
-    "version": "1.0.0",
+    "version": "1.0.10",
     "restore": {
       "projectUniqueName": "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\MCA.SharedKernel.Application\\MCA.SharedKernel.Application.csproj",
-      "projectName": "MCA.SharedKernel.Application",
+      "projectName": "AkbarAmd.SharedKernel.Application",
       "projectPath": "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\MCA.SharedKernel.Application\\MCA.SharedKernel.Application.csproj",
       "packagesPath": "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\",
       "outputPath": "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\MCA.SharedKernel.Application\\obj\\",

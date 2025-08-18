@@ -5,12 +5,11 @@
  * Year: 2025
  */
 
-using MCA.Identity.Domain.User.BusinessRules;
-using MCA.Identity.Domain.User.Constants;
+using MCA.Context.Identity.Domain.User.BusinessRules;
+using MCA.Context.Identity.Domain.User.Constants;
 using MCA.SharedKernel.Domain;
-using System.Text.RegularExpressions;
 
-namespace MCA.Identity.Domain.User.ValueObjects;
+namespace MCA.Context.Identity.Domain.User.ValueObjects;
 
 /// <summary>
 /// Value object representing an email address.

@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild> <!-- Optional for NuGet packaging -->
     <PackageId>MCA.Identity.Application</PackageId>
-    <Version>1.0.0</Version>
+    <Version>1.0.8</Version>
     <Authors>Akbar Ahmadi Saray</Authors>
     <Company>Your Company</Company>
     <Description>Clean Architecture Application Layer - Use Cases, CQRS, and Business Logic</Description>

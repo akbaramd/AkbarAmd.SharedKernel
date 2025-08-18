@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.Localization;
 
-namespace CleanArchitecture.Infrastructure.Authorization;
+namespace MCA.Context.Identity.Infrastructure.Authorization;
 
 public static class PermissionTree
 {

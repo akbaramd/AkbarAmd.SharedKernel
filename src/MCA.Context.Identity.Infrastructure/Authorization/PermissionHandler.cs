@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace CleanArchitecture.Infrastructure.Authorization;
+namespace MCA.Context.Identity.Infrastructure.Authorization;
 
 public sealed class PermissionHandler : AuthorizationHandler<PermissionRequirement>
 {

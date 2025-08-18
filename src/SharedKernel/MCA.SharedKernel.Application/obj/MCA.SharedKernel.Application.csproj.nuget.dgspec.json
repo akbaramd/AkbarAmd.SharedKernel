@@ -5,10 +5,10 @@
   },
   "projects": {
     "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\MCA.SharedKernel.Application\\MCA.SharedKernel.Application.csproj": {
-      "version": "1.0.0",
+      "version": "1.0.10",
       "restore": {
         "projectUniqueName": "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\MCA.SharedKernel.Application\\MCA.SharedKernel.Application.csproj",
-        "projectName": "MCA.SharedKernel.Application",
+        "projectName": "AkbarAmd.SharedKernel.Application",
         "projectPath": "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\MCA.SharedKernel.Application\\MCA.SharedKernel.Application.csproj",
         "packagesPath": "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\",
         "outputPath": "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\MCA.SharedKernel.Application\\obj\\",
@@ -101,10 +101,10 @@
       }
     },
     "E:\\projects\\CleanArchitecture\\Src\\SharedKernel\\MCA.SharedKernel.Domain\\MCA.SharedKernel.Domain.csproj": {
-      "version": "1.0.0",
+      "version": "1.0.10",
       "restore": {
         "projectUniqueName": "E:\\projects\\CleanArchitecture\\Src\\SharedKernel\\MCA.SharedKernel.Domain\\MCA.SharedKernel.Domain.csproj",
-        "projectName": "MCA.SharedKernel.Domain",
+        "projectName": "AkbarAmd.SharedKernel.Domain",
         "projectPath": "E:\\projects\\CleanArchitecture\\Src\\SharedKernel\\MCA.SharedKernel.Domain\\MCA.SharedKernel.Domain.csproj",
         "packagesPath": "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\",
         "outputPath": "E:\\projects\\CleanArchitecture\\Src\\SharedKernel\\MCA.SharedKernel.Domain\\obj\\",

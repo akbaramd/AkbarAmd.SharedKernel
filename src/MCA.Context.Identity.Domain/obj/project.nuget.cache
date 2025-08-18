@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "J+I/fUAzLDU=",
+  "dgSpecHash": "eyY3d3rqUEQ=",
   "success": true,
   "projectFilePath": "E:\\projects\\CleanArchitecture\\src\\MCA.Context.Identity.Domain\\MCA.Context.Identity.Domain.csproj",
   "expectedPackageFiles": [
@@ -67,7 +67,8 @@
     "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\system.collections.immutable\\1.7.1\\system.collections.immutable.1.7.1.nupkg.sha512",
     "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\system.diagnostics.diagnosticsource\\8.0.1\\system.diagnostics.diagnosticsource.8.0.1.nupkg.sha512",
     "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\system.diagnostics.eventlog\\8.0.1\\system.diagnostics.eventlog.8.0.1.nupkg.sha512",
-    "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\system.linq.dynamic.core\\1.4.6\\system.linq.dynamic.core.1.4.6.nupkg.sha512"
+    "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\system.linq.dynamic.core\\1.4.6\\system.linq.dynamic.core.1.4.6.nupkg.sha512",
+    "C:\\Users\\ahmadi.UR-NEZAM\\.nuget\\packages\\akbaramd.sharedkernel.domain\\1.0.10\\akbaramd.sharedkernel.domain.1.0.10.nupkg.sha512"
   ],
   "logs": []
 }

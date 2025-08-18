@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using MCA.SharedKernel.Domain;
 
-namespace CleanArchitecture.Infrastructure.Authorization;
+namespace MCA.Context.Identity.Infrastructure.Authorization;
 
 /// <summary>
 ///  Value-Object؛ تنها راه ساخت نمونه از طریق <see cref="Of"/> است.

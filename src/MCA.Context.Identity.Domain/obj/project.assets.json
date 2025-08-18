@@ -1178,7 +1178,7 @@
           }
         }
       },
-      "MCA.SharedKernel.Domain/1.0.0": {
+      "AkbarAmd.SharedKernel.Domain/1.0.10": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
@@ -1186,10 +1186,10 @@
           "MediatR": "12.5.0"
         },
         "compile": {
-          "bin/placeholder/MCA.SharedKernel.Domain.dll": {}
+          "bin/placeholder/AkbarAmd.SharedKernel.Domain.dll": {}
         },
         "runtime": {
-          "bin/placeholder/MCA.SharedKernel.Domain.dll": {}
+          "bin/placeholder/AkbarAmd.SharedKernel.Domain.dll": {}
         }
       }
     }
@@ -2877,7 +2877,7 @@
         "system.linq.dynamic.core.nuspec"
       ]
     },
-    "MCA.SharedKernel.Domain/1.0.0": {
+    "AkbarAmd.SharedKernel.Domain/1.0.10": {
       "type": "project",
       "path": "../SharedKernel/MCA.SharedKernel.Domain/MCA.SharedKernel.Domain.csproj",
       "msbuildProject": "../SharedKernel/MCA.SharedKernel.Domain/MCA.SharedKernel.Domain.csproj"
@@ -2885,8 +2885,8 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "AkbarAmd.SharedKernel.Domain >= 1.0.10",
       "Bonyan >= 1.5.6",
-      "MCA.SharedKernel.Domain >= 1.0.0",
       "MediatR >= 12.5.0",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 8.0.18",
       "Newtonsoft.Json >= 13.0.3"
@@ -2898,7 +2898,7 @@
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
-    "version": "1.0.7",
+    "version": "1.0.8",
     "restore": {
       "projectUniqueName": "E:\\projects\\CleanArchitecture\\src\\MCA.Context.Identity.Domain\\MCA.Context.Identity.Domain.csproj",
       "projectName": "AkbarAmd.CleanArchitecture.Domain",

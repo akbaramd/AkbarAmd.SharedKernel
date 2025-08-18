@@ -1,9 +1,8 @@
 ﻿using Bonyan.Modularity.Abstractions;
-using MCA.Identity.Domain;
+using MCA.Context.Identity.Domain;
 using MCA.SharedKernel.Application;
-using MCA.SharedKernel.Domain;
 
-namespace CleanArchitecture.Application;
+namespace MCA.Context.Identity.Application;
 
 public class McaIdentityApplciationModule : BonModule
 {

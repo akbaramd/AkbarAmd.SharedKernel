@@ -5,11 +5,11 @@
  * Year: 2025
  */
 
-using MCA.Identity.Domain.User.Constants;
-using MCA.Identity.Domain.User.Entities;
-using MCA.Identity.Domain.User.Enumerations;
+using MCA.Context.Identity.Domain.User.Constants;
+using MCA.Context.Identity.Domain.User.Entities;
+using MCA.Context.Identity.Domain.User.Enumerations;
 
-namespace MCA.Identity.Domain.User.Policies;
+namespace MCA.Context.Identity.Domain.User.Policies;
 
 /// <summary>
 /// Policy for managing user status transitions.

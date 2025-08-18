@@ -5,7 +5,7 @@
  * Year: 2025
  */
 
-namespace MCA.Identity.Domain.User.Constants;
+namespace MCA.Context.Identity.Domain.User.Constants;
 
 /// <summary>
 /// Constants for validation rules in the User domain.

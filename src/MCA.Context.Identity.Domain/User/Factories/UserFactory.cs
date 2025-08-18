@@ -5,13 +5,12 @@
  * Year: 2025
  */
 
-using MCA.Identity.Domain.User.Entities;
-using MCA.Identity.Domain.User.Enumerations;
-using MCA.Identity.Domain.User.Policies;
-using MCA.Identity.Domain.User.ValueObjects;
-using MCA.SharedKernel.Domain.Contracts;
+using MCA.Context.Identity.Domain.User.Entities;
+using MCA.Context.Identity.Domain.User.Enumerations;
+using MCA.Context.Identity.Domain.User.Policies;
+using MCA.Context.Identity.Domain.User.ValueObjects;
 
-namespace MCA.Identity.Domain.User.Factories;
+namespace MCA.Context.Identity.Domain.User.Factories;
 
 /// <summary>
 /// Advanced factory for creating User entities with various creation scenarios.

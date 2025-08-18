@@ -5,12 +5,12 @@
  * Year: 2025
  */
 
-using MCA.Identity.Domain.User.BusinessRules;
-using MCA.Identity.Domain.User.Constants;
-using MCA.SharedKernel.Domain;
 using System.Security.Cryptography;
+using MCA.Context.Identity.Domain.User.BusinessRules;
+using MCA.Context.Identity.Domain.User.Constants;
+using MCA.SharedKernel.Domain;
 
-namespace MCA.Identity.Domain.User.ValueObjects;
+namespace MCA.Context.Identity.Domain.User.ValueObjects;
 
 /// <summary>
 /// Value object representing a password.

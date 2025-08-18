@@ -5,18 +5,14 @@
  * Year: 2025
  */
 
-using MCA.Identity.Domain.User.BusinessRules;
-using MCA.Identity.Domain.User.Constants;
-using MCA.Identity.Domain.User.Enumerations;
-using MCA.Identity.Domain.User.Events;
-using MCA.Identity.Domain.User.Policies;
-using MCA.Identity.Domain.User.ValueObjects;
+using MCA.Context.Identity.Domain.User.BusinessRules;
+using MCA.Context.Identity.Domain.User.Enumerations;
+using MCA.Context.Identity.Domain.User.Events;
+using MCA.Context.Identity.Domain.User.Policies;
+using MCA.Context.Identity.Domain.User.ValueObjects;
 using MCA.SharedKernel.Domain;
-using MCA.SharedKernel.Domain.Contracts;
-using MCA.SharedKernel.Domain.Events;
-using Microsoft.AspNetCore.Identity;
 
-namespace MCA.Identity.Domain.User.Entities;
+namespace MCA.Context.Identity.Domain.User.Entities;
 
 /// <summary>
 /// Aggregate Root representing an application user.

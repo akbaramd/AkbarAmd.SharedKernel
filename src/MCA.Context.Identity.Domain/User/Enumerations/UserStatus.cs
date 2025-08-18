@@ -1,6 +1,6 @@
 using MCA.SharedKernel.Domain;
 
-namespace MCA.Identity.Domain.User.Enumerations;
+namespace MCA.Context.Identity.Domain.User.Enumerations;
 
 public sealed class UserStatus : Enumeration
 {
