@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>AkbarAmd.SharedKernel.Application</id>
+    <version>1.0.10</version>
+    <authors>Akbar Ahmadi Saray</authors>
+    <description>Clean Architecture Infrastructure Layer - EF Core Integration and Repository Implementations</description>
+    <repository type="git" commit="7c25f1c3c05686e7f5880c57fc50b3c32e402fa7" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="AkbarAmd.SharedKernel.Domain" version="1.0.10" exclude="Build,Analyzers" />
+        <dependency id="AutoMapper" version="12.0.1" exclude="Build,Analyzers" />
+        <dependency id="Bonyan" version="1.5.6" exclude="Build,Analyzers" />
+        <dependency id="FluentValidation" version="11.5.0" exclude="Build,Analyzers" />
+        <dependency id="MediatR" version="12.5.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Logging.Abstractions" version="8.0.3" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\bin\Release\net8.0\MCA.SharedKernel.Application.dll" target="lib\net8.0\MCA.SharedKernel.Application.dll" />
+  </files>
+</package>

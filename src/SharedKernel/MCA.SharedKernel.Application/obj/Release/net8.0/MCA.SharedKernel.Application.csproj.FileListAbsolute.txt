@@ -1,0 +1,16 @@
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\bin\Release\net8.0\MCA.SharedKernel.Application.deps.json
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\bin\Release\net8.0\MCA.SharedKernel.Application.dll
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\bin\Release\net8.0\MCA.SharedKernel.Application.pdb
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\bin\Release\net8.0\MCA.SharedKernel.Domain.dll
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\bin\Release\net8.0\MCA.SharedKernel.Domain.pdb
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Release\net8.0\MCA.SharedKernel.Application.csproj.AssemblyReference.cache
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Release\net8.0\MCA.SharedKernel.Application.GeneratedMSBuildEditorConfig.editorconfig
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Release\net8.0\MCA.SharedKernel.Application.AssemblyInfoInputs.cache
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Release\net8.0\MCA.SharedKernel.Application.AssemblyInfo.cs
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Release\net8.0\MCA.SharedKernel.Application.csproj.CoreCompileInputs.cache
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Release\net8.0\MCA.SharedKernel.Application.sourcelink.json
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Release\net8.0\MCA.Shar.F7FEEA71.Up2Date
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Release\net8.0\MCA.SharedKernel.Application.dll
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Release\net8.0\refint\MCA.SharedKernel.Application.dll
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Release\net8.0\MCA.SharedKernel.Application.pdb
+E:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Application\obj\Release\net8.0\ref\MCA.SharedKernel.Application.dll
