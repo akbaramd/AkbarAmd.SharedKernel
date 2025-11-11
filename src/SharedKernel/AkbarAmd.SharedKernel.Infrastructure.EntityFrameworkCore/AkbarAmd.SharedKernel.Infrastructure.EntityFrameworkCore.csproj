@@ -14,10 +14,10 @@
         <Description>Clean Architecture Infrastructure Layer - EF Core Integration, Repository Implementations, and Data Access</Description>
         <Copyright>Copyright © Akbar Ahmadi Saray 2025</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/akbaramd/AkbarAmd.SharedKernel</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/akbarahmadi/CleanArchitecture</PackageProjectUrl>
         <PackageIcon>logo.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <RepositoryUrl>https://github.com/akbaramd/AkbarAmd.SharedKernel</RepositoryUrl>
+        <RepositoryUrl>https://github.com/akbarahmadi/CleanArchitecture</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>clean-architecture;infrastructure;ef-core;entity-framework;repositories;data-access;specifications</PackageTags>
         <PackageReleaseNotes>Version 1.0.16: Enhanced documentation with comprehensive README including usage examples, architecture principles, and component descriptions</PackageReleaseNotes>
