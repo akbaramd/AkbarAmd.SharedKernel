@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>AkbarAmd.SharedKernel.Infrastructure</id>
+    <version>1.0.10</version>
+    <authors>Akbar Ahmadi Saray</authors>
+    <description>Clean Architecture Infrastructure Layer - EF Core Integration and Repository Implementations</description>
+    <repository type="git" commit="2383006f3a05f952515d95ab531e7fcc8dfdad4f" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="AkbarAmd.SharedKernel.Domain" version="1.0.10" exclude="Build,Analyzers" />
+        <dependency id="Bonyan" version="1.5.6" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.AspNetCore.Authorization" version="8.0.18" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.AspNetCore.Identity.EntityFrameworkCore" version="8.0.18" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.EntityFrameworkCore" version="8.0.18" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.EntityFrameworkCore.Relational" version="8.0.18" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.EntityFrameworkCore.SqlServer" version="8.0.18" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.Localization" version="8.0.18" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="e:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Infrastructure\bin\Debug\net8.0\MCA.SharedKernel.Infrastructure.runtimeconfig.json" target="lib\net8.0\MCA.SharedKernel.Infrastructure.runtimeconfig.json" />
+    <file src="e:\projects\CleanArchitecture\src\SharedKernel\MCA.SharedKernel.Infrastructure\bin\Debug\net8.0\MCA.SharedKernel.Infrastructure.dll" target="lib\net8.0\MCA.SharedKernel.Infrastructure.dll" />
+  </files>
+</package>

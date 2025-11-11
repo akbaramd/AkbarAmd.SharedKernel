@@ -1,7 +1,0 @@
-C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\bin\Release\net9.0\publish\CleanArchitecture.Domain.dll
-C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\bin\Release\net9.0\publish\CleanArchitecture.Domain.deps.json
-C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\bin\Release\net9.0\publish\CleanArchitecture.Domain.pdb
-C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\bin\Release\net9.0\publish\MediatR.dll
-C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\bin\Release\net9.0\publish\MediatR.Contracts.dll
-C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\bin\Release\net9.0\publish\Microsoft.Extensions.DependencyInjection.Abstractions.dll
-C:\Users\ahmadi\RiderProjects\CleanArchitecture.V2\src\CleanArchitecture.Domain\bin\Release\net9.0\publish\Newtonsoft.Json.dll

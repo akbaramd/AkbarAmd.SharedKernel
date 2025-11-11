@@ -1,0 +1,516 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MCA.SharedKernel.Infrastructure</name>
+    </assembly>
+    <members>
+        <member name="T:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions">
+            <summary>
+            Extension methods for EntityTypeBuilder to simplify entity configuration.
+            </summary>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureCreationAudit``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
+            <summary>
+            Configures creation audit properties for entities implementing ICreatableAudit.
+            </summary>
+            <typeparam name="TEntity">The entity type implementing ICreatableAudit.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <returns>The EntityTypeBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureModificationAudit``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
+            <summary>
+            Configures modification audit properties for entities implementing IModifiableAudit.
+            </summary>
+            <typeparam name="TEntity">The entity type implementing IModifiableAudit.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <returns>The EntityTypeBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureSoftDeleteAudit``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
+            <summary>
+            Configures soft delete audit properties for entities implementing ISoftDeletableAudit.
+            </summary>
+            <typeparam name="TEntity">The entity type implementing ISoftDeletableAudit.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <returns>The EntityTypeBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureConcurrentAudit``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
+            <summary>
+            Configures concurrent audit properties for entities implementing IConcurrentAudit.
+            </summary>
+            <typeparam name="TEntity">The entity type implementing IConcurrentAudit.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <returns>The EntityTypeBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureFullAudit``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
+            <summary>
+            Configures full audit trail for entities implementing IConcurrentAudit (all audit properties).
+            </summary>
+            <typeparam name="TEntity">The entity type implementing IConcurrentAudit.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <returns>The EntityTypeBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureStringProperty``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0},System.Linq.Expressions.Expression{System.Func{``0,System.String}},System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            Configures a string property with common settings.
+            </summary>
+            <typeparam name="TEntity">The entity type.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <param name="propertyExpression">Expression representing the property.</param>
+            <param name="maxLength">Maximum length for the string property.</param>
+            <param name="isRequired">Whether the property is required.</param>
+            <param name="isUnicode">Whether the property supports Unicode characters.</param>
+            <returns>The PropertyBuilder for further configuration.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureDecimalProperty``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Decimal}},System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Configures a decimal property with precision and scale.
+            </summary>
+            <typeparam name="TEntity">The entity type.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <param name="propertyExpression">Expression representing the property.</param>
+            <param name="precision">The precision for the decimal property.</param>
+            <param name="scale">The scale for the decimal property.</param>
+            <param name="isRequired">Whether the property is required.</param>
+            <returns>The PropertyBuilder for further configuration.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureDecimalProperty``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Nullable{System.Decimal}}},System.Int32,System.Int32)">
+            <summary>
+            Configures a nullable decimal property with precision and scale.
+            </summary>
+            <typeparam name="TEntity">The entity type.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <param name="propertyExpression">Expression representing the property.</param>
+            <param name="precision">The precision for the decimal property.</param>
+            <param name="scale">The scale for the decimal property.</param>
+            <returns>The PropertyBuilder for further configuration.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureDateTimeProperty``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0},System.Linq.Expressions.Expression{System.Func{``0,System.DateTime}},System.String,System.Boolean)">
+            <summary>
+            Configures a datetime property with appropriate column type.
+            </summary>
+            <typeparam name="TEntity">The entity type.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <param name="propertyExpression">Expression representing the property.</param>
+            <param name="columnType">The column type (default: datetime2).</param>
+            <param name="isRequired">Whether the property is required.</param>
+            <returns>The PropertyBuilder for further configuration.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureDateTimeProperty``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0},System.Linq.Expressions.Expression{System.Func{``0,System.Nullable{System.DateTime}}},System.String)">
+            <summary>
+            Configures a nullable datetime property with appropriate column type.
+            </summary>
+            <typeparam name="TEntity">The entity type.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <param name="propertyExpression">Expression representing the property.</param>
+            <param name="columnType">The column type (default: datetime2).</param>
+            <returns>The PropertyBuilder for further configuration.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureCompositeIndex``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0},System.String,System.String[],System.Boolean)">
+            <summary>
+            Creates a composite index on multiple properties.
+            </summary>
+            <typeparam name="TEntity">The entity type.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <param name="indexName">The name of the index.</param>
+            <param name="propertyNames">The names of the properties to include in the index.</param>
+            <param name="isUnique">Whether the index should be unique.</param>
+            <returns>The IndexBuilder for further configuration.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureCreatableEntity``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
+            <summary>
+            Configures an entity that implements IEntity and ICreatableAudit.
+            Sets up entity configuration with creation audit properties.
+            </summary>
+            <typeparam name="TEntity">The entity type implementing IEntity and ICreatableAudit.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <returns>The EntityTypeBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureModifiableEntity``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
+            <summary>
+            Configures an entity that implements IEntity and IModifiableAudit.
+            Sets up entity configuration with creation and modification audit properties.
+            </summary>
+            <typeparam name="TEntity">The entity type implementing IEntity and IModifiableAudit.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <returns>The EntityTypeBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureSoftDeletableEntity``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
+            <summary>
+            Configures an entity that implements IEntity and ISoftDeletableAudit.
+            Sets up entity configuration with creation, modification, and soft delete audit properties.
+            </summary>
+            <typeparam name="TEntity">The entity type implementing IEntity and ISoftDeletableAudit.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <returns>The EntityTypeBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureFullAuditableEntity``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
+            <summary>
+            Configures an entity that implements IEntity and IConcurrentAudit.
+            Sets up entity configuration with full audit trail (creation, modification, soft delete, and concurrency).
+            </summary>
+            <typeparam name="TEntity">The entity type implementing IEntity and IConcurrentAudit.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <returns>The EntityTypeBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureCreatableEntity``2(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
+            <summary>
+            Configures an entity with typed Id that implements IEntity&lt;TId&gt; and ICreatableAudit.
+            Sets up entity configuration with creation audit properties and typed primary key.
+            </summary>
+            <typeparam name="TEntity">The entity type implementing IEntity&lt;TId&gt; and ICreatableAudit.</typeparam>
+            <typeparam name="TId">The type of the entity's identifier.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <returns>The EntityTypeBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureModifiableEntity``2(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
+            <summary>
+            Configures an entity with typed Id that implements IEntity&lt;TId&gt; and IModifiableAudit.
+            Sets up entity configuration with creation and modification audit properties and typed primary key.
+            </summary>
+            <typeparam name="TEntity">The entity type implementing IEntity&lt;TId&gt; and IModifiableAudit.</typeparam>
+            <typeparam name="TId">The type of the entity's identifier.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <returns>The EntityTypeBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureSoftDeletableEntity``2(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
+            <summary>
+            Configures an entity with typed Id that implements IEntity&lt;TId&gt; and ISoftDeletableAudit.
+            Sets up entity configuration with creation, modification, and soft delete audit properties and typed primary key.
+            </summary>
+            <typeparam name="TEntity">The entity type implementing IEntity&lt;TId&gt; and ISoftDeletableAudit.</typeparam>
+            <typeparam name="TId">The type of the entity's identifier.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <returns>The EntityTypeBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureFullAuditableEntity``2(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
+            <summary>
+            Configures an entity with typed Id that implements IEntity&lt;TId&gt; and IConcurrentAudit.
+            Sets up entity configuration with full audit trail (creation, modification, soft delete, and concurrency) and typed primary key.
+            </summary>
+            <typeparam name="TEntity">The entity type implementing IEntity&lt;TId&gt; and IConcurrentAudit.</typeparam>
+            <typeparam name="TId">The type of the entity's identifier.</typeparam>
+            <param name="builder">The EntityTypeBuilder instance.</param>
+            <returns>The EntityTypeBuilder instance for method chaining.</returns>
+        </member>
+        <member name="T:MCA.SharedKernel.Infrastructure.Configurations.Extensions.ModelBuilderExtensions">
+            <summary>
+            Extension methods for ModelBuilder to simplify entity configuration.
+            </summary>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.ModelBuilderExtensions.ApplyConfigurationsFromAssembly(Microsoft.EntityFrameworkCore.ModelBuilder,System.Reflection.Assembly)">
+            <summary>
+            Applies all entity configurations from the specified assembly.
+            </summary>
+            <param name="modelBuilder">The ModelBuilder instance.</param>
+            <param name="assembly">The assembly containing the configurations.</param>
+            <returns>The ModelBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.ModelBuilderExtensions.ConfigureAuditProperties(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <summary>
+            Configures audit properties for all entities implementing ICreatableAudit.
+            </summary>
+            <param name="modelBuilder">The ModelBuilder instance.</param>
+            <returns>The ModelBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.ModelBuilderExtensions.ConfigureAggregateRoots(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <summary>
+            Configures aggregate root properties for all entities implementing IAggregateRoot.
+            </summary>
+            <param name="modelBuilder">The ModelBuilder instance.</param>
+            <returns>The ModelBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.ModelBuilderExtensions.ConfigureGlobalFilters(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <summary>
+            Configures global query filters for soft deletable entities.
+            </summary>
+            <param name="modelBuilder">The ModelBuilder instance.</param>
+            <returns>The ModelBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.ModelBuilderExtensions.ConfigureDecimalProperties(Microsoft.EntityFrameworkCore.ModelBuilder,System.Int32,System.Int32)">
+            <summary>
+            Configures decimal properties with appropriate precision and scale.
+            </summary>
+            <param name="modelBuilder">The ModelBuilder instance.</param>
+            <param name="precision">The precision for decimal properties.</param>
+            <param name="scale">The scale for decimal properties.</param>
+            <returns>The ModelBuilder instance for method chaining.</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Configurations.Extensions.ModelBuilderExtensions.ConfigureStringProperties(Microsoft.EntityFrameworkCore.ModelBuilder,System.Int32)">
+            <summary>
+            Configures string properties with maximum length.
+            </summary>
+            <param name="modelBuilder">The ModelBuilder instance.</param>
+            <param name="maxLength">The maximum length for string properties.</param>
+            <returns>The ModelBuilder instance for method chaining.</returns>
+        </member>
+        <member name="T:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3">
+            <summary>
+            Base abstract read-only repository implementation using EF Core.
+            </summary>
+        </member>
+        <member name="F:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3._dbSet">
+            <summary>
+            s
+            </summary>
+        </member>
+        <member name="F:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3._enableTracking">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.PrepareQuery(System.Linq.IQueryable{`1})">
+            <summary>
+            Virtual method to prepare query with includes and other modifications.
+            Uses enableTracking field to conditionally apply AsNoTracking.
+            Override this method in derived repositories to add includes, filters, etc.
+            </summary>
+            <param name="query">The base query</param>
+            <returns>The prepared query with modifications</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.ApplySpecification(MCA.SharedKernel.Domain.Contracts.Specifications.ISpecification{`1})">
+            <summary>
+            
+            </summary>
+            <param name="specification"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.GetPaginatedAsync(MCA.SharedKernel.Domain.Contracts.Specifications.IPaginatedSpecification{`1},System.Threading.CancellationToken)">
+            <summary>
+            Returns a paginated result based on the provided pagination specification.
+            Applies the specification filters first, then computes total count and returns the requested page.
+            </summary>
+            <param name="specification">Pagination specification including filters and pagination parameters</param>
+            <param name="cancellationToken">Cancellation token</param>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.GetPaginatedAsync(MCA.SharedKernel.Domain.Contracts.Specifications.IPaginatedSortableSpecification{`1},System.Threading.CancellationToken)">
+            <summary>
+            Returns a paginated result applying optional sorting from the specification.
+            If <paramref name="specification"/> does not provide a sort selector, falls back to Id ordering for stability.
+            </summary>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.GetByIdAsync(`2,System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="id"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentException"></exception>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.FindOneAsync(System.Linq.Expressions.Expression{System.Func{`1,System.Boolean}},System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="predicate"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.FindOneAsync(MCA.SharedKernel.Domain.Contracts.Specifications.ISpecification{`1},System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="specification"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.FindAsync(System.Linq.Expressions.Expression{System.Func{`1,System.Boolean}},System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="predicate"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.FindAsync(MCA.SharedKernel.Domain.Contracts.Specifications.ISpecification{`1},System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="specification"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.ExistsAsync(System.Linq.Expressions.Expression{System.Func{`1,System.Boolean}},System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="predicate"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.ExistsAsync(MCA.SharedKernel.Domain.Contracts.Specifications.ISpecification{`1},System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="specification"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.CountAsync(System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.CountAsync(System.Linq.Expressions.Expression{System.Func{`1,System.Boolean}},System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="predicate"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.CountAsync(MCA.SharedKernel.Domain.Contracts.Specifications.ISpecification{`1},System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="specification"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.GetPagedAsync(System.Int32,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="pageNumber"></param>
+            <param name="pageSize"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.GetPagedAsync(System.Int32,System.Int32,MCA.SharedKernel.Domain.Contracts.Specifications.ISpecification{`1},System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="pageNumber"></param>
+            <param name="pageSize"></param>
+            <param name="specification"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.FindOneAsync``1(System.Linq.Expressions.Expression{System.Func{`1,System.Boolean}},System.Linq.Expressions.Expression{System.Func{`1,``0}},System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="predicate"></param>
+            <param name="selector"></param>
+            <param name="cancellationToken"></param>
+            <typeparam name="TResult"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.FindAsync``1(System.Linq.Expressions.Expression{System.Func{`1,System.Boolean}},System.Linq.Expressions.Expression{System.Func{`1,``0}},System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="predicate"></param>
+            <param name="selector"></param>
+            <param name="cancellationToken"></param>
+            <typeparam name="TResult"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.GetAllAsync``1(System.Linq.Expressions.Expression{System.Func{`1,``0}},System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="selector"></param>
+            <param name="cancellationToken"></param>
+            <typeparam name="TResult"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.ReadOnlyEfRepository`3.FindAsync(System.Linq.Expressions.Expression{System.Func{`1,System.Boolean}},System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            
+            </summary>
+            <param name="predicate"></param>
+            <param name="asNoTracking"></param>
+            <param name="cancellationToken"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MCA.SharedKernel.Infrastructure.Repositories.EfRepository`3">
+            <summary>
+            Full EF Core repository supporting write operations, inherits read-only repo.
+            </summary>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.EfRepository`3.#ctor(`0)">
+            <summary>
+            
+            </summary>
+            <param name="dbContext"></param>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.EfRepository`3.AddAsync(`1,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Adds an entity to the repository
+            </summary>
+            <param name="entity">The entity to add</param>
+            <param name="save">If true, automatically calls SaveChangesAsync</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.EfRepository`3.UpdateAsync(`1,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Updates an entity in the repository
+            </summary>
+            <param name="entity">The entity to update</param>
+            <param name="save">If true, automatically calls SaveChangesAsync</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.EfRepository`3.DeleteAsync(`1,System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Deletes an entity from the repository
+            </summary>
+            <param name="entity">The entity to delete</param>
+            <param name="save">If true, automatically calls SaveChangesAsync</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.EfRepository`3.AddRangeAsync(System.Collections.Generic.IEnumerable{`1},System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Adds multiple entities to the repository
+            </summary>
+            <param name="entities">The entities to add</param>
+            <param name="save">If true, automatically calls SaveChangesAsync</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.EfRepository`3.UpdateRangeAsync(System.Collections.Generic.IEnumerable{`1},System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Updates multiple entities in the repository
+            </summary>
+            <param name="entities">The entities to update</param>
+            <param name="save">If true, automatically calls SaveChangesAsync</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.EfRepository`3.DeleteRangeAsync(System.Collections.Generic.IEnumerable{`1},System.Boolean,System.Threading.CancellationToken)">
+            <summary>
+            Deletes multiple entities from the repository
+            </summary>
+            <param name="entities">The entities to delete</param>
+            <param name="save">If true, automatically calls SaveChangesAsync</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException"></exception>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.EfRepository`3.BulkDeleteAsync(System.Linq.Expressions.Expression{System.Func{`1,System.Boolean}},System.Threading.CancellationToken)">
+            <summary>
+            Bulk delete entities that match the specified condition using ExecuteDeleteAsync
+            This is more efficient than loading entities into memory and then deleting them
+            </summary>
+            <param name="predicate">Condition to match entities for deletion</param>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns>Number of entities deleted</returns>
+        </member>
+        <member name="M:MCA.SharedKernel.Infrastructure.Repositories.EfRepository`3.SaveAsync(System.Threading.CancellationToken)">
+            <summary>
+            Saves all changes made in this context to the database
+            </summary>
+            <param name="cancellationToken">Cancellation token</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

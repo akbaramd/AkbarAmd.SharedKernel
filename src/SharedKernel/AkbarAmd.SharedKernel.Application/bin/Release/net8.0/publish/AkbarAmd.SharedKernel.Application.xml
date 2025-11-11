@@ -1,0 +1,687 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AkbarAmd.SharedKernel.Application</name>
+    </assembly>
+    <members>
+        <member name="T:AkbarAmd.SharedKernel.Application.Contracts.IEvent">
+            <summary>
+            Marker interface for integration events and application-level events.
+            Used for cross-bounded context communication and external system integration.
+            Integration events are different from domain events as they represent
+            business operations that have been completed and are ready for external consumption.
+            </summary>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Application.Contracts.IEvent.Id">
+            <summary>
+            Unique identifier for the integration event.
+            </summary>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Application.Contracts.IEvent.OccurredOn">
+            <summary>
+            UTC timestamp when the integration event occurred.
+            </summary>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Application.Contracts.IEvent.CorrelationId">
+            <summary>
+            Correlation ID for tracking the event across different systems.
+            </summary>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Application.Contracts.IEvent.Source">
+            <summary>
+            Source system or bounded context that published this event.
+            </summary>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Contracts.IMapper`2">
+            <summary>
+            Generic strongly-typed mapper for a specific source and destination type.
+            This interface is bound to a single source–destination pair.
+            </summary>
+            <typeparam name="TSource">The source type to map from.</typeparam>
+            <typeparam name="TDestination">The destination type to map to.</typeparam>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Contracts.IMapper`2.MapAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Creates a new TDestination instance by mapping from a TSource instance.
+            </summary>
+            <param name="source">Source object.</param>
+            <param name="cancellationToken">Cancellation token.</param>
+            <returns>A mapped instance of TDestination.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Contracts.IMapper`2.MapAsync(`0,`1,System.Threading.CancellationToken)">
+            <summary>
+            Maps values from the specified TSource instance into the given existing TDestination instance.
+            </summary>
+            <param name="source">Source object.</param>
+            <param name="destination">Existing destination object to update.</param>
+            <param name="cancellationToken">Cancellation token.</param>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Dtos.AggregateDto`1">
+            <summary>
+            
+            </summary>
+            <typeparam name="TKey"></typeparam>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Dtos.CreatableAggregateDto`1">
+            <summary>
+            
+            </summary>
+            <typeparam name="TKey"></typeparam>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Dtos.DeletableAggregateDto`1">
+            <summary>
+            
+            </summary>
+            <typeparam name="TKey"></typeparam>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Dtos.EntityDto`1">
+            <summary>
+            
+            </summary>
+            <typeparam name="TKey"></typeparam>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Dtos.ModifiableAggregateDto`1">
+            <summary>
+            
+            </summary>
+            <typeparam name="TKey"></typeparam>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Mediators.CommandHandler`1">
+            <summary>
+            Base class for handling commands that modify system state.
+            Commands represent intentions to change the system state and should be handled
+            within the application layer following CQRS principles.
+            </summary>
+            <typeparam name="TCommand">The type of command to handle.</typeparam>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.CommandHandler`1.ProcessAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Protected method for processing the command asynchronously.
+            Override this method to implement specific command handling logic.
+            </summary>
+            <param name="request">The command to process.</param>
+            <param name="cancellationToken">Cancellation token for the operation.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when request is null.</exception>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.CommandHandler`1.Handle(`0,System.Threading.CancellationToken)">
+            <summary>
+            Public processor method that wraps the protected implementation with cross-cutting concerns.
+            This method is called by MediatR and provides logging, validation, and error handling.
+            </summary>
+            <param name="request">The command to handle.</param>
+            <param name="cancellationToken">Cancellation token for the operation.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.CommandHandler`1.OnCommandReceived(`0)">
+            <summary>
+            Called when a command is received.
+            Override to add custom logging or metrics.
+            </summary>
+            <param name="request">The command that was received.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.CommandHandler`1.ValidateCommand(`0)">
+            <summary>
+            Validates the command before processing.
+            Override to add custom validation logic for commands.
+            </summary>
+            <param name="request">The command to validate.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.CommandHandler`1.OnCommandProcessed(`0)">
+            <summary>
+            Called when a command has been processed successfully.
+            Override to add custom logging or metrics.
+            </summary>
+            <param name="request">The command that was processed.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.CommandHandler`1.OnCommandError(`0,System.Exception)">
+            <summary>
+            Called when an error occurs while processing a command.
+            Override to add custom error logging or error handling.
+            </summary>
+            <param name="request">The command that caused the error.</param>
+            <param name="exception">The exception that occurred.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Mediators.CommandHandler`2">
+            <summary>
+            Base class for handling commands that modify system state and return a result.
+            Commands represent intentions to change the system state and should be handled
+            within the application layer following CQRS principles.
+            </summary>
+            <typeparam name="TCommand">The type of command to handle.</typeparam>
+            <typeparam name="TResult">The type of result returned by the command.</typeparam>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.CommandHandler`2.ProcessAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Protected method for processing the command asynchronously and returning a result.
+            Override this method to implement specific command handling logic.
+            </summary>
+            <param name="request">The command to process.</param>
+            <param name="cancellationToken">Cancellation token for the operation.</param>
+            <returns>A task containing the result of the command processing.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when request is null.</exception>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.CommandHandler`2.Handle(`0,System.Threading.CancellationToken)">
+            <summary>
+            Public processor method that wraps the protected implementation with cross-cutting concerns.
+            This method is called by MediatR and provides logging, validation, and error handling.
+            </summary>
+            <param name="request">The command to handle.</param>
+            <param name="cancellationToken">Cancellation token for the operation.</param>
+            <returns>A task containing the result of the command processing.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.CommandHandler`2.OnCommandReceived(`0)">
+            <summary>
+            Called when a command is received.
+            Override to add custom logging or metrics.
+            </summary>
+            <param name="request">The command that was received.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.CommandHandler`2.ValidateCommand(`0)">
+            <summary>
+            Validates the command before processing.
+            Override to add custom validation logic for commands.
+            </summary>
+            <param name="request">The command to validate.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.CommandHandler`2.OnCommandProcessed(`0,`1)">
+            <summary>
+            Called when a command has been processed successfully.
+            Override to add custom logging or metrics.
+            </summary>
+            <param name="request">The command that was processed.</param>
+            <param name="result">The result returned by the command.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.CommandHandler`2.OnCommandError(`0,System.Exception)">
+            <summary>
+            Called when an error occurs while processing a command.
+            Override to add custom error logging or error handling.
+            </summary>
+            <param name="request">The command that caused the error.</param>
+            <param name="exception">The exception that occurred.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Mediators.DomainEventHandler`1">
+            <summary>
+            Base class for handling domain events within the same bounded context.
+            Domain events represent state changes that have occurred within aggregates
+            and are used for internal communication within the bounded context.
+            </summary>
+            <typeparam name="TEvent">The type of domain event to handle.</typeparam>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.DomainEventHandler`1.ProcessAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Protected method for handling the domain event asynchronously.
+            Override this method to implement specific domain event handling logic.
+            </summary>
+            <param name="notification">The domain event to handle.</param>
+            <param name="cancellationToken">Cancellation token for the operation.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when notification is null.</exception>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.DomainEventHandler`1.Handle(`0,System.Threading.CancellationToken)">
+            <summary>
+            Public processor method that wraps the protected implementation with cross-cutting concerns.
+            This method is called by MediatR and provides logging, validation, and error handling.
+            </summary>
+            <param name="notification">The domain event to handle.</param>
+            <param name="cancellationToken">Cancellation token for the operation.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.DomainEventHandler`1.OnDomainEventReceived(`0)">
+            <summary>
+            Called when a domain event is received.
+            Override to add custom domain-specific logging or metrics.
+            </summary>
+            <param name="notification">The domain event that was received.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.DomainEventHandler`1.ValidateDomainEvent(`0)">
+            <summary>
+            Validates the domain event before processing.
+            Override to add custom validation logic for domain events.
+            </summary>
+            <param name="notification">The domain event to validate.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.DomainEventHandler`1.OnDomainEventProcessed(`0)">
+            <summary>
+            Called when a domain event has been processed successfully.
+            Override to add custom domain-specific logging or metrics.
+            </summary>
+            <param name="notification">The domain event that was processed.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.DomainEventHandler`1.OnDomainEventError(`0,System.Exception)">
+            <summary>
+            Called when an error occurs while processing a domain event.
+            Override to add custom domain-specific error logging or error handling.
+            </summary>
+            <param name="notification">The domain event that caused the error.</param>
+            <param name="exception">The exception that occurred.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Mediators.EventHandler`1">
+            <summary>
+            Base class for handling integration events and application-level events.
+            Integration events are used for cross-bounded context communication
+            and external system integration after business operations are completed.
+            </summary>
+            <typeparam name="TEvent">The type of integration event to handle.</typeparam>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.EventHandler`1.ProcessAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Protected method for handling the integration event asynchronously.
+            Override this method to implement specific event handling logic.
+            </summary>
+            <param name="notification">The integration event to handle.</param>
+            <param name="cancellationToken">Cancellation token for the operation.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when notification is null.</exception>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.EventHandler`1.Handle(`0,System.Threading.CancellationToken)">
+            <summary>
+            Public processor method that wraps the protected implementation with cross-cutting concerns.
+            This method is called by MediatR and provides logging, validation, and error handling.
+            </summary>
+            <param name="notification">The integration event to handle.</param>
+            <param name="cancellationToken">Cancellation token for the operation.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.EventHandler`1.OnEventReceived(`0)">
+            <summary>
+            Called when an integration event is received.
+            Override to add custom logging or metrics.
+            </summary>
+            <param name="notification">The integration event that was received.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.EventHandler`1.ValidateIntegrationEvent(`0)">
+            <summary>
+            Validates the integration event before processing.
+            Override to add custom validation logic for integration events.
+            </summary>
+            <param name="notification">The integration event to validate.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.EventHandler`1.OnEventProcessed(`0)">
+            <summary>
+            Called when an integration event has been processed successfully.
+            Override to add custom logging or metrics.
+            </summary>
+            <param name="notification">The integration event that was processed.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.EventHandler`1.OnEventError(`0,System.Exception)">
+            <summary>
+            Called when an error occurs while processing an integration event.
+            Override to add custom error logging or error handling.
+            </summary>
+            <param name="notification">The integration event that caused the error.</param>
+            <param name="exception">The exception that occurred.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Mediators.QueryHandler`2">
+            <summary>
+            Base class for handling queries that retrieve data without modifying system state.
+            Queries represent read operations and should be handled within the application layer
+            following CQRS principles. Queries should be idempotent and not cause side effects.
+            </summary>
+            <typeparam name="TQuery">The type of query to handle.</typeparam>
+            <typeparam name="TResult">The type of result returned by the query.</typeparam>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.QueryHandler`2.ProcessAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Protected method for processing the query asynchronously and returning a result.
+            Override this method to implement specific query handling logic.
+            </summary>
+            <param name="request">The query to process.</param>
+            <param name="cancellationToken">Cancellation token for the operation.</param>
+            <returns>A task containing the result of the query processing.</returns>
+            <exception cref="T:System.ArgumentNullException">Thrown when request is null.</exception>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.QueryHandler`2.Handle(`0,System.Threading.CancellationToken)">
+            <summary>
+            Public processor method that wraps the protected implementation with cross-cutting concerns.
+            This method is called by MediatR and provides logging, validation, caching, and error handling.
+            </summary>
+            <param name="request">The query to handle.</param>
+            <param name="cancellationToken">Cancellation token for the operation.</param>
+            <returns>A task containing the result of the query processing.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.QueryHandler`2.OnQueryReceived(`0)">
+            <summary>
+            Called when a query is received.
+            Override to add custom logging or metrics.
+            </summary>
+            <param name="request">The query that was received.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.QueryHandler`2.ValidateQuery(`0)">
+            <summary>
+            Validates the query before processing.
+            Override to add custom validation logic for queries.
+            </summary>
+            <param name="request">The query to validate.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.QueryHandler`2.TryGetFromCache(`0)">
+            <summary>
+            Attempts to retrieve the result from cache.
+            Override to implement custom caching logic.
+            </summary>
+            <param name="request">The query to check in cache.</param>
+            <returns>The cached result if available, otherwise null.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.QueryHandler`2.CacheResult(`0,`1)">
+            <summary>
+            Caches the query result for future use.
+            Override to implement custom caching logic.
+            </summary>
+            <param name="request">The query that was processed.</param>
+            <param name="result">The result to cache.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.QueryHandler`2.OnQueryProcessed(`0,`1)">
+            <summary>
+            Called when a query has been processed successfully.
+            Override to add custom logging or metrics.
+            </summary>
+            <param name="request">The query that was processed.</param>
+            <param name="result">The result returned by the query.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.QueryHandler`2.OnQueryProcessedFromCache(`0,`1)">
+            <summary>
+            Called when a query result is retrieved from cache.
+            Override to add custom logging or metrics for cache hits.
+            </summary>
+            <param name="request">The query that was processed.</param>
+            <param name="result">The result retrieved from cache.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.QueryHandler`2.OnQueryError(`0,System.Exception)">
+            <summary>
+            Called when an error occurs while processing a query.
+            Override to add custom error logging or error handling.
+            </summary>
+            <param name="request">The query that caused the error.</param>
+            <param name="exception">The exception that occurred.</param>
+            <returns>A task representing the asynchronous operation.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.QueryHandler`2.GetCacheKey(`0)">
+            <summary>
+            Gets a cache key for the query.
+            Override to implement custom cache key generation.
+            </summary>
+            <param name="request">The query to generate a cache key for.</param>
+            <returns>A cache key string.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.QueryHandler`2.ShouldCache(`0)">
+            <summary>
+            Determines if the query result should be cached.
+            Override to implement custom caching logic.
+            </summary>
+            <param name="request">The query to check.</param>
+            <returns>True if the result should be cached, otherwise false.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Mediators.QueryHandler`2.GetCacheDurationMinutes(`0)">
+            <summary>
+            Gets the cache duration for the query result.
+            Override to implement custom cache duration logic.
+            </summary>
+            <param name="request">The query to get cache duration for.</param>
+            <returns>The cache duration in minutes.</returns>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Models.ServiceResult.IServiceResult">
+            <summary>
+            Base interface for service results
+            </summary>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Application.Models.ServiceResult.IServiceResult.IsSuccess">
+            <summary>
+            Indicates whether the operation was successful
+            </summary>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Application.Models.ServiceResult.IServiceResult.ErrorMessage">
+            <summary>
+            Error message if the operation failed
+            </summary>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Application.Models.ServiceResult.IServiceResult.ErrorCode">
+            <summary>
+            Error code for categorization
+            </summary>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Application.Models.ServiceResult.IServiceResult.Metadata">
+            <summary>
+            Additional metadata about the result
+            </summary>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Models.ServiceResult.IServiceResult`1">
+            <summary>
+            Generic interface for service results with data
+            </summary>
+            <typeparam name="T">Type of the data returned</typeparam>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Application.Models.ServiceResult.IServiceResult`1.Data">
+            <summary>
+            The data returned by the operation
+            </summary>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Models.ServiceResult.PaginatedResult`1">
+            <summary>
+            Result for paginated operations with data and pagination metadata
+            </summary>
+            <typeparam name="T">Type of the data items</typeparam>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.PaginatedResult`1.Success(System.Collections.Generic.IEnumerable{`0},System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Creates a successful paginated result
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.PaginatedResult`1.Success(System.Collections.Generic.IEnumerable{`0},System.Int32,System.Int32,System.Int32,System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Creates a successful paginated result with metadata
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.PaginatedResult`1.Failure(System.String,System.String)">
+            <summary>
+            Creates a failed paginated result
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.PaginatedResult`1.FailureWithCode(System.String,System.String)">
+            <summary>
+            Creates a failed paginated result with error code
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.PaginatedResult`1.Empty(System.Int32,System.Int32)">
+            <summary>
+            Creates an empty paginated result (no data but successful)
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.PaginatedResult`1.WithMetadata(System.String,System.Object)">
+            <summary>
+            Adds metadata to the result
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.PaginatedResult`1.WithMetadata(System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Adds multiple metadata items to the result
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.PaginatedResult`1.op_Implicit(System.Boolean)~AkbarAmd.SharedKernel.Application.Models.ServiceResult.PaginatedResult{`0}" -->
+        <!-- Badly formed XML comment ignored for member "M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.PaginatedResult`1.op_Implicit(System.String)~AkbarAmd.SharedKernel.Application.Models.ServiceResult.PaginatedResult{`0}" -->
+        <!-- Badly formed XML comment ignored for member "M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.PaginatedResult`1.op_Implicit(System.Exception)~AkbarAmd.SharedKernel.Application.Models.ServiceResult.PaginatedResult{`0}" -->
+        <member name="T:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult">
+            <summary>
+            Base implementation of service result without data
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult.Success">
+            <summary>
+            Creates a successful result
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult.Failure(System.String,System.String)">
+            <summary>
+            Creates a failed result
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult.FailureWithCode(System.String,System.String)">
+            <summary>
+            Creates a failed result with error code (alternative signature)
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult.WithMetadata(System.String,System.Object)">
+            <summary>
+            Adds metadata to the result
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult.WithMetadata(System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Adds multiple metadata items to the result
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult.op_Implicit(System.Boolean)~AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult">
+            <summary>
+            Implicit conversion from bool to ServiceResult
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult.op_Implicit(System.String)~AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult">
+            <summary>
+            Implicit conversion from string to ServiceResult (treats as error message)
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult.op_Implicit(System.Exception)~AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult">
+            <summary>
+            Implicit conversion from Exception to ServiceResult
+            </summary>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult`1">
+            <summary>
+            Generic implementation of service result with data
+            </summary>
+            <typeparam name="T">Type of the data returned</typeparam>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult`1.Success(`0)">
+            <summary>
+            Creates a successful result with data
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult`1.Success(`0,System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Creates a successful result with data and metadata
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult`1.Failure(System.String,System.String)">
+            <summary>
+            Creates a failed result
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult`1.FailureWithCode(System.String,System.String)">
+            <summary>
+            Creates a failed result with error code (alternative signature)
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult`1.WithMetadata(System.String,System.Object)">
+            <summary>
+            Adds metadata to the result
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult`1.WithMetadata(System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Adds multiple metadata items to the result
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult`1.op_Implicit(`0)~AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult{`0}" -->
+        <!-- Badly formed XML comment ignored for member "M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult`1.op_Implicit(System.Boolean)~AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult{`0}" -->
+        <!-- Badly formed XML comment ignored for member "M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult`1.op_Implicit(System.String)~AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult{`0}" -->
+        <!-- Badly formed XML comment ignored for member "M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult`1.op_Implicit(System.Exception)~AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult{`0}" -->
+        <member name="T:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResultConversions">
+            <summary>
+            Conversion operators for ServiceResult types
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResultConversions.ToGeneric``1(AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult)" -->
+        <!-- Badly formed XML comment ignored for member "M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResultConversions.ToGeneric``1(AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult,``0)" -->
+        <!-- Badly formed XML comment ignored for member "M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResultConversions.ToNonGeneric``1(AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult{``0})" -->
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResultConversions.WithData``1(AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult,``0)">
+            <summary>
+            Creates a generic result from a non-generic result with data
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResultConversions.WithData``1(AkbarAmd.SharedKernel.Application.Models.ServiceResult.ServiceResult,``0,System.Collections.Generic.IDictionary{System.String,System.Object})">
+            <summary>
+            Creates a generic result from a non-generic result with data and metadata
+            </summary>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationResult">
+            <summary>
+            Result for validation operations with detailed error information
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationResult.Success">
+            <summary>
+            Creates a successful validation result
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationResult.Failure(System.Collections.Generic.IEnumerable{AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationError})">
+            <summary>
+            Creates a failed validation result with errors
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationResult.Failure(System.String,System.String)">
+            <summary>
+            Creates a failed validation result with error message
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationResult.FailureWithCode(System.String,System.String)">
+            <summary>
+            Creates a failed validation result with error code
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationResult.AddError(System.String,System.String,System.String)">
+            <summary>
+            Adds a validation error
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationResult.AddErrors(System.Collections.Generic.IEnumerable{AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationError})">
+            <summary>
+            Adds multiple validation errors
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationResult.op_Implicit(System.Boolean)~AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationResult">
+            <summary>
+            Implicit conversion from bool to ValidationResult
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationResult.op_Implicit(System.String)~AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationResult">
+            <summary>
+            Implicit conversion from string to ValidationResult (treats as error message)
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationResult.op_Implicit(System.Exception)~AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationResult">
+            <summary>
+            Implicit conversion from Exception to ValidationResult
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationResult.op_Implicit(AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationError)~AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationResult">
+            <summary>
+            Implicit conversion from ValidationError to ValidationResult
+            </summary>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Application.Models.ServiceResult.ValidationError">
+            <summary>
+            Represents a validation error for a specific property
+            </summary>
+        </member>
+    </members>
+</doc>

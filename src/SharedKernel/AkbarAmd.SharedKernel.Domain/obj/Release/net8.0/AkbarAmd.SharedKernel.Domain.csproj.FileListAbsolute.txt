@@ -1,0 +1,15 @@
+E:\projects\CleanArchitecture\src\SharedKernel\AkbarAmd.SharedKernel.Domain\bin\Release\net8.0\AkbarAmd.SharedKernel.Domain.deps.json
+E:\projects\CleanArchitecture\src\SharedKernel\AkbarAmd.SharedKernel.Domain\bin\Release\net8.0\AkbarAmd.SharedKernel.Domain.dll
+E:\projects\CleanArchitecture\src\SharedKernel\AkbarAmd.SharedKernel.Domain\bin\Release\net8.0\AkbarAmd.SharedKernel.Domain.pdb
+E:\projects\CleanArchitecture\src\SharedKernel\AkbarAmd.SharedKernel.Domain\bin\Release\net8.0\AkbarAmd.SharedKernel.Domain.xml
+E:\projects\CleanArchitecture\src\SharedKernel\AkbarAmd.SharedKernel.Domain\obj\Release\net8.0\AkbarAmd.SharedKernel.Domain.csproj.AssemblyReference.cache
+E:\projects\CleanArchitecture\src\SharedKernel\AkbarAmd.SharedKernel.Domain\obj\Release\net8.0\AkbarAmd.SharedKernel.Domain.GeneratedMSBuildEditorConfig.editorconfig
+E:\projects\CleanArchitecture\src\SharedKernel\AkbarAmd.SharedKernel.Domain\obj\Release\net8.0\AkbarAmd.SharedKernel.Domain.AssemblyInfoInputs.cache
+E:\projects\CleanArchitecture\src\SharedKernel\AkbarAmd.SharedKernel.Domain\obj\Release\net8.0\AkbarAmd.SharedKernel.Domain.AssemblyInfo.cs
+E:\projects\CleanArchitecture\src\SharedKernel\AkbarAmd.SharedKernel.Domain\obj\Release\net8.0\AkbarAmd.SharedKernel.Domain.csproj.CoreCompileInputs.cache
+E:\projects\CleanArchitecture\src\SharedKernel\AkbarAmd.SharedKernel.Domain\obj\Release\net8.0\AkbarAmd.SharedKernel.Domain.sourcelink.json
+E:\projects\CleanArchitecture\src\SharedKernel\AkbarAmd.SharedKernel.Domain\obj\Release\net8.0\AkbarAmd.SharedKernel.Domain.dll
+E:\projects\CleanArchitecture\src\SharedKernel\AkbarAmd.SharedKernel.Domain\obj\Release\net8.0\refint\AkbarAmd.SharedKernel.Domain.dll
+E:\projects\CleanArchitecture\src\SharedKernel\AkbarAmd.SharedKernel.Domain\obj\Release\net8.0\AkbarAmd.SharedKernel.Domain.xml
+E:\projects\CleanArchitecture\src\SharedKernel\AkbarAmd.SharedKernel.Domain\obj\Release\net8.0\AkbarAmd.SharedKernel.Domain.pdb
+E:\projects\CleanArchitecture\src\SharedKernel\AkbarAmd.SharedKernel.Domain\obj\Release\net8.0\ref\AkbarAmd.SharedKernel.Domain.dll
