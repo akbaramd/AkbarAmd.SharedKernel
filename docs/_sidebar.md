@@ -1,24 +1,18 @@
 * [Home](/)
-* Getting Started
-  * [Introduction](getting-started.md)
-  * [Installation](getting-started.md#installation)
-  * [Basic Example](getting-started.md#basic-example)
-* Usage Guides
-  * [Basic Usage](basic-usage.md)
-  * [Fluent API](fluent-api.md)
-  * [Criteria Building](basic-usage.md#criteria-building)
-  * [Sorting](basic-usage.md#sorting)
-  * [Pagination](basic-usage.md#pagination)
-* Patterns
-  * [Database Patterns](database-patterns.md)
-  * [Enterprise Patterns](enterprise-patterns.md)
-  * [Repository Pattern](database-patterns.md#repository-pattern)
-* Advanced
-  * [Advanced Examples](advanced-examples.md)
-  * [Performance Optimization](database-patterns.md#performance)
-  * [Best Practices](enterprise-patterns.md#best-practices)
-* Reference
-  * [API Reference](api-reference.md)
-  * [BaseSpecification](api-reference.md#basespecification)
-  * [FluentSpecificationBuilder](api-reference.md#fluentspecificationbuilder)
 
+* **Modules**
+  * [AkbarAmd.SharedKernel.Application](modules/application.md)
+  * [AkbarAmd.SharedKernel.Domain](modules/domain.md)
+  * [AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore](modules/infrastructure.md)
+
+* **DDD Concepts**
+  * [DDD Overview](concepts/ddd/index.md)
+  * [Repository](concepts/ddd/repository.md)
+  * [Specifications](concepts/ddd/specifications.md)
+  * [Aggregate Root](concepts/ddd/aggregate-root.md)
+  * [Domain Events](concepts/ddd/domain-events.md)
+  * [Value Objects](concepts/ddd/value-objects.md)
+
+* **CQRS Concepts**
+  * [CQRS Overview](concepts/cqrs/index.md)
+  * [CQRS](concepts/cqrs/cqrs.md)

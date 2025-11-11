@@ -1,38 +1,34 @@
-# Specification Pattern Documentation
+# Shared Kernels Documentation
 
-> Comprehensive guide for using the Specification Pattern in Clean Architecture
+Welcome to the Shared Kernels documentation. This documentation provides comprehensive guides for using the Shared Kernel modules in your .NET applications.
 
-## Overview
+## Getting Started
 
-The Specification Pattern provides a powerful way to encapsulate business rules and query logic in a reusable, testable, and maintainable manner. This implementation supports:
+Start by exploring the [Modules](modules/) section to understand what each module provides, then dive into the [Concepts](concepts/) section to learn about key patterns and practices.
 
-- ✅ **Complex Criteria Building** - AND, OR, NOT operations with grouping
-- ✅ **Fluent API** - Clean, chainable syntax for building specifications
-- ✅ **Multi-level Sorting** - OrderBy, ThenBy with null handling
-- ✅ **Pagination** - Built-in support for paging queries
-- ✅ **Eager Loading** - Include related entities efficiently
-- ✅ **EF Core Integration** - Optimized for Entity Framework Core
+## Modules
 
-## Quick Start
+- **[AkbarAmd.SharedKernel.Application](modules/application.md)** - CQRS, MediatR, and application services
+- **[AkbarAmd.SharedKernel.Domain](modules/domain.md)** - Domain models, entities, and business logic
+- **[AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore](modules/infrastructure.md)** - EF Core repository implementations
 
-```csharp
-// Simple specification
-var spec = new FluentSpecificationBuilder<Product>()
-    .Where(p => p.IsActive)
-    .OrderBy(p => p.Name)
-    .Page(1, 10)
-    .Build();
+## Concepts
 
-var products = await repository.FindAsync(spec);
-```
+### DDD Concepts
 
-## Table of Contents
+- **[DDD Overview](concepts/ddd/index.md)** - Domain-Driven Design concepts overview
+- **[Repository](concepts/ddd/repository.md)** - Repository pattern for data access
+- **[Specifications](concepts/ddd/specifications.md)** - Specification pattern for complex queries
+- **[Aggregate Root](concepts/ddd/aggregate-root.md)** - Aggregate roots and domain entities
+- **[Domain Events](concepts/ddd/domain-events.md)** - Domain events for cross-aggregate communication
+- **[Value Objects](concepts/ddd/value-objects.md)** - Immutable value objects
 
-- [Getting Started](getting-started.md)
-- [Basic Usage](basic-usage.md)
-- [Fluent API](fluent-api.md)
-- [Database Patterns](database-patterns.md)
-- [Enterprise Patterns](enterprise-patterns.md)
-- [Advanced Examples](advanced-examples.md)
-- [API Reference](api-reference.md)
+### CQRS Concepts
 
+- **[CQRS Overview](concepts/cqrs/index.md)** - CQRS concepts overview
+- **[CQRS](concepts/cqrs/cqrs.md)** - Command Query Responsibility Segregation
+
+## Quick Links
+
+- [GitHub Repository](https://github.com/akbaramd/AkbarAmd.SharedKernel)
+- [Installation Guide](modules/application.md#installation)

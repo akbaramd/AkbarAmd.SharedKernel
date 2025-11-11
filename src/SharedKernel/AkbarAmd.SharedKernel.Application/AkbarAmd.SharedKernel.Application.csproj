@@ -14,10 +14,10 @@
         <Description>Clean Architecture Application Layer - CQRS, MediatR, Validation, and Application Services</Description>
         <Copyright>Copyright © Akbar Ahmadi Saray 2025</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/akbarahmadi/CleanArchitecture</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/akbaramd/AkbarAmd.SharedKernel</PackageProjectUrl>
         <PackageIcon>logo.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <RepositoryUrl>https://github.com/akbarahmadi/CleanArchitecture</RepositoryUrl>
+        <RepositoryUrl>https://github.com/akbaramd/AkbarAmd.SharedKernel.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>clean-architecture;application;cqrs;mediatr;validation;fluent-validation;auto-mapper</PackageTags>
         <PackageReleaseNotes>Version 1.0.16: Enhanced documentation with comprehensive README including usage examples, architecture principles, and component descriptions</PackageReleaseNotes>

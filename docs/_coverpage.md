@@ -1,9 +1,8 @@
-# Specification Pattern
+# Shared Kernels
 
-> Comprehensive documentation for using the Specification Pattern in Clean Architecture
+> Comprehensive documentation for Shared Kernel modules
 
-[GitHub](https://github.com/akbarahmadi/CleanArchitecture)
-[Get Started](getting-started.md)
+[GitHub](https://github.com/akbaramd/AkbarAmd.SharedKernel)
+[Get Started](#/)
 
 ![color](#2c3e50)
-
