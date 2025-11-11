@@ -338,5 +338,21 @@
             
             </summary>
         </member>
+        <member name="M:AkbarAmd.SharedKernel.Infrastructure.Specifications.EfCoreSpecificationEvaluator`1.BuildNullRank(System.Linq.Expressions.LambdaExpression,System.Boolean)">
+            <summary>
+            Builds a rank expression that returns 0 for nulls (if nullsFirst) or 1 for nulls (if nullsLast).
+            This allows EF Core to translate null ordering to SQL.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Infrastructure.Specifications.EfCoreSpecificationEvaluator`1.OrderByDynamic(System.Linq.IQueryable{`0},System.Linq.Expressions.LambdaExpression,System.Boolean)">
+            <summary>
+            Dynamically invokes OrderBy/OrderByDescending with the correct generic type.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Infrastructure.Specifications.EfCoreSpecificationEvaluator`1.ThenByDynamic(System.Linq.IOrderedQueryable{`0},System.Linq.Expressions.LambdaExpression,System.Boolean)">
+            <summary>
+            Dynamically invokes ThenBy/ThenByDescending with the correct generic type.
+            </summary>
+        </member>
     </members>
 </doc>

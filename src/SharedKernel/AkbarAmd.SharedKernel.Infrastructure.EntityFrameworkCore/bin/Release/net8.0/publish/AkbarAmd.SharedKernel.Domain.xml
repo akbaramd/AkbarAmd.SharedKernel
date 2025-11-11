@@ -485,6 +485,7 @@
             Base implementation of ISpecification that provides common functionality
             for building query specifications with criteria, includes, sorting, and paging.
             Supports both legacy AddCriteria (AND-based) and new Where() fluent API for complex criteria.
+            Implements IMultiSortSpecification for multi-level sorting support.
             </summary>
         </member>
         <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.AddCriteria(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
@@ -514,6 +515,83 @@
             <summary>
             Replaces an old subtree with a new one in the criteria tree.
             Used when a chain's root is updated (e.g., when Or/And is called).
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.Include(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
+            <summary>
+            Fluent API: Adds an include expression.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.Include(System.String)">
+            <summary>
+            Fluent API: Adds an include by string path.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.Include(System.Linq.Expressions.Expression{System.Func{`0,System.Object}}[])">
+            <summary>
+            Fluent API: Adds multiple include expressions.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.IncludePaths(System.String[])">
+            <summary>
+            Fluent API: Adds multiple include paths.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.OrderByKey``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Fluent API: Sets the primary sort key in ascending order.
+            Clears any existing sort chain and starts a new one.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.OrderByKeyDescending``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Fluent API: Sets the primary sort key in descending order.
+            Clears any existing sort chain and starts a new one.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.ThenBy``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Fluent API: Adds a secondary sort key in ascending order.
+            Requires that OrderByKey or OrderByKeyDescending has been called first.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.ThenByDescending``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Fluent API: Adds a secondary sort key in descending order.
+            Requires that OrderByKey or OrderByKeyDescending has been called first.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.NullsFirst">
+            <summary>
+            Fluent API: Sets null ordering policy to NullsFirst for the last sort descriptor.
+            Only meaningful for nullable or reference types.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.NullsLast">
+            <summary>
+            Fluent API: Sets null ordering policy to NullsLast for the last sort descriptor.
+            Only meaningful for nullable or reference types.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.Page(System.Int32,System.Int32)">
+            <summary>
+            Fluent API: Sets pagination using page number and page size.
+            Calculates skip and take automatically.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.SkipBy(System.Int32)">
+            <summary>
+            Fluent API: Sets the skip value for pagination.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.TakeBy(System.Int32)">
+            <summary>
+            Fluent API: Sets the take value for pagination.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.ToObjectSelector(System.Linq.Expressions.LambdaExpression)">
+            <summary>
+            Converts a typed lambda expression to an object selector for legacy compatibility.
             </summary>
         </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.CountOptimizedSpecification`1">
@@ -603,6 +681,19 @@
             Example: OrGroup(g => g.And(A).And(B)) creates (A AND B) OR (existing root)
             </summary>
         </member>
+        <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IMultiSortSpecification`1">
+            <summary>
+            Defines a specification that supports multi-level sorting with ThenBy/ThenByDescending.
+            Allows chaining multiple sort criteria with null ordering policies.
+            </summary>
+            <typeparam name="T">The entity type being sorted.</typeparam>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IMultiSortSpecification`1.Sorts">
+            <summary>
+            Gets the ordered list of sort descriptors.
+            The first descriptor is the primary sort, subsequent descriptors are secondary sorts.
+            </summary>
+        </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IPaginatedSortableSpecification`1">
             <summary>
             Defines a specification that supports both pagination and sorting.
@@ -636,6 +727,26 @@
             applying filters, includes, sorting, and pagination in a composable way.
             </summary>
         </member>
+        <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.NullSort">
+            <summary>
+            Specifies how null values should be ordered in sorting operations.
+            </summary>
+        </member>
+        <member name="F:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.NullSort.Unspecified">
+            <summary>
+            No explicit null ordering policy. Database default behavior applies.
+            </summary>
+        </member>
+        <member name="F:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.NullSort.NullsFirst">
+            <summary>
+            Null values are ordered first (before non-null values).
+            </summary>
+        </member>
+        <member name="F:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.NullSort.NullsLast">
+            <summary>
+            Null values are ordered last (after non-null values).
+            </summary>
+        </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.PaginatedSortableSpecification`1">
             <summary>
             Base specification that supports both pagination and sorting.
@@ -647,6 +758,38 @@
             Base class for paginated specifications.
             Automatically applies Skip/Take to the underlying query.
             </summary>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.SortDescriptor`1">
+            <summary>
+            Represents a single sort descriptor in a multi-level sorting chain.
+            Contains the key selector, sort direction, and null ordering policy.
+            </summary>
+            <typeparam name="T">The entity type being sorted.</typeparam>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.SortDescriptor`1.KeySelector">
+            <summary>
+            The lambda expression that selects the property to sort by.
+            Example: (T x) => x.Name
+            </summary>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.SortDescriptor`1.Direction">
+            <summary>
+            The direction of sorting (Ascending or Descending).
+            </summary>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.SortDescriptor`1.Nulls">
+            <summary>
+            The null ordering policy for this sort level.
+            Only meaningful for nullable or reference types.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.SortDescriptor`1.#ctor(System.Linq.Expressions.LambdaExpression,AkbarAmd.SharedKernel.Domain.Contracts.Specifications.SortDirection,AkbarAmd.SharedKernel.Domain.Contracts.Specifications.NullSort)">
+            <summary>
+            Initializes a new instance of SortDescriptor.
+            </summary>
+            <param name="keySelector">The property selector expression.</param>
+            <param name="direction">The sort direction.</param>
+            <param name="nulls">The null ordering policy.</param>
         </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.SortDirection">
             <summary>
@@ -1873,6 +2016,93 @@
         <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaChain`1.StartDetached">
             <summary>
             Starts a detached chain for use in Group/OrGroup.
+            </summary>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1">
+            <summary>
+            Fluent builder for creating ad-hoc specifications without inheriting from BaseSpecification.
+            Provides a clean API for building complete specifications with criteria, includes, sorting, and paging.
+            </summary>
+            <typeparam name="T">The entity type for the specification.</typeparam>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.Where(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            Adds a criteria expression using the fluent Where API.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.Where(System.Func{AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain{`0},AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain{`0}})">
+            <summary>
+            Adds complex criteria using a builder function.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.Include(System.Linq.Expressions.Expression{System.Func{`0,System.Object}})">
+            <summary>
+            Adds an include expression.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.Include(System.String)">
+            <summary>
+            Adds an include by string path.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.Include(System.Linq.Expressions.Expression{System.Func{`0,System.Object}}[])">
+            <summary>
+            Adds multiple include expressions.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.IncludePaths(System.String[])">
+            <summary>
+            Adds multiple include paths.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.OrderBy``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Sets the primary sort key in ascending order.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.OrderByDescending``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Sets the primary sort key in descending order.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.ThenBy``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Adds a secondary sort key in ascending order.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.ThenByDescending``1(System.Linq.Expressions.Expression{System.Func{`0,``0}})">
+            <summary>
+            Adds a secondary sort key in descending order.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.NullsFirst">
+            <summary>
+            Sets null ordering policy to NullsFirst for the last sort descriptor.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.NullsLast">
+            <summary>
+            Sets null ordering policy to NullsLast for the last sort descriptor.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.Page(System.Int32,System.Int32)">
+            <summary>
+            Sets pagination using page number and page size.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.Skip(System.Int32)">
+            <summary>
+            Sets the skip value for pagination.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.Take(System.Int32)">
+            <summary>
+            Sets the take value for pagination.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.Build">
+            <summary>
+            Builds and returns the final specification.
             </summary>
         </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Specifications.Internal.AndNode`1">
