@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>AkbarAmd.SharedKernel.Domain</PackageId>
-        <Version>1.0.16</Version>
-        <AssemblyVersion>1.0.16.0</AssemblyVersion>
-        <FileVersion>1.0.16.0</FileVersion>
+        <Version>1.0.17</Version>
+        <AssemblyVersion>1.0.17.0</AssemblyVersion>
+        <FileVersion>1.0.17.0</FileVersion>
         <Authors>Akbar Ahmadi Saray</Authors>
         <Company>AkbarAhmadi</Company>
         <Description>Clean Architecture Domain Layer - Core Domain Models, Entities, Value Objects, and Domain Events</Description>
@@ -20,7 +20,7 @@
         <RepositoryUrl>https://github.com/akbaramd/AkbarAmd.SharedKernel.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>clean-architecture;ddd;domain-driven-design;entities;value-objects;domain-events;aggregate-roots</PackageTags>
-        <PackageReleaseNotes>Version 1.0.16: Enhanced documentation with comprehensive README including usage examples, architecture principles, and component descriptions</PackageReleaseNotes>
+        <PackageReleaseNotes>Version 1.0.17: Updated repository URLs to AkbarAmd.SharedKernel, improved documentation structure with DDD and CQRS concept groups</PackageReleaseNotes>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <IncludeSymbols>true</IncludeSymbols>

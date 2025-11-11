@@ -4,9 +4,9 @@
 # Usage: Run from solution root
 
 $projects = @(
-    "src\CleanArchitecture.Domain",
-    "src\CleanArchitecture.Application",
-    "src\CleanArchitecture.Infrastructure"
+    "src\SharedKernel\AkbarAmd.SharedKernel.Domain",
+    "src\SharedKernel\AkbarAmd.SharedKernel.Application",
+    "src\SharedKernel\AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore"
 )
 
 $nupkgOutput = Join-Path -Path (Get-Location) -ChildPath "nupkgs"
