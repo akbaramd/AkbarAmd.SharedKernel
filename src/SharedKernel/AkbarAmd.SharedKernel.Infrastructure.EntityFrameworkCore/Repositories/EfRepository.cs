@@ -10,11 +10,10 @@ using AkbarAmd.SharedKernel.Domain;
 using AkbarAmd.SharedKernel.Domain.Contracts.Repositories;
 using AkbarAmd.SharedKernel.Domain.Contracts.Specifications;
 using AkbarAmd.SharedKernel.Domain.Models;
-using AkbarAmd.SharedKernel.Infrastructure.Specifications;
+using AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Specifications;
 using Microsoft.EntityFrameworkCore;
-// removed: using AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Specifications; (no longer needed with simplified specifications)
 
-namespace AkbarAmd.SharedKernel.Infrastructure.Repositories
+namespace AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Repositories
 {
     public abstract class ReadOnlyEfRepository<TDbContext, T, TKey> : IReadOnlyRepository<T, TKey>
         where T : Entity<TKey>
@@ -24,12 +23,15 @@ namespace AkbarAmd.SharedKernel.Infrastructure.Repositories
         protected readonly TDbContext _dbContext;
         protected readonly DbSet<T> _dbSet;
         protected readonly bool _enableTracking;
+        protected readonly ISpecificationEvaluator<T> _evaluator;
 
-        protected ReadOnlyEfRepository(TDbContext dbContext, bool enableTracking = false)
+        protected ReadOnlyEfRepository(TDbContext dbContext, ISpecificationEvaluator<T>? evaluator = null, bool enableTracking = false)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _dbSet = _dbContext.Set<T>();
             _enableTracking = enableTracking;
+            // Use provided evaluator or default to EF Core implementation
+            _evaluator = evaluator ?? new EfCoreSpecificationEvaluator<T>();
         }
 
         // ---------- Options for evaluator (override per repo if needed)
@@ -48,20 +50,52 @@ namespace AkbarAmd.SharedKernel.Infrastructure.Repositories
         protected virtual IQueryable<T> PrepareQuery(IQueryable<T> query)
             => _enableTracking ? query : query.AsNoTracking();
 
+        /// <summary>
+        /// Applies specification to query. Returns queryable with criteria applied.
+        /// </summary>
         protected IQueryable<T> ApplySpecification(ISpecification<T>? specification)
         {
-            var baseQuery = _dbSet.AsQueryable();
+            var baseQuery = PrepareQuery(_dbSet);
             if (specification is null)
-                return BuildEvaluatorOptions().AsNoTracking ? baseQuery.AsNoTracking() : baseQuery;
+                return baseQuery;
 
-            return EfCoreSpecificationEvaluator<T>.GetQuery(baseQuery, specification, BuildEvaluatorOptions());
+            return _evaluator.Evaluate(baseQuery, specification, BuildEvaluatorOptions());
         }
 
-        private IQueryable<T> ApplySpecificationForCount(ISpecification<T> specification)
+        // ---------- Infrastructure-level query building (sorting, pagination)
+
+        /// <summary>
+        /// Applies sorting to a query. Override this method to customize sorting behavior.
+        /// </summary>
+        protected virtual IQueryable<T> ApplySorting(
+            IQueryable<T> query,
+            Expression<Func<T, object>>? orderBy,
+            SortDirection direction = SortDirection.Ascending)
         {
-            var baseQuery = _dbSet.AsQueryable();
-            var countOptimized = new CountOptimizedSpecification<T>(specification);
-            return EfCoreSpecificationEvaluator<T>.GetQuery(baseQuery, countOptimized, BuildEvaluatorOptions());
+            if (orderBy == null)
+            {
+                // Apply stable sorting by ID if no explicit sort is provided
+                return query.OrderBy(x => x.Id);
+            }
+
+            // Convert decimal to double for SQLite compatibility
+            var convertedOrderBy = EfCoreSpecificationEvaluator<T>.ConvertDecimalToDoubleIfNeeded(orderBy);
+
+            return direction == SortDirection.Descending
+                ? query.OrderByDescending(convertedOrderBy)
+                : query.OrderBy(convertedOrderBy);
+        }
+
+
+        /// <summary>
+        /// Applies pagination to a query.
+        /// </summary>
+        protected virtual IQueryable<T> ApplyPagination(IQueryable<T> query, int pageNumber, int pageSize)
+        {
+            if (pageNumber < 1) throw new ArgumentOutOfRangeException(nameof(pageNumber), "Page number must be greater than zero.");
+            if (pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be greater than zero.");
+
+            return query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
         }
 
         // ========== Core Queries
@@ -99,130 +133,83 @@ namespace AkbarAmd.SharedKernel.Infrastructure.Repositories
             => await PrepareQuery(_dbSet).CountAsync(predicate, cancellationToken);
 
         public virtual async Task<int> CountAsync(ISpecification<T> specification, CancellationToken cancellationToken = default)
-            => await ApplySpecificationForCount(specification).CountAsync(cancellationToken);
-
-        // ========== Simple Paging without spec
-        public virtual async Task<IEnumerable<T>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
-        {
-            if (pageNumber < 1) throw new ArgumentOutOfRangeException(nameof(pageNumber));
-            if (pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize));
-
-            var query = PrepareQuery(_dbSet);
-
-            // Stable ordering by key for consistent paging
-            query = query.OrderBy(x => x.Id);
-
-            return await query.Skip((pageNumber - 1) * pageSize)
-                              .Take(pageSize)
-                              .ToListAsync(cancellationToken);
-        }
-
-        public virtual async Task<IEnumerable<T>> GetPagedAsync(int pageNumber, int pageSize, ISpecification<T>? specification, CancellationToken cancellationToken = default)
-        {
-            if (pageNumber < 1) throw new ArgumentOutOfRangeException(nameof(pageNumber));
-            if (pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize));
-            if (specification == null) throw new ArgumentNullException(nameof(specification));
-
-            // Remove paging from specification to avoid double paging
-            // Evaluator will apply stable sorting if no explicit sort is provided
-            var countOptimized = new CountOptimizedSpecification<T>(specification);
-            var query = EfCoreSpecificationEvaluator<T>.GetQuery(_dbSet.AsQueryable(), countOptimized, BuildEvaluatorOptions());
-
-            return await query.Skip((pageNumber - 1) * pageSize)
-                            .Take(pageSize)
-                            .ToListAsync(cancellationToken);
-        }
-
-        public virtual async Task<IEnumerable<T>> GetPagedAsync(
-            int pageNumber,
-            int pageSize,
-            Expression<Func<T, object>>? orderBy,
-            SortDirection direction = SortDirection.Ascending,
-            ISpecification<T>? specification = null,
-            CancellationToken cancellationToken = default)
-        {
-            if (pageNumber < 1) throw new ArgumentOutOfRangeException(nameof(pageNumber));
-            if (pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize));
-
-            var query = ApplySpecification(specification);
-
-            if (orderBy != null)
-            {
-                // Convert decimal to double for SQLite compatibility
-                var convertedOrderBy = EfCoreSpecificationEvaluator<T>.ConvertDecimalToDoubleIfNeeded(orderBy);
-                query = direction == SortDirection.Descending ? query.OrderByDescending(convertedOrderBy) : query.OrderBy(convertedOrderBy);
-            }
-
-            // اگر orderBy null بود، Evaluator با StableSortByIdWhenMissing پوشش می‌دهد.
-
-            return await query.Skip((pageNumber - 1) * pageSize)
-                              .Take(pageSize)
-                              .ToListAsync(cancellationToken);
-        }
+            => await ApplySpecification(specification).CountAsync(cancellationToken);
 
         // ========== Paginated Results
-        public virtual async Task<PaginatedResult<T>> GetPaginatedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default)
-            => await GetPaginatedAsync(pageNumber, pageSize, specification: null, cancellationToken);
 
-        public virtual async Task<PaginatedResult<T>> GetPaginatedAsync(int pageNumber, int pageSize, ISpecification<T>? specification, CancellationToken cancellationToken = default)
-        {
-            if (pageNumber < 1) throw new ArgumentOutOfRangeException(nameof(pageNumber));
-            if (pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize));
-
-            var totalCount = specification is null
-                ? await CountAsync(cancellationToken)
-                : await CountAsync(specification, cancellationToken);
-
-            var items = specification is null
-                ? await GetPagedAsync(pageNumber, pageSize, cancellationToken)
-                : await GetPagedAsync(pageNumber, pageSize, specification, cancellationToken);
-
-            return new PaginatedResult<T>(items, totalCount, pageNumber, pageSize);
-        }
-
+        /// <summary>
+        /// Returns paginated results using an expression predicate for filtering.
+        /// </summary>
+        /// <param name="predicate">Optional filter expression. If null, returns all entities.</param>
+        /// <param name="pageNumber">Page number (1-based).</param>
+        /// <param name="pageSize">Number of items per page.</param>
+        /// <param name="orderBy">Optional sort expression. If null, sorts by ID.</param>
+        /// <param name="direction">Sort direction (default: Ascending).</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>Paginated result with items and total count.</returns>
         public virtual async Task<PaginatedResult<T>> GetPaginatedAsync(
+            Expression<Func<T, bool>> predicate,
             int pageNumber,
             int pageSize,
-            Expression<Func<T, object>>? orderBy,
+            Expression<Func<T, object>>? orderBy = null,
             SortDirection direction = SortDirection.Ascending,
-            ISpecification<T>? specification = null,
             CancellationToken cancellationToken = default)
         {
-            if (pageNumber < 1) throw new ArgumentOutOfRangeException(nameof(pageNumber));
-            if (pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize));
+            if (pageNumber < 1) throw new ArgumentOutOfRangeException(nameof(pageNumber), "Page number must be greater than zero.");
+            if (pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be greater than zero.");
 
+            // Get total count
+            var totalCount = predicate is null
+                ? await CountAsync(cancellationToken)
+                : await CountAsync(predicate, cancellationToken);
+
+            // Get paged items
+            var query = PrepareQuery(_dbSet);
+            if (predicate != null)
+                query = query.Where(predicate);
+            
+            query = ApplySorting(query, orderBy, direction);
+            query = ApplyPagination(query, pageNumber, pageSize);
+            
+            var items = await query.ToListAsync(cancellationToken);
+            return new PaginatedResult<T>(items, totalCount, pageNumber, pageSize);
+        }
+
+        /// <summary>
+        /// Returns paginated results using a specification for filtering.
+        /// </summary>
+        /// <param name="specification">Optional specification for filtering. If null, returns all entities.</param>
+        /// <param name="pageNumber">Page number (1-based).</param>
+        /// <param name="pageSize">Number of items per page.</param>
+        /// <param name="orderBy">Optional sort expression. If null, sorts by ID.</param>
+        /// <param name="direction">Sort direction (default: Ascending).</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>Paginated result with items and total count.</returns>
+        public virtual async Task<PaginatedResult<T>> GetPaginatedAsync(
+            ISpecification<T> specification,
+            int pageNumber,
+            int pageSize,
+            Expression<Func<T, object>>? orderBy = null,
+            SortDirection direction = SortDirection.Ascending,
+            CancellationToken cancellationToken = default)
+        {
+            if (pageNumber < 1) throw new ArgumentOutOfRangeException(nameof(pageNumber), "Page number must be greater than zero.");
+            if (pageSize < 1) throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be greater than zero.");
+
+            // Get total count
             var totalCount = specification is null
                 ? await CountAsync(cancellationToken)
                 : await CountAsync(specification, cancellationToken);
 
-            var items = await GetPagedAsync(pageNumber, pageSize, orderBy, direction, specification, cancellationToken);
+            // Get paged items
+            var query = ApplySpecification(specification);
+            query = ApplySorting(query, orderBy, direction);
+            query = ApplyPagination(query, pageNumber, pageSize);
+            
+            var items = await query.ToListAsync(cancellationToken);
             return new PaginatedResult<T>(items, totalCount, pageNumber, pageSize);
         }
 
-        public virtual async Task<PaginatedResult<T>> GetPaginatedAsync(IPaginatedSpecification<T> specification, CancellationToken cancellationToken = default)
-        {
-            if (specification == null) throw new ArgumentNullException(nameof(specification));
-
-            // پیجینگ داخل Spec اعمال شده
-            var pageQuery = ApplySpecification(specification);
-
-            // شمارش بدون Paging و Include
-            var totalCount = await ApplySpecificationForCount(specification).CountAsync(cancellationToken);
-
-            var items = await pageQuery.ToListAsync(cancellationToken);
-            return new PaginatedResult<T>(items, totalCount, specification.PageNumber, specification.PageSize);
-        }
-
-        public virtual async Task<PaginatedResult<T>> GetPaginatedAsync(IPaginatedSortableSpecification<T> specification, CancellationToken cancellationToken = default)
-        {
-            if (specification == null) throw new ArgumentNullException(nameof(specification));
-
-            var pageQuery = ApplySpecification(specification);
-            var totalCount = await ApplySpecificationForCount(specification).CountAsync(cancellationToken);
-
-            var items = await pageQuery.ToListAsync(cancellationToken);
-            return new PaginatedResult<T>(items, totalCount, specification.PageNumber, specification.PageSize);
-        }
 
         // ========== Projection
         public virtual async Task<TResult?> FindOneAsync<TResult>(Expression<Func<T, bool>> predicate, Expression<Func<T, TResult>> selector, CancellationToken cancellationToken = default)
@@ -242,18 +229,6 @@ namespace AkbarAmd.SharedKernel.Infrastructure.Repositories
         }
     }
 
-    // For cases where you need to count all entities (null spec)
-    internal sealed class EmptySpecification<T> : ISpecification<T>
-    {
-        public Expression<Func<T, bool>> Criteria => x => true;
-        public IReadOnlyList<Expression<Func<T, object>>> Includes { get; } = Array.Empty<Expression<Func<T, object>>>();
-        public IReadOnlyList<string> IncludeStrings { get; } = Array.Empty<string>();
-        public Expression<Func<T, object>>? OrderBy => null;
-        public Expression<Func<T, object>>? OrderByDescending => null;
-        public int Take => 0;
-        public int Skip => 0;
-        public bool IsPagingEnabled => false;
-    }
 
 
 
@@ -266,10 +241,12 @@ namespace AkbarAmd.SharedKernel.Infrastructure.Repositories
         where TDbContext : DbContext
     {
         /// <summary>
-        /// 
+        /// Initializes a new instance of the EfRepository class.
         /// </summary>
-        /// <param name="dbContext"></param>
-        protected EfRepository(TDbContext dbContext) : base(dbContext, enableTracking: true)
+        /// <param name="dbContext">The database context.</param>
+        /// <param name="evaluator">Optional specification evaluator. If not provided, uses EF Core implementation.</param>
+        protected EfRepository(TDbContext dbContext, ISpecificationEvaluator<T>? evaluator = null) 
+            : base(dbContext, evaluator, enableTracking: true)
         {
         }
 

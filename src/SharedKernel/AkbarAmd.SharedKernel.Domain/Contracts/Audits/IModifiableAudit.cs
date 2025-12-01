@@ -15,11 +15,11 @@ namespace AkbarAmd.SharedKernel.Domain.Contracts.Audits
         /// <summary>
         /// When the entity was last modified (nullable)
         /// </summary>
-        DateTime? LastModifiedAt { get; set; }
+        DateTime? ModifiedAt { get; set; }
 
         /// <summary>
         /// Who last modified the entity (nullable)
         /// </summary>
-        string? LastModifiedBy { get; set; }
+        string? ModifiedBy { get; set; }
     }
 }

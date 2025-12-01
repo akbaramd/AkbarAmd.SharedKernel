@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>AkbarAmd.SharedKernel.Domain</PackageId>
-        <Version>1.0.17</Version>
-        <AssemblyVersion>1.0.17.0</AssemblyVersion>
-        <FileVersion>1.0.17.0</FileVersion>
+        <Version>1.0.20</Version>
+        <AssemblyVersion>1.0.20.0</AssemblyVersion>
+        <FileVersion>1.0.20.0</FileVersion>
         <Authors>Akbar Ahmadi Saray</Authors>
         <Company>AkbarAhmadi</Company>
         <Description>Clean Architecture Domain Layer - Core Domain Models, Entities, Value Objects, and Domain Events</Description>
@@ -20,7 +20,21 @@
         <RepositoryUrl>https://github.com/akbaramd/AkbarAmd.SharedKernel.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>clean-architecture;ddd;domain-driven-design;entities;value-objects;domain-events;aggregate-roots</PackageTags>
-        <PackageReleaseNotes>Version 1.0.17: Updated repository URLs to AkbarAmd.SharedKernel, improved documentation structure with DDD and CQRS concept groups</PackageReleaseNotes>
+        <PackageReleaseNotes>Version 1.0.19: 
+- Added comprehensive nested includes support with IncludeChain and ThenInclude functionality
+- Enhanced FluentSpecificationBuilder with IncludeChain method for nested include chains
+- Added IncludeChainBuilder for fluent API support of nested includes
+- Full support for nullable navigation properties at any level in include chains
+- Added comprehensive unit tests for nested includes functionality
+- Improved specification pattern with better include chain support
+
+Version 1.0.18: 
+- Removed Version property and IncrementVersion() method from IAggregateRoot&lt;TId&gt; interface and AggregateRoot&lt;TKey&gt; class
+- Renamed LastModifiedAt to ModifiedAt and LastModifiedBy to ModifiedBy in IModifiableAudit interface
+- Updated all aggregate root implementations and DTOs to use ModifiedAt/ModifiedBy naming
+- Updated Entity Framework Core configurations to reflect property name changes
+- Breaking change: Aggregate roots no longer support version-based optimistic concurrency control (RowVersion still available via IConcurrentAudit)
+- Breaking change: IModifiableAudit properties renamed from LastModifiedAt/LastModifiedBy to ModifiedAt/ModifiedBy</PackageReleaseNotes>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <IncludeSymbols>true</IncludeSymbols>

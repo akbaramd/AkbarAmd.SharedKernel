@@ -19,12 +19,12 @@ namespace AkbarAmd.SharedKernel.Domain.AggregateRoots
         /// <summary>
         /// When the entity was last modified (nullable)
         /// </summary>
-        public DateTime? LastModifiedAt { get; set; }
+        public DateTime? ModifiedAt { get; set; }
 
         /// <summary>
         /// Who last modified the entity (nullable)
         /// </summary>
-        public string? LastModifiedBy { get; set; }
+        public string? ModifiedBy { get; set; }
 
         /// <summary>
         /// Default constructor for ORM/ODM support.
@@ -59,8 +59,8 @@ namespace AkbarAmd.SharedKernel.Domain.AggregateRoots
         /// <param name="modifiedBy">Who modified the entity</param>
         protected ModifiableAggregateRoot(TKey id, string createdBy, string modifiedBy) : base(id, createdBy)
         {
-            LastModifiedAt = DateTime.UtcNow;
-            LastModifiedBy = modifiedBy ?? throw new ArgumentNullException(nameof(modifiedBy));
+            ModifiedAt = DateTime.UtcNow;
+            ModifiedBy = modifiedBy ?? throw new ArgumentNullException(nameof(modifiedBy));
         }
 
         /// <summary>
@@ -70,8 +70,8 @@ namespace AkbarAmd.SharedKernel.Domain.AggregateRoots
         /// <exception cref="ArgumentNullException">Thrown when modifiedBy is null</exception>
         public void MarkModified(string modifiedBy)
         {
-            LastModifiedAt = DateTime.UtcNow;
-            LastModifiedBy = modifiedBy ?? throw new ArgumentNullException(nameof(modifiedBy));
+            ModifiedAt = DateTime.UtcNow;
+            ModifiedBy = modifiedBy ?? throw new ArgumentNullException(nameof(modifiedBy));
         }
     }
 }

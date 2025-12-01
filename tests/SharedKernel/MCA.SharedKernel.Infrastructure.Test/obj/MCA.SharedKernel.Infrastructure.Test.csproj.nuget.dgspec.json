@@ -5,7 +5,7 @@
   },
   "projects": {
     "E:\\projects\\CleanArchitecture\\Src\\SharedKernel\\AkbarAmd.SharedKernel.Domain\\AkbarAmd.SharedKernel.Domain.csproj": {
-      "version": "1.0.17",
+      "version": "1.0.20",
       "restore": {
         "projectUniqueName": "E:\\projects\\CleanArchitecture\\Src\\SharedKernel\\AkbarAmd.SharedKernel.Domain\\AkbarAmd.SharedKernel.Domain.csproj",
         "projectName": "AkbarAmd.SharedKernel.Domain",
@@ -85,7 +85,7 @@
       }
     },
     "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore\\AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.csproj": {
-      "version": "1.0.17",
+      "version": "1.0.20",
       "restore": {
         "projectUniqueName": "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore\\AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.csproj",
         "projectName": "AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore",

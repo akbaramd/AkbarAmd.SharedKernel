@@ -30,11 +30,6 @@ namespace AkbarAmd.SharedKernel.Domain.AggregateRoots
         public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
         /// <summary>
-        /// Version for optimistic concurrency control
-        /// </summary>
-        public long Version { get; private set; }
-
-        /// <summary>
         /// Row version for optimistic concurrency control (required)
         /// </summary>
         public byte[] RowVersion { get; set; } = Array.Empty<byte>();
@@ -71,14 +66,6 @@ namespace AkbarAmd.SharedKernel.Domain.AggregateRoots
         public void ClearDomainEvents()
         {
             _domainEvents.Clear();
-        }
-
-        /// <summary>
-        /// Increment version after successful commit
-        /// </summary>
-        public void IncrementVersion()
-        {
-            Version++;
         }
     }
 }

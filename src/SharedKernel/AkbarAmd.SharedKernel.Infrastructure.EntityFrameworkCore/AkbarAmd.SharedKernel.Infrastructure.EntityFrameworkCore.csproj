@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore</PackageId>
-        <Version>1.0.17</Version>
-        <AssemblyVersion>1.0.17.0</AssemblyVersion>
-        <FileVersion>1.0.17.0</FileVersion>
+        <Version>1.0.20</Version>
+        <AssemblyVersion>1.0.20.0</AssemblyVersion>
+        <FileVersion>1.0.20.0</FileVersion>
         <Authors>Akbar Ahmadi Saray</Authors>
         <Company>AkbarAhmadi</Company>
         <Description>Clean Architecture Infrastructure Layer - EF Core Integration, Repository Implementations, and Data Access</Description>
@@ -20,7 +20,18 @@
         <RepositoryUrl>https://github.com/akbaramd/AkbarAmd.SharedKernel.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>clean-architecture;infrastructure;ef-core;entity-framework;repositories;data-access;specifications</PackageTags>
-        <PackageReleaseNotes>Version 1.0.17: Updated repository URLs to AkbarAmd.SharedKernel, improved documentation structure with DDD and CQRS concept groups</PackageReleaseNotes>
+        <PackageReleaseNotes>Version 1.0.19: 
+- Enhanced EfCoreSpecificationEvaluator with full support for nested include chains
+- Added automatic handling of nullable navigation properties in ThenInclude chains
+- Improved include chain evaluation with proper type resolution
+- Full support for Include().ThenInclude().ThenInclude() chains in EF Core queries
+- Enhanced specification pattern integration with Entity Framework Core
+
+Version 1.0.18: 
+- Removed Version property configuration from ConfigureAggregateRoots method
+- Updated ConfigureModificationAudit to use ModifiedAt/ModifiedBy instead of LastModifiedAt/LastModifiedBy
+- Updated index names and filter expressions to reflect property name changes
+- Breaking change: Entity Framework Core configurations now use ModifiedAt/ModifiedBy property names</PackageReleaseNotes>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <IncludeSymbols>true</IncludeSymbols>

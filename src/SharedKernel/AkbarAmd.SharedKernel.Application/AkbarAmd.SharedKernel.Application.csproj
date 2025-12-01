@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>AkbarAmd.SharedKernel.Application</PackageId>
-        <Version>1.0.17</Version>
-        <AssemblyVersion>1.0.17.0</AssemblyVersion>
-        <FileVersion>1.0.17.0</FileVersion>
+        <Version>1.0.20</Version>
+        <AssemblyVersion>1.0.20.0</AssemblyVersion>
+        <FileVersion>1.0.20.0</FileVersion>
         <Authors>Akbar Ahmadi Saray</Authors>
         <Company>AkbarAhmadi</Company>
         <Description>Clean Architecture Application Layer - CQRS, MediatR, Validation, and Application Services</Description>
@@ -20,7 +20,13 @@
         <RepositoryUrl>https://github.com/akbaramd/AkbarAmd.SharedKernel.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>clean-architecture;application;cqrs;mediatr;validation;fluent-validation;auto-mapper</PackageTags>
-        <PackageReleaseNotes>Version 1.0.17: Updated repository URLs to AkbarAmd.SharedKernel, improved documentation structure with DDD and CQRS concept groups</PackageReleaseNotes>
+        <PackageReleaseNotes>Version 1.0.19: 
+- Updated to support nested includes from Domain layer
+- Enhanced application layer compatibility with new IncludeChain functionality
+
+Version 1.0.18: 
+- Updated ModifiableAggregateDto to use ModifiedAt/ModifiedBy instead of LastModifiedAt/LastModifiedBy
+- Breaking change: ModifiableAggregateDto properties renamed from LastModifiedAt/LastModifiedBy to ModifiedAt/ModifiedBy</PackageReleaseNotes>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <IncludeSymbols>true</IncludeSymbols>

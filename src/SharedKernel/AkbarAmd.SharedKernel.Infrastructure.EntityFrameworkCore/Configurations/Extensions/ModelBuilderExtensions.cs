@@ -3,7 +3,7 @@ using AkbarAmd.SharedKernel.Domain.Contracts;
 using AkbarAmd.SharedKernel.Domain.Contracts.Audits;
 using Microsoft.EntityFrameworkCore;
 
-namespace AkbarAmd.SharedKernel.Infrastructure.Configurations.Extensions
+namespace AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Configurations.Extensions
 {
     /// <summary>
     /// Extension methods for ModelBuilder to simplify entity configuration.
@@ -76,19 +76,6 @@ namespace AkbarAmd.SharedKernel.Infrastructure.Configurations.Extensions
                     // Ignore domain events properties
                     modelBuilder.Entity(clrType).Ignore("DomainEvents");
                     modelBuilder.Entity(clrType).Ignore("HasPendingEvents");
-
-                    // Configure version property if it implements IAggregateRoot<TId>
-                    var genericInterface = clrType.GetInterfaces()
-                        .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IAggregateRoot<>));
-
-                    if (genericInterface != null)
-                    {
-                        modelBuilder.Entity(clrType)
-                            .Property("Version")
-                            .IsRequired()
-                            .IsConcurrencyToken()
-                            .HasDefaultValue(0L);
-                    }
                 }
             }
 

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MCA.SharedKernel.Domain.Test")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+db4dc6e187f2a813cc15d69713fb019400b87060")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+050a5cfefd6f06c9a473a4761dde22cf482744b8")]
 [assembly: System.Reflection.AssemblyProductAttribute("MCA.SharedKernel.Domain.Test")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MCA.SharedKernel.Domain.Test")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

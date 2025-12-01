@@ -1,6 +1,8 @@
 using System;
 using System.Linq.Expressions;
+using AkbarAmd.SharedKernel.Domain.Contracts.Specifications;
 using AkbarAmd.SharedKernel.Domain.Specifications;
+using AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Specifications;
 using MCA.SharedKernel.Infrastructure.Test.Specifications.TestEntities;
 using Xunit;
 
@@ -11,6 +13,12 @@ namespace MCA.SharedKernel.Infrastructure.Test.Specifications;
 /// </summary>
 public sealed class CriteriaBuilderTests
 {
+    static CriteriaBuilderTests()
+    {
+        // Register Infrastructure handlers with Domain layer
+        InfrastructureInitialization.RegisterHandlers();
+    }
+
     #region Basic Operations Tests
 
     [Fact]

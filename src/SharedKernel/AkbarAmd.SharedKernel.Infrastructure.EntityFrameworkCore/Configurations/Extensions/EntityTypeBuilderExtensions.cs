@@ -11,7 +11,7 @@ using AkbarAmd.SharedKernel.Domain.Contracts.Audits;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace AkbarAmd.SharedKernel.Infrastructure.Configurations.Extensions
+namespace AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Configurations.Extensions
 {
     /// <summary>
     /// Extension methods for EntityTypeBuilder to simplify entity configuration.
@@ -56,21 +56,21 @@ namespace AkbarAmd.SharedKernel.Infrastructure.Configurations.Extensions
         public static EntityTypeBuilder<TEntity> ConfigureModificationAudit<TEntity>(this EntityTypeBuilder<TEntity> builder)
             where TEntity : class, IModifiableAudit
         {
-            builder.Property(e => e.LastModifiedAt)
+            builder.Property(e => e.ModifiedAt)
                 .HasColumnType("datetime2");
 
-            builder.Property(e => e.LastModifiedBy)
+            builder.Property(e => e.ModifiedBy)
                 .HasMaxLength(100)
                 .IsUnicode(false);
 
             // Add indexes for common queries with filters
-            builder.HasIndex(e => e.LastModifiedAt)
-                .HasDatabaseName($"IX_{typeof(TEntity).Name}_LastModifiedAt")
-                .HasFilter("[LastModifiedAt] IS NOT NULL");
+            builder.HasIndex(e => e.ModifiedAt)
+                .HasDatabaseName($"IX_{typeof(TEntity).Name}_ModifiedAt")
+                .HasFilter("[ModifiedAt] IS NOT NULL");
 
-            builder.HasIndex(e => e.LastModifiedBy)
-                .HasDatabaseName($"IX_{typeof(TEntity).Name}_LastModifiedBy")
-                .HasFilter("[LastModifiedBy] IS NOT NULL");
+            builder.HasIndex(e => e.ModifiedBy)
+                .HasDatabaseName($"IX_{typeof(TEntity).Name}_ModifiedBy")
+                .HasFilter("[ModifiedBy] IS NOT NULL");
 
             return builder;
         }

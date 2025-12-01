@@ -37,14 +37,5 @@ namespace AkbarAmd.SharedKernel.Domain.Contracts
     public interface IAggregateRoot<TId> : IAggregateRoot, IEntity<TId>
         where TId : IEquatable<TId>
     {
-        /// <summary>
-        /// Version for optimistic concurrency control.
-        /// </summary>
-        long Version { get; }
-
-        /// <summary>
-        /// Increment version after successful commit.
-        /// </summary>
-        void IncrementVersion();
     }
 }

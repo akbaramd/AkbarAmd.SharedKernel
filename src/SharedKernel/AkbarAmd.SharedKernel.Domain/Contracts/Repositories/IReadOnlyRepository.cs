@@ -31,82 +31,45 @@ namespace AkbarAmd.SharedKernel.Domain.Contracts.Repositories
         Task<int> CountAsync(ISpecification<T> specification, CancellationToken cancellationToken = default);
 
         // -------------------------
-        // 🔹 Simple Paging (no specification)
-        // -------------------------
-
-        /// <summary>
-        /// Returns entities for a specific page using deterministic Id ordering.
-        /// </summary>
-        Task<IEnumerable<T>> GetPagedAsync(
-            int pageNumber,
-            int pageSize,
-            CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Returns entities for a specific page using optional specification for filtering and includes.
-        /// </summary>
-        Task<IEnumerable<T>> GetPagedAsync(
-            int pageNumber,
-            int pageSize,
-            ISpecification<T>? specification,
-            CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Returns entities for a page with optional sorting.
-        /// </summary>
-        Task<IEnumerable<T>> GetPagedAsync(
-            int pageNumber,
-            int pageSize,
-            Expression<Func<T, object>>? orderBy,
-            SortDirection direction = SortDirection.Ascending,
-            ISpecification<T>? specification = null,
-            CancellationToken cancellationToken = default);
-
-        // -------------------------
         // 🔹 Paginated Results (with total count)
         // -------------------------
 
         /// <summary>
-        /// Returns a paginated result using basic pagination (no sort).
+        /// Returns paginated results using an expression predicate for filtering.
         /// </summary>
+        /// <param name="predicate">Optional filter expression. If null, returns all entities.</param>
+        /// <param name="pageNumber">Page number (1-based).</param>
+        /// <param name="pageSize">Number of items per page.</param>
+        /// <param name="orderBy">Optional sort expression. If null, sorts by ID.</param>
+        /// <param name="direction">Sort direction (default: Ascending).</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>Paginated result with items and total count.</returns>
         Task<PaginatedResult<T>> GetPaginatedAsync(
+            Expression<Func<T, bool>> predicate,
             int pageNumber,
             int pageSize,
-            CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Returns a paginated result using optional specification.
-        /// </summary>
-        Task<PaginatedResult<T>> GetPaginatedAsync(
-            int pageNumber,
-            int pageSize,
-            ISpecification<T>? specification,
-            CancellationToken cancellationToken = default);
-
-        /// <summary>
-        /// Returns a paginated result with optional sorting and specification.
-        /// </summary>
-        Task<PaginatedResult<T>> GetPaginatedAsync(
-            int pageNumber,
-            int pageSize,
-            Expression<Func<T, object>>? orderBy,
+            Expression<Func<T, object>>? orderBy = null,
             SortDirection direction = SortDirection.Ascending,
-            ISpecification<T>? specification = null,
             CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Returns a paginated result using an IPaginatedSpecification that already defines paging behavior.
+        /// Returns paginated results using a specification for filtering.
         /// </summary>
+        /// <param name="specification">Optional specification for filtering. If null, returns all entities.</param>
+        /// <param name="pageNumber">Page number (1-based).</param>
+        /// <param name="pageSize">Number of items per page.</param>
+        /// <param name="orderBy">Optional sort expression. If null, sorts by ID.</param>
+        /// <param name="direction">Sort direction (default: Ascending).</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
+        /// <returns>Paginated result with items and total count.</returns>
         Task<PaginatedResult<T>> GetPaginatedAsync(
-            IPaginatedSpecification<T> specification,
+            ISpecification<T> specification,
+            int pageNumber,
+            int pageSize,
+            Expression<Func<T, object>>? orderBy = null,
+            SortDirection direction = SortDirection.Ascending,
             CancellationToken cancellationToken = default);
 
-        /// <summary>
-        /// Returns a paginated result using an IPaginatedSortableSpecification that defines both paging and sorting.
-        /// </summary>
-        Task<PaginatedResult<T>> GetPaginatedAsync(
-            IPaginatedSortableSpecification<T> specification,
-            CancellationToken cancellationToken = default);
 
         // -------------------------
         // 🔹 Projection queries

@@ -1,4 +1,4 @@
-using AkbarAmd.SharedKernel.Infrastructure.Repositories;
+using AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Repositories;
 using MCA.SharedKernel.Infrastructure.Test.Specifications.TestDbContext;
 using MCA.SharedKernel.Infrastructure.Test.Specifications.TestEntities;
 

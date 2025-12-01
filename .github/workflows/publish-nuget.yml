@@ -1,0 +1,40 @@
+name: Build, Test & Publish NuGet Packages
+
+on:
+  push:
+    branches:
+      - main        # Change to "master" if your default branch is master
+  # Optional: publish only when creating a version tag
+  # push:
+  #   tags:
+  #     - 'v*'
+
+jobs:
+  publish-nuget:
+    runs-on: ubuntu-latest   # or windows-latest if you prefer
+
+    env:
+      # This will be visible inside the script as $env:NUGET_API_KEY
+      NUGET_API_KEY: ${{ secrets.NugetKey }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Run Publish-Packages script
+        shell: pwsh
+        run: |
+          ./Publish-Packages.ps1 -PublishToNuGet -SkipConfirmation
+
+      - name: Upload NuGet packages as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages
+          path: nupkgs/*.nupkg
+          retention-days: 30
+

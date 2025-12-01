@@ -1,6 +1,6 @@
 ﻿using Bonyan.Modularity.Abstractions;
 
-namespace AkbarAmd.SharedKernel.Infrastructure;
+namespace AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore;
 
 /// <summary>
 /// 

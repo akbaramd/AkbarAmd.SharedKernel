@@ -3708,7 +3708,7 @@
           "build/net6.0/xunit.runner.visualstudio.props": {}
         }
       },
-      "AkbarAmd.SharedKernel.Domain/1.0.17": {
+      "AkbarAmd.SharedKernel.Domain/1.0.20": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
@@ -3722,11 +3722,11 @@
           "bin/placeholder/AkbarAmd.SharedKernel.Domain.dll": {}
         }
       },
-      "AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore/1.0.17": {
+      "AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore/1.0.20": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
-          "AkbarAmd.SharedKernel.Domain": "1.0.17",
+          "AkbarAmd.SharedKernel.Domain": "1.0.20",
           "Bonyan": "1.5.6",
           "Microsoft.AspNetCore.Authorization": "8.0.18",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.18",
@@ -10406,12 +10406,12 @@
         "xunit.runner.visualstudio.nuspec"
       ]
     },
-    "AkbarAmd.SharedKernel.Domain/1.0.17": {
+    "AkbarAmd.SharedKernel.Domain/1.0.20": {
       "type": "project",
       "path": "../../../Src/SharedKernel/AkbarAmd.SharedKernel.Domain/AkbarAmd.SharedKernel.Domain.csproj",
       "msbuildProject": "../../../Src/SharedKernel/AkbarAmd.SharedKernel.Domain/AkbarAmd.SharedKernel.Domain.csproj"
     },
-    "AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore/1.0.17": {
+    "AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore/1.0.20": {
       "type": "project",
       "path": "../../../src/SharedKernel/AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore/AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.csproj",
       "msbuildProject": "../../../src/SharedKernel/AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore/AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.csproj"
@@ -10419,8 +10419,8 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "AkbarAmd.SharedKernel.Domain >= 1.0.17",
-      "AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore >= 1.0.17",
+      "AkbarAmd.SharedKernel.Domain >= 1.0.20",
+      "AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore >= 1.0.20",
       "Microsoft.EntityFrameworkCore.Sqlite >= 8.0.21",
       "Microsoft.NET.Test.Sdk >= 17.8.0",
       "coverlet.collector >= 6.0.0",

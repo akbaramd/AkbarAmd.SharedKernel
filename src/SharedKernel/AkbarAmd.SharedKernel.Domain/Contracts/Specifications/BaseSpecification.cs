@@ -6,11 +6,11 @@ namespace AkbarAmd.SharedKernel.Domain.Contracts.Specifications;
 
 /// <summary>
 /// Base implementation of ISpecification that provides common functionality
-/// for building query specifications with criteria, includes, sorting, and paging.
+/// for building domain specifications with criteria only.
 /// Supports both legacy AddCriteria (AND-based) and new Where() fluent API for complex criteria.
-/// Implements IMultiSortSpecification for multi-level sorting support.
+/// Pure domain specification - no infrastructure concerns (includes, sorting, pagination).
 /// </summary>
-public abstract class BaseSpecification<T> : ISpecification<T>, IMultiSortSpecification<T>
+public abstract class BaseSpecification<T> : ISpecification<T>
 {
     // Legacy AND-based criteria list for backward compatibility
     private readonly List<Expression<Func<T, bool>>> _criteriaAnd = new();
@@ -18,9 +18,10 @@ public abstract class BaseSpecification<T> : ISpecification<T>, IMultiSortSpecif
     // Tree-based criteria for Where() fluent API
     internal ICriteriaNode<T>? CriteriaTree { get; private set; }
 
-    private readonly List<Expression<Func<T, object>>> _includes = new();
-    private readonly List<string> _includeStrings = new();
-
+    /// <summary>
+    /// Gets the criteria expression that defines the business rule or filter.
+    /// Combines legacy AddCriteria expressions with Where() fluent API expressions.
+    /// </summary>
     public Expression<Func<T, bool>>? Criteria
     {
         get
@@ -37,19 +38,33 @@ public abstract class BaseSpecification<T> : ISpecification<T>, IMultiSortSpecif
         }
     }
 
-    public IReadOnlyList<Expression<Func<T, object>>> Includes => _includes;
-    public IReadOnlyList<string> IncludeStrings => _includeStrings;
+    /// <summary>
+    /// Determines whether a candidate object satisfies the specification.
+    /// This is the classic DDD method for in-memory validation and domain checks.
+    /// Compiles the criteria expression and evaluates it against the candidate.
+    /// </summary>
+    /// <param name="candidate">The candidate object to evaluate.</param>
+    /// <returns>True if the candidate satisfies the specification; otherwise, false.</returns>
+    public bool IsSatisfiedBy(T candidate)
+    {
+        if (candidate is null)
+            throw new ArgumentNullException(nameof(candidate));
 
-    public Expression<Func<T, object>>? OrderBy { get; private set; }
-    public Expression<Func<T, object>>? OrderByDescending { get; private set; }
+        var criteria = Criteria;
+        if (criteria is null)
+            return true; // No criteria means all candidates satisfy the spec
 
-    // Multi-level sorting chain
-    private readonly List<SortDescriptor<T>> _sorts = new();
-    public IReadOnlyList<SortDescriptor<T>> Sorts => _sorts;
+        // Compile and evaluate the expression
+        var compiled = criteria.Compile();
+        return compiled(candidate);
+    }
 
-    public int Take { get; private set; }
-    public int Skip { get; private set; }
-    public bool IsPagingEnabled { get; private set; }
+    /// <summary>
+    /// Converts the specification to an expression tree for use in queries.
+    /// This is an alias for the Criteria property, provided for clarity and API consistency.
+    /// </summary>
+    /// <returns>The criteria expression, or null if no criteria are defined.</returns>
+    public Expression<Func<T, bool>>? ToExpression() => Criteria;
 
     /// <summary>
     /// Legacy API: Adds a criteria expression that will be combined with AND.
@@ -170,225 +185,7 @@ public abstract class BaseSpecification<T> : ISpecification<T>, IMultiSortSpecif
         return current;
     }
 
-    protected void AddInclude(Expression<Func<T, object>> includeExpression)
-    {
-        if (includeExpression is null)
-            throw new ArgumentNullException(nameof(includeExpression));
-        _includes.Add(includeExpression);
-    }
-
-    protected void AddInclude(string includeString)
-    {
-        if (string.IsNullOrWhiteSpace(includeString))
-            throw new ArgumentException("Include cannot be empty.", nameof(includeString));
-        _includeStrings.Add(includeString);
-    }
-
-    protected void AddOrderBy(Expression<Func<T, object>> orderByExpression)
-        => OrderBy = orderByExpression ?? throw new ArgumentNullException(nameof(orderByExpression));
-
-    protected void AddOrderByDescending(Expression<Func<T, object>> orderByDescExpression)
-        => OrderByDescending = orderByDescExpression ?? throw new ArgumentNullException(nameof(orderByDescExpression));
-
-    protected void ApplyPaging(int skip, int take)
-    {
-        if (skip < 0)  throw new ArgumentOutOfRangeException(nameof(skip), "Skip cannot be negative.");
-        if (take <= 0) throw new ArgumentOutOfRangeException(nameof(take), "Take must be greater than zero.");
-        Skip = skip;
-        Take = take;
-        IsPagingEnabled = true;
-    }
-
-    // ======== New Fluent APIs ========
-
-    /// <summary>
-    /// Fluent API: Adds an include expression.
-    /// </summary>
-    public BaseSpecification<T> Include(Expression<Func<T, object>> include)
-    {
-        AddInclude(include);
-        return this;
-    }
-
-    /// <summary>
-    /// Fluent API: Adds an include by string path.
-    /// </summary>
-    public BaseSpecification<T> Include(string includePath)
-    {
-        AddInclude(includePath);
-        return this;
-    }
-
-    /// <summary>
-    /// Fluent API: Adds multiple include expressions.
-    /// </summary>
-    public BaseSpecification<T> Include(params Expression<Func<T, object>>[] includes)
-    {
-        if (includes is null)
-            throw new ArgumentNullException(nameof(includes));
-        foreach (var include in includes)
-            AddInclude(include);
-        return this;
-    }
-
-    /// <summary>
-    /// Fluent API: Adds multiple include paths.
-    /// </summary>
-    public BaseSpecification<T> IncludePaths(params string[] paths)
-    {
-        if (paths is null)
-            throw new ArgumentNullException(nameof(paths));
-        foreach (var path in paths)
-            AddInclude(path);
-        return this;
-    }
-
-    /// <summary>
-    /// Fluent API: Sets the primary sort key in ascending order.
-    /// Clears any existing sort chain and starts a new one.
-    /// </summary>
-    public BaseSpecification<T> OrderByKey<TKey>(Expression<Func<T, TKey>> key)
-    {
-        if (key is null)
-            throw new ArgumentNullException(nameof(key));
-
-        _sorts.Clear(); // Start new chain
-        _sorts.Add(new SortDescriptor<T>(key, SortDirection.Ascending, NullSort.Unspecified));
-        
-        // Sync with legacy properties
-        OrderBy = ToObjectSelector(key);
-        OrderByDescending = null;
-        
-        return this;
-    }
-
-    /// <summary>
-    /// Fluent API: Sets the primary sort key in descending order.
-    /// Clears any existing sort chain and starts a new one.
-    /// </summary>
-    public BaseSpecification<T> OrderByKeyDescending<TKey>(Expression<Func<T, TKey>> key)
-    {
-        if (key is null)
-            throw new ArgumentNullException(nameof(key));
-
-        _sorts.Clear(); // Start new chain
-        _sorts.Add(new SortDescriptor<T>(key, SortDirection.Descending, NullSort.Unspecified));
-        
-        // Sync with legacy properties
-        OrderBy = null;
-        OrderByDescending = ToObjectSelector(key);
-        
-        return this;
-    }
-
-    /// <summary>
-    /// Fluent API: Adds a secondary sort key in ascending order.
-    /// Requires that OrderByKey or OrderByKeyDescending has been called first.
-    /// </summary>
-    public BaseSpecification<T> ThenBy<TKey>(Expression<Func<T, TKey>> key)
-    {
-        if (key is null)
-            throw new ArgumentNullException(nameof(key));
-        if (_sorts.Count == 0)
-            throw new InvalidOperationException("Call OrderByKey or OrderByKeyDescending first before using ThenBy.");
-
-        _sorts.Add(new SortDescriptor<T>(key, SortDirection.Ascending, NullSort.Unspecified));
-        return this;
-    }
-
-    /// <summary>
-    /// Fluent API: Adds a secondary sort key in descending order.
-    /// Requires that OrderByKey or OrderByKeyDescending has been called first.
-    /// </summary>
-    public BaseSpecification<T> ThenByDescending<TKey>(Expression<Func<T, TKey>> key)
-    {
-        if (key is null)
-            throw new ArgumentNullException(nameof(key));
-        if (_sorts.Count == 0)
-            throw new InvalidOperationException("Call OrderByKey or OrderByKeyDescending first before using ThenByDescending.");
-
-        _sorts.Add(new SortDescriptor<T>(key, SortDirection.Descending, NullSort.Unspecified));
-        return this;
-    }
-
-    /// <summary>
-    /// Fluent API: Sets null ordering policy to NullsFirst for the last sort descriptor.
-    /// Only meaningful for nullable or reference types.
-    /// </summary>
-    public BaseSpecification<T> NullsFirst()
-    {
-        if (_sorts.Count == 0)
-            throw new InvalidOperationException("Call OrderByKey/OrderByKeyDescending/ThenBy first before using NullsFirst.");
-
-        var last = _sorts[^1];
-        _sorts[^1] = last with { Nulls = NullSort.NullsFirst };
-        return this;
-    }
-
-    /// <summary>
-    /// Fluent API: Sets null ordering policy to NullsLast for the last sort descriptor.
-    /// Only meaningful for nullable or reference types.
-    /// </summary>
-    public BaseSpecification<T> NullsLast()
-    {
-        if (_sorts.Count == 0)
-            throw new InvalidOperationException("Call OrderByKey/OrderByKeyDescending/ThenBy first before using NullsLast.");
-
-        var last = _sorts[^1];
-        _sorts[^1] = last with { Nulls = NullSort.NullsLast };
-        return this;
-    }
-
-    /// <summary>
-    /// Fluent API: Sets pagination using page number and page size.
-    /// Calculates skip and take automatically.
-    /// </summary>
-    public BaseSpecification<T> Page(int pageNumber, int pageSize)
-    {
-        if (pageNumber < 1)
-            throw new ArgumentOutOfRangeException(nameof(pageNumber), "Page number must be greater than zero.");
-        if (pageSize < 1)
-            throw new ArgumentOutOfRangeException(nameof(pageSize), "Page size must be greater than zero.");
-
-        ApplyPaging((pageNumber - 1) * pageSize, pageSize);
-        return this;
-    }
-
-    /// <summary>
-    /// Fluent API: Sets the skip value for pagination.
-    /// </summary>
-    public BaseSpecification<T> SkipBy(int skip)
-    {
-        if (skip < 0)
-            throw new ArgumentOutOfRangeException(nameof(skip), "Skip cannot be negative.");
-        
-        ApplyPaging(skip, Take > 0 ? Take : int.MaxValue);
-        return this;
-    }
-
-    /// <summary>
-    /// Fluent API: Sets the take value for pagination.
-    /// </summary>
-    public BaseSpecification<T> TakeBy(int take)
-    {
-        if (take <= 0)
-            throw new ArgumentOutOfRangeException(nameof(take), "Take must be greater than zero.");
-        
-        ApplyPaging(Skip, take);
-        return this;
-    }
-
     // ---- Helpers
-
-    /// <summary>
-    /// Converts a typed lambda expression to an object selector for legacy compatibility.
-    /// </summary>
-    private static Expression<Func<T, object>> ToObjectSelector(LambdaExpression lambda)
-    {
-        var param = lambda.Parameters[0];
-        var body = Expression.Convert(lambda.Body, typeof(object));
-        return Expression.Lambda<Func<T, object>>(body, param);
-    }
 
     private Expression<Func<T, bool>>? BuildTreeExpression()
     {

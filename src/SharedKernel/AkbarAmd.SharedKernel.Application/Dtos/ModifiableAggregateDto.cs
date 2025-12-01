@@ -8,6 +8,6 @@ namespace AkbarAmd.SharedKernel.Application.Dtos;
 /// <typeparam name="TKey"></typeparam>
 public class ModifiableAggregateDto<TKey> : CreatableAggregateDto<TKey>,IModifiableAudit
 {
-    public DateTime? LastModifiedAt { get; set; }
-    public string? LastModifiedBy { get; set; }
+    public DateTime? ModifiedAt { get; set; }
+    public string? ModifiedBy { get; set; }
 }

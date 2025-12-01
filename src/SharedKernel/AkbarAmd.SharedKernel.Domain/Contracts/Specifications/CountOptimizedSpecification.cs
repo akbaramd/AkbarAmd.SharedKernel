@@ -4,8 +4,8 @@ namespace AkbarAmd.SharedKernel.Domain.Contracts.Specifications;
 
 /// <summary>
 /// Wrapper specification optimized for count operations.
-/// Removes paging and includes to improve performance while preserving criteria.
-/// Sorting is removed as it's not needed for count operations.
+/// Simply returns the criteria from the wrapped specification.
+/// Since specifications now only contain criteria, this is a simple pass-through.
 /// </summary>
 public sealed class CountOptimizedSpecification<T> : ISpecification<T>
 {
@@ -27,38 +27,15 @@ public sealed class CountOptimizedSpecification<T> : ISpecification<T>
     public Expression<Func<T, bool>>? Criteria => _spec.Criteria;
 
     /// <summary>
-    /// Gets an empty list of includes (removed for count operations).
+    /// Determines whether a candidate object satisfies the wrapped specification.
     /// </summary>
-    public IReadOnlyList<Expression<Func<T, object>>> Includes { get; } = Array.Empty<Expression<Func<T, object>>>();
+    /// <param name="candidate">The candidate object to evaluate.</param>
+    /// <returns>True if the candidate satisfies the specification; otherwise, false.</returns>
+    public bool IsSatisfiedBy(T candidate) => _spec.IsSatisfiedBy(candidate);
 
     /// <summary>
-    /// Gets an empty list of include strings (removed for count operations).
+    /// Converts the wrapped specification to an expression tree for use in queries.
     /// </summary>
-    public IReadOnlyList<string> IncludeStrings { get; } = Array.Empty<string>();
-
-    /// <summary>
-    /// Always returns null (sorting not needed for count).
-    /// </summary>
-    public Expression<Func<T, object>>? OrderBy => null;
-
-    /// <summary>
-    /// Always returns null (sorting not needed for count).
-    /// </summary>
-    public Expression<Func<T, object>>? OrderByDescending => null;
-
-    /// <summary>
-    /// Always returns 0 (paging disabled).
-    /// </summary>
-    public int Take => 0;
-
-    /// <summary>
-    /// Always returns 0 (paging disabled).
-    /// </summary>
-    public int Skip => 0;
-
-    /// <summary>
-    /// Always returns false (paging disabled).
-    /// </summary>
-    public bool IsPagingEnabled => false;
+    /// <returns>The criteria expression, or null if no criteria are defined.</returns>
+    public Expression<Func<T, bool>>? ToExpression() => _spec.ToExpression();
 }
-
