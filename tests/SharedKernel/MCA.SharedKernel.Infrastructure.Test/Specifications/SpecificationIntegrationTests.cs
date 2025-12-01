@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using AkbarAmd.SharedKernel.Domain.Contracts.Specifications;
 using AkbarAmd.SharedKernel.Domain.Specifications;
+using AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Specifications;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MCA.SharedKernel.Infrastructure.Test.Specifications.TestDbContext;
@@ -22,6 +23,9 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
 
     public SpecificationIntegrationTests(TestDatabaseFixture fixture)
     {
+        // Register Infrastructure handlers with Domain layer
+        InfrastructureInitialization.RegisterHandlers();
+        
         _fixture = fixture;
         _repository = new TestProductRepository(_fixture.DbContext);
         _reviewRepository = new TestProductReviewRepository(_fixture.DbContext);
@@ -109,16 +113,21 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     }
 
     [Fact]
-    public async Task FindAsync_WithProductsSortedByPriceSpecification_ReturnsSortedResults()
+    public async Task FindAsync_WithSpecificationAndSorting_ReturnsSortedResults()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new ProductsSortedByPriceSpecification(ascending: true);
+        var specification = new ActiveProductsSpecification();
 
-        // Act
-        var results = await _repository.FindAsync(specification);
-        var resultsList = results.ToList();
+        // Act - Use repository method with sorting
+        var results = await _repository.GetPaginatedAsync(
+            specification,
+            pageNumber: 1,
+            pageSize: 100,
+            orderBy: p => p.Price,
+            direction: SortDirection.Ascending);
+        var resultsList = results.Items.ToList();
 
         // Assert
         Assert.NotEmpty(resultsList);
@@ -130,16 +139,21 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     }
 
     [Fact]
-    public async Task FindAsync_WithProductsSortedByPriceDescendingSpecification_ReturnsDescendingSortedResults()
+    public async Task FindAsync_WithSpecificationAndDescendingSorting_ReturnsDescendingSortedResults()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new ProductsSortedByPriceSpecification(ascending: false);
+        var specification = new ActiveProductsSpecification();
 
-        // Act
-        var results = await _repository.FindAsync(specification);
-        var resultsList = results.ToList();
+        // Act - Use repository method with descending sorting
+        var results = await _repository.GetPaginatedAsync(
+            specification,
+            pageNumber: 1,
+            pageSize: 100,
+            orderBy: p => p.Price,
+            direction: SortDirection.Descending);
+        var resultsList = results.Items.ToList();
 
         // Assert
         Assert.NotEmpty(resultsList);
@@ -513,15 +527,18 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     #region Pagination Tests
 
     [Fact]
-    public async Task GetPaginatedAsync_WithPaginatedProductsSpecification_ReturnsPaginatedResults()
+    public async Task GetPaginatedAsync_WithSpecification_ReturnsPaginatedResults()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new PaginatedProductsSpecification(pageNumber: 1, pageSize: 5);
+        var specification = new ActiveProductsSpecification();
 
-        // Act
-        var result = await _repository.GetPaginatedAsync(specification);
+        // Act - Use new method signature: specification first, then pagination
+        var result = await _repository.GetPaginatedAsync(
+            specification,
+            pageNumber: 1,
+            pageSize: 5);
 
         // Assert
         Assert.NotNull(result);
@@ -529,22 +546,24 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
         Assert.Equal(5, result.PageSize);
         Assert.True(result.Items.Count() <= 5);
         Assert.True(result.TotalCount > 0);
+        Assert.All(result.Items, p => Assert.True(p.IsActive));
     }
 
     [Fact]
-    public async Task GetPaginatedAsync_WithPaginatedActiveProductsSpecification_ReturnsOnlyActiveProducts()
+    public async Task GetPaginatedAsync_WithNullSpecification_ReturnsAllProducts()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new PaginatedActiveProductsSpecification(pageNumber: 1, pageSize: 10);
-
-        // Act
-        var result = await _repository.GetPaginatedAsync(specification);
+        // Act - No specification (null) returns all
+        var result = await _repository.GetPaginatedAsync(
+            (ISpecification<TestProduct>?)null,
+            pageNumber: 1,
+            pageSize: 10);
 
         // Assert
         Assert.NotNull(result);
-        Assert.All(result.Items, p => Assert.True(p.IsActive));
+        Assert.All(result.Items, p => Assert.NotNull(p));
         Assert.True(result.TotalCount > 0);
     }
 
@@ -554,12 +573,11 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
         // Arrange
         await SeedTestData();
 
-        var page1Spec = new PaginatedProductsSpecification(pageNumber: 1, pageSize: 3);
-        var page2Spec = new PaginatedProductsSpecification(pageNumber: 2, pageSize: 3);
+        var specification = new ActiveProductsSpecification();
 
         // Act
-        var page1 = await _repository.GetPaginatedAsync(page1Spec);
-        var page2 = await _repository.GetPaginatedAsync(page2Spec);
+        var page1 = await _repository.GetPaginatedAsync(specification, pageNumber: 1, pageSize: 3);
+        var page2 = await _repository.GetPaginatedAsync(specification, pageNumber: 2, pageSize: 3);
 
         // Assert
         Assert.NotNull(page1);
@@ -581,14 +599,13 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
         // Arrange
         await SeedTestData();
 
-        var totalCount = await _repository.CountAsync();
+        var specification = new ActiveProductsSpecification();
+        var totalCount = await _repository.CountAsync(specification);
         var pageSize = 5;
         var lastPageNumber = (int)Math.Ceiling(totalCount / (double)pageSize);
 
-        var specification = new PaginatedProductsSpecification(lastPageNumber, pageSize);
-
         // Act
-        var result = await _repository.GetPaginatedAsync(specification);
+        var result = await _repository.GetPaginatedAsync(specification, lastPageNumber, pageSize);
 
         // Assert
         Assert.NotNull(result);
@@ -597,24 +614,41 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
         Assert.Equal(totalCount, result.TotalCount);
     }
 
-    #endregion
-
-    #region Paginated and Sortable Tests
-
     [Fact]
-    public async Task GetPaginatedAsync_WithPaginatedSortableSpecification_ReturnsSortedPaginatedResults()
+    public async Task GetPaginatedAsync_WithPredicate_ReturnsPaginatedResults()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new PaginatedSortableProductsSpecification(
+        // Act - Use predicate instead of specification
+        var result = await _repository.GetPaginatedAsync(
+            predicate: p => p.IsActive,
+            pageNumber: 1,
+            pageSize: 5);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(1, result.PageNumber);
+        Assert.Equal(5, result.PageSize);
+        Assert.True(result.Items.Count() <= 5);
+        Assert.All(result.Items, p => Assert.True(p.IsActive));
+    }
+
+    [Fact]
+    public async Task GetPaginatedAsync_WithSpecificationAndSorting_ReturnsSortedPaginatedResults()
+    {
+        // Arrange
+        await SeedTestData();
+
+        var specification = new ActiveProductsSpecification();
+
+        // Act - Use repository method with specification, pagination, and sorting
+        var result = await _repository.GetPaginatedAsync(
+            specification,
             pageNumber: 1,
             pageSize: 5,
-            sortBy: p => p.Price,
+            orderBy: p => p.Price,
             direction: SortDirection.Ascending);
-
-        // Act
-        var result = await _repository.GetPaginatedAsync(specification);
 
         // Assert
         Assert.NotNull(result);
@@ -622,6 +656,7 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
         Assert.Equal(5, result.PageSize);
         var itemsList = result.Items.ToList();
         Assert.True(itemsList.Count <= 5);
+        Assert.All(itemsList, p => Assert.True(p.IsActive));
 
         // Verify sorting
         if (itemsList.Count >= 2)
@@ -634,19 +669,20 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     }
 
     [Fact]
-    public async Task GetPaginatedAsync_WithPaginatedSortableDescendingSpecification_ReturnsDescendingSortedResults()
+    public async Task GetPaginatedAsync_WithSpecificationAndDescendingSorting_ReturnsDescendingSortedResults()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new PaginatedSortableProductsSpecification(
-            pageNumber: 1,
-            pageSize: 5,
-            sortBy: p => p.Price,
-            direction: SortDirection.Descending);
+        var specification = new ActiveProductsSpecification();
 
         // Act
-        var result = await _repository.GetPaginatedAsync(specification);
+        var result = await _repository.GetPaginatedAsync(
+            specification,
+            pageNumber: 1,
+            pageSize: 5,
+            orderBy: p => p.Price,
+            direction: SortDirection.Descending);
 
         // Assert
         Assert.NotNull(result);
@@ -663,19 +699,20 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     }
 
     [Fact]
-    public async Task GetPaginatedAsync_WithPaginatedSortableByNameSpecification_ReturnsSortedByName()
+    public async Task GetPaginatedAsync_WithSpecificationAndNameSorting_ReturnsSortedByName()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new PaginatedSortableProductsSpecification(
-            pageNumber: 1,
-            pageSize: 10,
-            sortBy: p => p.Name,
-            direction: SortDirection.Ascending);
+        var specification = new ActiveProductsSpecification();
 
         // Act
-        var result = await _repository.GetPaginatedAsync(specification);
+        var result = await _repository.GetPaginatedAsync(
+            specification,
+            pageNumber: 1,
+            pageSize: 10,
+            orderBy: p => p.Name,
+            direction: SortDirection.Ascending);
 
         // Assert
         Assert.NotNull(result);
@@ -692,20 +729,20 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     }
 
     [Fact]
-    public async Task GetPaginatedAsync_WithComplexPaginatedSortableSpecification_ReturnsFilteredSortedPaginatedResults()
+    public async Task GetPaginatedAsync_WithComplexSpecificationAndSorting_ReturnsFilteredSortedPaginatedResults()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new PaginatedSortableActiveProductsByCategorySpecification(
-            pageNumber: 1,
-            pageSize: 5,
-            category: "Electronics",
-            sortBy: p => p.Price,
-            direction: SortDirection.Ascending);
+        var specification = new ActiveProductsByCategoryAndPriceSpecification("Electronics", 50m, 500m);
 
         // Act
-        var result = await _repository.GetPaginatedAsync(specification);
+        var result = await _repository.GetPaginatedAsync(
+            specification,
+            pageNumber: 1,
+            pageSize: 5,
+            orderBy: p => p.Price,
+            direction: SortDirection.Ascending);
 
         // Assert
         Assert.NotNull(result);
@@ -713,6 +750,7 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
         {
             Assert.True(p.IsActive);
             Assert.Equal("Electronics", p.Category);
+            Assert.True(p.Price >= 50m && p.Price <= 500m);
         });
 
         var itemsList = result.Items.ToList();
@@ -779,329 +817,26 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     }
 
     [Fact]
-    public void PaginatedProductsSpecification_CreationWithValidParameters_Succeeds()
+    public void ActiveProductsSpecification_Creation_OnlyContainsCriteria()
     {
         // Act
-        var specification = new PaginatedProductsSpecification(pageNumber: 1, pageSize: 10);
+        var specification = new ActiveProductsSpecification();
 
         // Assert
         Assert.NotNull(specification);
-        Assert.Equal(1, specification.PageNumber);
-        Assert.Equal(10, specification.PageSize);
-        Assert.True(specification.IsPagingEnabled);
-        Assert.Equal(0, specification.Skip);
-        Assert.Equal(10, specification.Take);
+        Assert.NotNull(specification.Criteria);
+        // Specifications now only contain criteria - no includes, sorting, or pagination
     }
 
     [Fact]
-    public void PaginatedProductsSpecification_CreationWithInvalidParameters_ThrowsException()
-    {
-        // Act & Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => new PaginatedProductsSpecification(0, 10));
-        Assert.Throws<ArgumentOutOfRangeException>(() => new PaginatedProductsSpecification(1, 0));
-        Assert.Throws<ArgumentOutOfRangeException>(() => new PaginatedProductsSpecification(-1, 10));
-    }
-
-    [Fact]
-    public void PaginatedSortableProductsSpecification_CreationWithValidParameters_Succeeds()
+    public void ProductsByCategorySpecification_Creation_OnlyContainsCriteria()
     {
         // Act
-        var specification = new PaginatedSortableProductsSpecification(
-            pageNumber: 1,
-            pageSize: 10,
-            sortBy: p => p.Price,
-            direction: SortDirection.Ascending);
+        var specification = new ProductsByCategorySpecification("Electronics");
 
         // Assert
         Assert.NotNull(specification);
-        Assert.Equal(1, specification.PageNumber);
-        Assert.Equal(10, specification.PageSize);
-        Assert.NotNull(specification.SortBy);
-        Assert.Equal(SortDirection.Ascending, specification.Direction);
-    }
-
-    #endregion
-
-    #region Include Tests
-
-    [Fact]
-    public async Task FindAsync_WithIncludeExpression_LoadsRelatedEntities()
-    {
-        // Arrange
-        await SeedTestData();
-
-        var specification = new ProductsWithReviewsSpecification();
-
-        // Act
-        var results = await _repository.FindAsync(specification);
-        var resultsList = results.ToList();
-
-        // Assert
-        Assert.NotEmpty(resultsList);
-        
-        // Verify that reviews are loaded (not null and accessible)
-        var productWithReviews = resultsList.FirstOrDefault(p => p.Reviews.Any());
-        Assert.NotNull(productWithReviews);
-        Assert.NotEmpty(productWithReviews.Reviews);
-        
-        // Verify review data is accessible
-        var firstReview = productWithReviews.Reviews.First();
-        Assert.NotNull(firstReview.ReviewerName);
-        Assert.True(firstReview.Rating >= 1 && firstReview.Rating <= 5);
-    }
-
-    [Fact]
-    public async Task FindAsync_WithIncludeString_LoadsRelatedEntities()
-    {
-        // Arrange
-        await SeedTestData();
-
-        var specification = new ProductsWithReviewsStringIncludeSpecification();
-
-        // Act
-        var results = await _repository.FindAsync(specification);
-        var resultsList = results.ToList();
-
-        // Assert
-        Assert.NotEmpty(resultsList);
-        
-        // Verify that reviews are loaded
-        var productWithReviews = resultsList.FirstOrDefault(p => p.Reviews.Any());
-        Assert.NotNull(productWithReviews);
-        Assert.NotEmpty(productWithReviews.Reviews);
-    }
-
-    [Fact]
-    public async Task FindAsync_WithCriteriaAndInclude_ReturnsFilteredProductsWithReviews()
-    {
-        // Arrange
-        await SeedTestData();
-
-        var specification = new ActiveProductsWithReviewsSpecification();
-
-        // Act
-        var results = await _repository.FindAsync(specification);
-        var resultsList = results.ToList();
-
-        // Assert
-        Assert.NotEmpty(resultsList);
-        Assert.All(resultsList, p =>
-        {
-            Assert.True(p.IsActive);
-            // Reviews collection should be accessible (may be empty for some products)
-            Assert.NotNull(p.Reviews);
-        });
-    }
-
-    [Fact]
-    public async Task FindOneAsync_WithInclude_LoadsRelatedEntities()
-    {
-        // Arrange
-        await SeedTestData();
-
-        var specification = new ProductsWithReviewsSpecification();
-
-        // Act
-        var result = await _repository.FindOneAsync(specification);
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.NotNull(result.Reviews);
-    }
-
-    [Fact]
-    public async Task FindAsync_WithIncludeAndSorting_ReturnsSortedProductsWithReviews()
-    {
-        // Arrange
-        await SeedTestData();
-
-        var specification = new ActiveProductsWithReviewsSortedByPriceSpecification(ascending: true);
-
-        // Act
-        var results = await _repository.FindAsync(specification);
-        var resultsList = results.ToList();
-
-        // Assert
-        Assert.NotEmpty(resultsList);
-        Assert.All(resultsList, p => Assert.True(p.IsActive));
-        Assert.NotNull(resultsList.First().Reviews);
-        
-        // Verify sorting
-        if (resultsList.Count >= 2)
-        {
-            for (int i = 0; i < resultsList.Count - 1; i++)
-            {
-                Assert.True(resultsList[i].Price <= resultsList[i + 1].Price);
-            }
-        }
-    }
-
-    [Fact]
-    public async Task CountAsync_WithInclude_ReturnsCorrectCount()
-    {
-        // Arrange
-        await SeedTestData();
-
-        var specification = new ActiveProductsWithReviewsSpecification();
-
-        // Act
-        var count = await _repository.CountAsync(specification);
-        var results = await _repository.FindAsync(specification);
-
-        // Assert
-        Assert.True(count > 0);
-        Assert.Equal(count, results.Count());
-    }
-
-    [Fact]
-    public async Task ExistsAsync_WithInclude_ReturnsCorrectResult()
-    {
-        // Arrange
-        await SeedTestData();
-
-        var specification = new ActiveProductsWithReviewsSpecification();
-
-        // Act
-        var exists = await _repository.ExistsAsync(specification);
-
-        // Assert
-        Assert.True(exists);
-    }
-
-    #endregion
-
-    #region Pagination with Includes Tests
-
-    [Fact]
-    public async Task GetPaginatedAsync_WithInclude_ReturnsPaginatedProductsWithReviews()
-    {
-        // Arrange
-        await SeedTestData();
-
-        var specification = new PaginatedProductsWithReviewsSpecification(pageNumber: 1, pageSize: 5);
-
-        // Act
-        var result = await _repository.GetPaginatedAsync(specification);
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(1, result.PageNumber);
-        Assert.Equal(5, result.PageSize);
-        Assert.True(result.Items.Count() <= 5);
-        Assert.True(result.TotalCount > 0);
-        
-        // Verify reviews are loaded
-        var firstItem = result.Items.First();
-        Assert.NotNull(firstItem.Reviews);
-    }
-
-    [Fact]
-    public async Task GetPaginatedAsync_WithIncludeAndSorting_ReturnsSortedPaginatedProductsWithReviews()
-    {
-        // Arrange
-        await SeedTestData();
-
-        var specification = new PaginatedSortableProductsWithReviewsSpecification(
-            pageNumber: 1,
-            pageSize: 5,
-            sortBy: p => p.Price,
-            direction: SortDirection.Ascending);
-
-        // Act
-        var result = await _repository.GetPaginatedAsync(specification);
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(1, result.PageNumber);
-        Assert.Equal(5, result.PageSize);
-        var itemsList = result.Items.ToList();
-        Assert.True(itemsList.Count <= 5);
-        
-        // Verify reviews are loaded
-        Assert.NotNull(itemsList.First().Reviews);
-        
-        // Verify sorting
-        if (itemsList.Count >= 2)
-        {
-            for (int i = 0; i < itemsList.Count - 1; i++)
-            {
-                Assert.True(itemsList[i].Price <= itemsList[i + 1].Price);
-            }
-        }
-    }
-
-    [Fact]
-    public async Task GetPaginatedAsync_WithIncludeAndMultiplePages_ReturnsCorrectPageWithReviews()
-    {
-        // Arrange
-        await SeedTestData();
-
-        var page1Spec = new PaginatedProductsWithReviewsSpecification(pageNumber: 1, pageSize: 3);
-        var page2Spec = new PaginatedProductsWithReviewsSpecification(pageNumber: 2, pageSize: 3);
-
-        // Act
-        var page1 = await _repository.GetPaginatedAsync(page1Spec);
-        var page2 = await _repository.GetPaginatedAsync(page2Spec);
-
-        // Assert
-        Assert.NotNull(page1);
-        Assert.NotNull(page2);
-        Assert.Equal(1, page1.PageNumber);
-        Assert.Equal(2, page2.PageNumber);
-        
-        // Verify reviews are loaded on both pages
-        Assert.NotNull(page1.Items.First().Reviews);
-        if (page2.Items.Any())
-        {
-            Assert.NotNull(page2.Items.First().Reviews);
-        }
-        
-        // Ensure no overlap
-        var page1Ids = page1.Items.Select(p => p.Id).ToHashSet();
-        var page2Ids = page2.Items.Select(p => p.Id).ToHashSet();
-        Assert.Empty(page1Ids.Intersect(page2Ids));
-    }
-
-    [Fact]
-    public async Task GetPaginatedAsync_WithComplexSpecification_ReturnsFilteredSortedPaginatedProductsWithReviews()
-    {
-        // Arrange
-        await SeedTestData();
-
-        var specification = new ComplexProductSpecification(
-            category: "Electronics",
-            minPrice: 50m,
-            maxPrice: 500m,
-            pageNumber: 1,
-            pageSize: 5,
-            sortBy: p => p.Price,
-            direction: SortDirection.Ascending);
-
-        // Act
-        var result = await _repository.GetPaginatedAsync(specification);
-
-        // Assert
-        Assert.NotNull(result);
-        Assert.Equal(1, result.PageNumber);
-        Assert.Equal(5, result.PageSize);
-        
-        var itemsList = result.Items.ToList();
-        Assert.All(itemsList, p =>
-        {
-            Assert.True(p.IsActive);
-            Assert.Equal("Electronics", p.Category);
-            Assert.True(p.Price >= 50m && p.Price <= 500m);
-            Assert.NotNull(p.Reviews);
-        });
-        
-        // Verify sorting
-        if (itemsList.Count >= 2)
-        {
-            for (int i = 0; i < itemsList.Count - 1; i++)
-            {
-                Assert.True(itemsList[i].Price <= itemsList[i + 1].Price);
-            }
-        }
+        Assert.NotNull(specification.Criteria);
     }
 
     #endregion
@@ -1109,22 +844,20 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     #region Comprehensive Specification Pattern Tests
 
     [Fact]
-    public async Task FindAsync_WithAllSpecificationFeatures_WorksCorrectly()
+    public async Task FindAsync_WithComplexCriteriaAndRepositoryFeatures_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new ComplexProductSpecification(
-            category: "Electronics",
-            minPrice: 50m,
-            maxPrice: 500m,
+        var specification = new ActiveProductsByCategoryAndPriceSpecification("Electronics", 50m, 500m);
+
+        // Act - Use repository methods for sorting and pagination
+        var result = await _repository.GetPaginatedAsync(
+            specification,
             pageNumber: 1,
             pageSize: 10,
-            sortBy: p => p.Name,
+            orderBy: p => p.Name,
             direction: SortDirection.Ascending);
-
-        // Act
-        var result = await _repository.GetPaginatedAsync(specification);
 
         // Assert
         Assert.NotNull(result);
@@ -1135,9 +868,6 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
             Assert.True(p.IsActive);
             Assert.Equal("Electronics", p.Category);
             Assert.True(p.Price >= 50m && p.Price <= 500m);
-            
-            // Include validation
-            Assert.NotNull(p.Reviews);
         });
         
         // Sorting validation
@@ -1157,12 +887,12 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     }
 
     [Fact]
-    public async Task Specification_WithMultipleIncludes_LoadsAllRelatedEntities()
+    public async Task Specification_CriteriaOnly_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new ProductsWithMultipleIncludesSpecification();
+        var specification = new ActiveProductsSpecification();
 
         // Act
         var results = await _repository.FindAsync(specification);
@@ -1170,62 +900,34 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
 
         // Assert
         Assert.NotEmpty(resultsList);
-        
-        // Verify all includes are loaded
-        var productWithReviews = resultsList.FirstOrDefault(p => p.Reviews.Any());
-        if (productWithReviews != null)
-        {
-            Assert.NotNull(productWithReviews.Reviews);
-            Assert.NotEmpty(productWithReviews.Reviews);
-        }
+        Assert.All(resultsList, p => Assert.True(p.IsActive));
+        // Specifications now only contain criteria - no includes, sorting, or pagination
     }
 
     [Fact]
-    public async Task Specification_WithIncludesAndNoTracking_WorksCorrectly()
+    public async Task Specification_WithCriteriaAndCount_ReturnsCorrectCount()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new ProductsWithReviewsSpecification();
-
-        // Act
-        var results = await _repository.FindAsync(specification);
-        var resultsList = results.ToList();
-
-        // Assert
-        Assert.NotEmpty(resultsList);
-        
-        // Verify reviews are loaded even with no tracking
-        var productWithReviews = resultsList.FirstOrDefault(p => p.Reviews.Any());
-        Assert.NotNull(productWithReviews);
-        Assert.NotEmpty(productWithReviews.Reviews);
-    }
-
-    [Fact]
-    public async Task Specification_WithIncludesAndCount_ExcludesIncludesFromCount()
-    {
-        // Arrange
-        await SeedTestData();
-
-        var specification = new ActiveProductsWithReviewsSpecification();
+        var specification = new ActiveProductsSpecification();
 
         // Act
         var count = await _repository.CountAsync(specification);
         var results = await _repository.FindAsync(specification);
 
         // Assert
-        // Count should match the number of products, not products * reviews
-        Assert.Equal(count, results.Count());
         Assert.True(count > 0);
+        Assert.Equal(count, results.Count());
     }
 
     [Fact]
-    public async Task Specification_WithIncludesAndExists_WorksCorrectly()
+    public async Task Specification_WithCriteriaAndExists_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new ActiveProductsWithReviewsSpecification();
+        var specification = new ActiveProductsSpecification();
 
         // Act
         var exists = await _repository.ExistsAsync(specification);
@@ -1235,12 +937,12 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     }
 
     [Fact]
-    public async Task Specification_WithIncludesAndFindOne_LoadsRelatedEntities()
+    public async Task Specification_WithCriteriaAndFindOne_ReturnsMatchingProduct()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new ActiveProductsWithReviewsSpecification();
+        var specification = new ActiveProductsSpecification();
 
         // Act
         var result = await _repository.FindOneAsync(specification);
@@ -1248,46 +950,40 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
         // Assert
         Assert.NotNull(result);
         Assert.True(result.IsActive);
-        Assert.NotNull(result.Reviews);
     }
 
     [Fact]
-    public async Task Specification_WithIncludesAndPagination_LoadsReviewsOnAllPages()
+    public async Task Specification_WithCriteriaAndPagination_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        var totalCount = await _repository.CountAsync();
+        var specification = new ActiveProductsSpecification();
+        var totalCount = await _repository.CountAsync(specification);
         var pageSize = 3;
         var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
 
-        // Act & Assert - verify all pages have reviews loaded
+        // Act & Assert - verify pagination works with specifications
         for (int page = 1; page <= Math.Min(totalPages, 3); page++)
         {
-            var specification = new PaginatedProductsWithReviewsSpecification(page, pageSize);
-            var result = await _repository.GetPaginatedAsync(specification);
+            var result = await _repository.GetPaginatedAsync(specification, page, pageSize);
             
             Assert.NotNull(result);
             Assert.Equal(page, result.PageNumber);
-            
-            foreach (var item in result.Items)
-            {
-                Assert.NotNull(item.Reviews);
-            }
+            Assert.All(result.Items, p => Assert.True(p.IsActive));
         }
     }
 
     #endregion
 
-    #region Tests Without Includes (Explicit Verification)
+    #region Specification Pattern Validation Tests
 
     [Fact]
-    public async Task FindAsync_WithoutInclude_DoesNotLoadRelatedEntities()
+    public async Task FindAsync_WithCriteriaOnly_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        // Use a specification WITHOUT includes
         var specification = new ActiveProductsSpecification();
 
         // Act
@@ -1296,26 +992,12 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
 
         // Assert
         Assert.NotEmpty(resultsList);
-        
-        // Verify that reviews are NOT loaded
-        // Since we're using AsNoTracking, accessing Reviews.Count should not trigger loading
-        // But to be safe, we check that the specification has no includes
-        Assert.Empty(specification.Includes);
-        Assert.Empty(specification.IncludeStrings);
-        
-        // Verify the query doesn't include reviews by checking a product that we know has reviews
-        // When not included, the navigation property should not be loaded
-        // Note: In EF Core with AsNoTracking, navigation properties are not loaded unless explicitly included
-        var product = resultsList.First();
-        Assert.NotNull(product);
-        
-        // The key test: verify that without include, we can't access review data
-        // Since AsNoTracking is used, accessing Reviews should return empty or not be loaded
-        // We verify the specification pattern works correctly by ensuring includes list is empty
+        Assert.All(resultsList, p => Assert.True(p.IsActive));
+        // Specifications contain only criteria - no includes, sorting, or pagination
     }
 
     [Fact]
-    public async Task FindOneAsync_WithoutInclude_DoesNotLoadRelatedEntities()
+    public async Task FindOneAsync_WithCriteriaOnly_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
@@ -1328,74 +1010,49 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
         // Assert
         Assert.NotNull(result);
         Assert.True(result.IsActive);
-        
-        // Verify specification has no includes
-        Assert.Empty(specification.Includes);
-        Assert.Empty(specification.IncludeStrings);
-        
-        // The specification pattern correctly excludes includes when not specified
     }
 
     [Fact]
-    public async Task GetPaginatedAsync_WithoutInclude_DoesNotLoadRelatedEntities()
+    public async Task GetPaginatedAsync_WithCriteriaOnly_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new PaginatedProductsSpecification(pageNumber: 1, pageSize: 5);
+        var specification = new ActiveProductsSpecification();
 
-        // Act
-        var result = await _repository.GetPaginatedAsync(specification);
+        // Act - Use new repository method signature
+        var result = await _repository.GetPaginatedAsync(specification, pageNumber: 1, pageSize: 5);
 
         // Assert
         Assert.NotNull(result);
         Assert.True(result.Items.Any());
-        
-        // Verify specification has no includes
-        Assert.Empty(specification.Includes);
-        Assert.Empty(specification.IncludeStrings);
-        
-        // The specification pattern correctly works without includes
+        Assert.All(result.Items, p => Assert.True(p.IsActive));
     }
 
     [Fact]
-    public async Task Specification_WithIncludeVsWithoutInclude_ShowsDifference()
+    public async Task Specification_CriteriaOnly_CountWorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        var specificationWithoutInclude = new ActiveProductsSpecification();
-        var specificationWithInclude = new ActiveProductsWithReviewsSpecification();
+        var specification = new ActiveProductsSpecification();
 
         // Act
-        var resultsWithoutInclude = await _repository.FindAsync(specificationWithoutInclude);
-        var resultsWithInclude = await _repository.FindAsync(specificationWithInclude);
-        
-        var productWithInclude = resultsWithInclude.First(p => p.Reviews.Any());
+        var count = await _repository.CountAsync(specification);
+        var allActive = await _repository.FindAsync(specification);
 
         // Assert
-        // Verify specification differences
-        Assert.Empty(specificationWithoutInclude.Includes);
-        Assert.Empty(specificationWithoutInclude.IncludeStrings);
-        Assert.NotEmpty(specificationWithInclude.Includes);
-        
-        // With include: reviews should be loaded
-        Assert.True(productWithInclude.Reviews.Count > 0);
-        Assert.NotNull(productWithInclude.Reviews.First().ReviewerName);
-        
-        // The key difference: one has includes, the other doesn't
-        Assert.True(specificationWithInclude.Includes.Count > 0);
-        Assert.True(specificationWithoutInclude.Includes.Count == 0);
+        Assert.True(count > 0);
+        Assert.Equal(count, allActive.Count());
     }
 
     [Fact]
-    public async Task CountAsync_WithIncludeVsWithoutInclude_ReturnsSameCount()
+    public async Task Specification_CriteriaOnly_ExistsWorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        var specificationWithoutInclude = new ActiveProductsSpecification();
-        var specificationWithInclude = new ActiveProductsWithReviewsSpecification();
+        var specification = new ActiveProductsSpecification();
 
         // Act
         var countWithoutInclude = await _repository.CountAsync(specificationWithoutInclude);
@@ -1448,25 +1105,26 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     }
 
     [Fact]
-    public async Task Specification_WithoutInclude_StillAppliesSortingCorrectly()
+    public async Task Specification_WithRepositorySorting_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new ProductsSortedByPriceSpecification(ascending: true); // No includes
+        var specification = new ActiveProductsSpecification();
 
-        // Act
-        var results = await _repository.FindAsync(specification);
-        var resultsList = results.ToList();
+        // Act - Use repository method for sorting
+        var result = await _repository.GetPaginatedAsync(
+            specification,
+            pageNumber: 1,
+            pageSize: 100,
+            orderBy: p => p.Price,
+            direction: SortDirection.Ascending);
+        var resultsList = result.Items.ToList();
 
         // Assert
         Assert.NotEmpty(resultsList);
         
-        // Verify specification has no includes
-        Assert.Empty(specification.Includes);
-        Assert.Empty(specification.IncludeStrings);
-        
-        // Verify sorting works without includes
+        // Verify sorting works
         if (resultsList.Count >= 2)
         {
             for (int i = 0; i < resultsList.Count - 1; i++)
@@ -1477,37 +1135,31 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     }
 
     [Fact]
-    public async Task Specification_WithoutInclude_StillAppliesPaginationCorrectly()
+    public async Task Specification_WithRepositoryPagination_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new PaginatedProductsSpecification(pageNumber: 1, pageSize: 3); // No includes
+        var specification = new ActiveProductsSpecification();
 
-        // Act
-        var result = await _repository.GetPaginatedAsync(specification);
+        // Act - Use repository method for pagination
+        var result = await _repository.GetPaginatedAsync(specification, pageNumber: 1, pageSize: 3);
 
         // Assert
         Assert.NotNull(result);
         Assert.Equal(1, result.PageNumber);
         Assert.Equal(3, result.PageSize);
         Assert.True(result.Items.Count() <= 3);
-        
-        // Verify pagination works without includes
         Assert.True(result.TotalCount > 0);
-        
-        // Verify specification has no includes
-        Assert.Empty(specification.Includes);
-        Assert.Empty(specification.IncludeStrings);
     }
 
     [Fact]
-    public async Task Specification_WithoutInclude_HandlesEmptyNavigationProperties()
+    public async Task Specification_CriteriaOnly_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new ActiveProductsSpecification(); // No includes
+        var specification = new ActiveProductsSpecification();
 
         // Act
         var results = await _repository.FindAsync(specification);
@@ -1515,13 +1167,8 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
 
         // Assert
         Assert.NotEmpty(resultsList);
-        
-        // Verify specification has no includes
-        Assert.Empty(specification.Includes);
-        Assert.Empty(specification.IncludeStrings);
-        
-        // The specification pattern correctly works without includes
-        // Navigation properties are not loaded when not included in the specification
+        Assert.All(resultsList, p => Assert.True(p.IsActive));
+        // Specifications now only contain criteria - no includes, sorting, or pagination
     }
 
     #endregion
@@ -1529,12 +1176,12 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     #region Comprehensive Pattern Validation Tests
 
     [Fact]
-    public async Task Specification_AllFeaturesWithoutInclude_WorksCorrectly()
+    public async Task Specification_ComplexCriteria_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        // Create a complex specification WITHOUT includes
+        // Create a complex specification with criteria only
         var specification = new ActiveProductsByCategoryAndPriceSpecification("Electronics", 50m, 500m);
 
         // Act
@@ -1543,10 +1190,6 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
 
         // Assert
         Assert.NotEmpty(resultsList);
-        
-        // Verify specification has no includes
-        Assert.Empty(specification.Includes);
-        Assert.Empty(specification.IncludeStrings);
         
         Assert.All(resultsList, p =>
         {
@@ -1558,64 +1201,19 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     }
 
     [Fact]
-    public async Task Specification_WithAndWithoutInclude_PerformanceAndBehaviorComparison()
+    public async Task Specification_CriteriaOnly_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        var specWithoutInclude = new ActiveProductsSpecification();
-        var specWithInclude = new ActiveProductsWithReviewsSpecification();
+        var specification = new ActiveProductsSpecification();
 
         // Act
-        var withoutInclude = await _repository.FindAsync(specWithoutInclude);
-        var withInclude = await _repository.FindAsync(specWithInclude);
-
-        // Assert
-        var withoutList = withoutInclude.ToList();
-        var withList = withInclude.ToList();
-        
-        // Verify specification differences
-        Assert.Empty(specWithoutInclude.Includes);
-        Assert.NotEmpty(specWithInclude.Includes);
-        
-        // Both should return the same products (same criteria)
-        Assert.Equal(withoutList.Count, withList.Count);
-        
-        // But with include should have reviews loaded
-        var productWithReviews = withList.FirstOrDefault(p => p.Reviews.Any());
-        if (productWithReviews != null)
-        {
-            Assert.True(productWithReviews.Reviews.Count > 0);
-        }
-        
-        // The key difference: specifications have different include configurations
-        Assert.True(specWithInclude.Includes.Count > 0);
-        Assert.True(specWithoutInclude.Includes.Count == 0);
-    }
-
-    [Fact]
-    public async Task Specification_EmptyIncludesList_WorksSameAsNoIncludes()
-    {
-        // Arrange
-        await SeedTestData();
-
-        // Create a specification that could have includes but doesn't
-        var specificationWithCriteriaOnly = new ActiveProductsSpecification();
-        
-        // Verify it has no includes
-        Assert.Empty(specificationWithCriteriaOnly.Includes);
-        Assert.Empty(specificationWithCriteriaOnly.IncludeStrings);
-
-        // Act
-        var results = await _repository.FindAsync(specificationWithCriteriaOnly);
+        var results = await _repository.FindAsync(specification);
         var resultsList = results.ToList();
 
         // Assert
         Assert.NotEmpty(resultsList);
-        
-        // Verify specification has no includes
-        Assert.Empty(specificationWithCriteriaOnly.Includes);
-        Assert.Empty(specificationWithCriteriaOnly.IncludeStrings);
         
         Assert.All(resultsList, p =>
         {
@@ -1636,12 +1234,10 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
         var findMany = await _repository.FindAsync(specification);
         var count = await _repository.CountAsync(specification);
         var exists = await _repository.ExistsAsync(specification);
-        var paginated = await _repository.GetPaginatedAsync(1, 5, specification);
+        var paginated = await _repository.GetPaginatedAsync(specification, pageNumber: 1, pageSize: 5);
 
         // Assert
-        // Verify specification has no includes
-        Assert.Empty(specification.Includes);
-        Assert.Empty(specification.IncludeStrings);
+        // Specifications now only contain criteria
         
         Assert.NotNull(findOne);
         Assert.True(findOne.IsActive);
@@ -1672,10 +1268,6 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
         // Assert
         Assert.NotEmpty(resultsList);
         
-        // Verify specification has no includes
-        Assert.Empty(specification.Includes);
-        Assert.Empty(specification.IncludeStrings);
-        
         Assert.All(resultsList, p =>
         {
             // All criteria should be met
@@ -1687,12 +1279,12 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     }
 
     [Fact]
-    public async Task Specification_OrCriteriaWithoutInclude_WorksCorrectly()
+    public async Task Specification_OrCriteria_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        // OR criteria without includes
+        // OR criteria
         var specification = new ProductsByCategoryOrSpecification("Electronics", "Furniture");
 
         // Act
@@ -1702,10 +1294,6 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
         // Assert
         Assert.NotEmpty(resultsList);
         
-        // Verify specification has no includes
-        Assert.Empty(specification.Includes);
-        Assert.Empty(specification.IncludeStrings);
-        
         Assert.All(resultsList, p =>
         {
             Assert.True(p.Category == "Electronics" || p.Category == "Furniture");
@@ -1713,27 +1301,22 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     }
 
     [Fact]
-    public async Task Specification_PaginationWithoutInclude_WorksCorrectly()
+    public async Task Specification_WithRepositoryPagination_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        var page1Spec = new PaginatedProductsSpecification(1, 3);
-        var page2Spec = new PaginatedProductsSpecification(2, 3);
+        var specification = new ActiveProductsSpecification();
 
-        // Act
-        var page1 = await _repository.GetPaginatedAsync(page1Spec);
-        var page2 = await _repository.GetPaginatedAsync(page2Spec);
+        // Act - Use repository method for pagination
+        var page1 = await _repository.GetPaginatedAsync(specification, pageNumber: 1, pageSize: 3);
+        var page2 = await _repository.GetPaginatedAsync(specification, pageNumber: 2, pageSize: 3);
 
         // Assert
         Assert.NotNull(page1);
         Assert.NotNull(page2);
         Assert.Equal(1, page1.PageNumber);
         Assert.Equal(2, page2.PageNumber);
-        
-        // Verify specifications have no includes
-        Assert.Empty(page1Spec.Includes);
-        Assert.Empty(page2Spec.Includes);
         
         // Verify no overlap
         var page1Ids = page1.Items.Select(p => p.Id).ToHashSet();
@@ -1742,23 +1325,24 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     }
 
     [Fact]
-    public async Task Specification_SortingWithoutInclude_WorksCorrectly()
+    public async Task Specification_WithRepositorySorting_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        var specification = new ProductsSortedByPriceSpecification(ascending: false);
+        var specification = new ActiveProductsSpecification();
 
-        // Act
-        var results = await _repository.FindAsync(specification);
-        var resultsList = results.ToList();
+        // Act - Use repository method for sorting
+        var result = await _repository.GetPaginatedAsync(
+            specification,
+            pageNumber: 1,
+            pageSize: 100,
+            orderBy: p => p.Price,
+            direction: SortDirection.Descending);
+        var resultsList = result.Items.ToList();
 
         // Assert
         Assert.NotEmpty(resultsList);
-        
-        // Verify specification has no includes
-        Assert.Empty(specification.Includes);
-        Assert.Empty(specification.IncludeStrings);
         
         // Verify descending sort
         if (resultsList.Count >= 2)
@@ -1771,34 +1355,33 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     }
 
     [Fact]
-    public async Task Specification_CountOptimization_ExcludesIncludesFromCountQuery()
+    public async Task Specification_Count_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        var specificationWithInclude = new ActiveProductsWithReviewsSpecification();
+        var specification = new ActiveProductsSpecification();
 
         // Act
-        var count = await _repository.CountAsync(specificationWithInclude);
+        var count = await _repository.CountAsync(specification);
         
         // Manually verify count matches
-        var allProducts = await _repository.FindAsync(new ActiveProductsSpecification());
-        var expectedCount = allProducts.Count(p => p.IsActive);
+        var allProducts = await _repository.FindAsync(specification);
+        var expectedCount = allProducts.Count();
 
         // Assert
-        // Count should be based on criteria only, not affected by includes
+        // Count should be based on criteria only
         Assert.Equal(expectedCount, count);
         Assert.True(count > 0);
     }
 
     [Fact]
-    public async Task Specification_ExistsOptimization_ExcludesIncludesFromExistsQuery()
+    public async Task Specification_Exists_WorksCorrectly()
     {
         // Arrange
         await SeedTestData();
 
-        var specificationWithInclude = new ActiveProductsWithReviewsSpecification();
-        var specificationWithoutInclude = new ActiveProductsSpecification();
+        var specification = new ActiveProductsSpecification();
 
         // Act
         var existsWithInclude = await _repository.ExistsAsync(specificationWithInclude);
@@ -2330,10 +1913,12 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
         // Arrange
         await SeedTestData();
 
-        var spec = new FluentSpecificationBuilder<TestProduct>()
+        var builder = new FluentSpecificationBuilder<TestProduct>()
             .Where(p => p.IsActive)
             .Include(p => p.Reviews)
             .Build();
+        
+        var spec = ((FluentSpecificationBuilder<TestProduct>)builder).Build();
 
         // Act
         var results = await _repository.FindAsync(spec);
@@ -2341,7 +1926,8 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
 
         // Assert
         Assert.NotEmpty(resultsList);
-        Assert.NotEmpty(spec.Includes);
+        Assert.NotNull(spec.IncludeChains);
+        Assert.Single(spec.IncludeChains);
         var productWithReviews = resultsList.FirstOrDefault(p => p.Reviews.Any());
         if (productWithReviews != null)
         {
@@ -2355,11 +1941,11 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
         // Arrange
         await SeedTestData();
 
-        var spec = new FluentSpecificationBuilder<TestProduct>()
+        var builder = new FluentSpecificationBuilder<TestProduct>()
             .Where(p => p.IsActive)
             .Include(p => p.Reviews)
-            .IncludePaths("Reviews")
             .Build();
+        var spec = ((FluentSpecificationBuilder<TestProduct>)builder).Build();
 
         // Act
         var results = await _repository.FindAsync(spec);
@@ -2367,8 +1953,8 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
 
         // Assert
         Assert.NotEmpty(resultsList);
-        Assert.NotEmpty(spec.Includes);
-        Assert.NotEmpty(spec.IncludeStrings);
+        Assert.NotNull(spec.IncludeChains);
+        Assert.Single(spec.IncludeChains);
     }
 
     [Fact]
@@ -2519,13 +2105,17 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
         // Arrange
         await SeedTestData();
 
-        var spec = new FluentSpecificationBuilder<TestProduct>()
+        var builder = new FluentSpecificationBuilder<TestProduct>()
             .Where(p => p.IsActive)
             .Where(b => b
                 .Group(g => g
                     .And(p => p.Category == "Electronics")
                     .And(p => p.Price > 50m)))
             .Include(p => p.Reviews)
+            .Build();
+        
+        var fluentBuilder = (FluentSpecificationBuilder<TestProduct>)builder;
+        var spec = fluentBuilder
             .OrderBy(p => p.Category)
             .ThenByDescending(p => p.Price)
             .Page(1, 10)
@@ -2539,7 +2129,8 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
         var baseSpec = spec as BaseSpecification<TestProduct>;
         Assert.NotNull(baseSpec);
         Assert.True(baseSpec.IsPagingEnabled);
-        Assert.NotEmpty(baseSpec.Includes);
+        Assert.NotNull(baseSpec.IncludeChains);
+        Assert.Single(baseSpec.IncludeChains);
         var multiSortSpec = spec as IMultiSortSpecification<TestProduct>;
         Assert.NotNull(multiSortSpec);
         Assert.Equal(2, multiSortSpec.Sorts.Count);
@@ -2702,6 +2293,271 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
     }
 
     #endregion
+
+    #region Nullable Navigation Properties Tests
+
+    [Fact]
+    public async Task FindAsync_WithFluentSpecificationBuilder_NullableIncludeExpression_WorksCorrectly()
+    {
+        // Arrange
+        await SeedTestData();
+
+        // Test that Include accepts nullable expressions (the API signature accepts object? which supports nullable)
+        // Note: We don't cast to object? in the expression itself as EF Core requires direct property access
+        var builder = new FluentSpecificationBuilder<TestProduct>()
+            .Where(p => p.IsActive)
+            .Include(p => p.Reviews) // The Include method signature accepts Expression<Func<T, object?>> which supports nullable
+            .Build();
+        var spec = ((FluentSpecificationBuilder<TestProduct>)builder).Build();
+
+        // Act
+        var results = await _repository.FindAsync(spec);
+        var resultsList = results.ToList();
+
+        // Assert
+        Assert.NotEmpty(resultsList);
+        Assert.NotEmpty(spec.IncludeChains);
+        var productWithReviews = resultsList.FirstOrDefault(p => p.Reviews.Any());
+        if (productWithReviews != null)
+        {
+            Assert.NotEmpty(productWithReviews.Reviews);
+        }
+    }
+
+    [Fact]
+    public async Task FindAsync_WithFluentSpecificationBuilder_NullableThenInclude_WorksCorrectly()
+    {
+        // Arrange
+        await SeedTestData();
+
+        // Test that ThenInclude accepts nullable property types in the expression
+        var builder = new FluentSpecificationBuilder<TestProduct>()
+            .Where(p => p.IsActive)
+            .Include(p => p.Reviews)
+            .ThenInclude<TestProductReview, TestProduct?>(r => r.Product) // Nullable Product type
+            .Build();
+        var spec = ((FluentSpecificationBuilder<TestProduct>)builder).Build();
+
+        // Act
+        var results = await _repository.FindAsync(spec);
+        var resultsList = results.ToList();
+
+        // Assert
+        Assert.NotEmpty(resultsList);
+        Assert.Single(spec.IncludeChains);
+        var chain = spec.IncludeChains[0];
+        Assert.NotNull(chain.IncludeExpression);
+        Assert.Single(chain.ThenIncludeExpressions);
+        
+        // Verify the include chain works correctly
+        var productWithReviews = resultsList.FirstOrDefault(p => p.Reviews.Any());
+        if (productWithReviews != null)
+        {
+            Assert.NotEmpty(productWithReviews.Reviews);
+            var review = productWithReviews.Reviews.First();
+            Assert.NotNull(review.Product);
+        }
+    }
+
+    [Fact]
+    public async Task FindAsync_WithFluentSpecificationBuilder_NullablePreviousTypeInThenInclude_WorksCorrectly()
+    {
+        // Arrange
+        await SeedTestData();
+
+        // Test that ThenInclude accepts nullable previous type (TPrevious?)
+        // Note: Since TestProductReview.Product is not nullable, we test the API accepts the nullable type annotation
+        var builder = new FluentSpecificationBuilder<TestProduct>()
+            .Where(p => p.IsActive)
+            .Include(p => p.Reviews)
+            .ThenInclude<TestProductReview?, TestProduct>(r => r!.Product) // Nullable previous type, non-nullable property
+            .Build();
+        var spec = ((FluentSpecificationBuilder<TestProduct>)builder).Build();
+
+        // Act
+        var results = await _repository.FindAsync(spec);
+        var resultsList = results.ToList();
+
+        // Assert
+        Assert.NotEmpty(resultsList);
+        Assert.Single(spec.IncludeChains);
+        var chain = spec.IncludeChains[0];
+        Assert.NotNull(chain.IncludeExpression);
+        Assert.Single(chain.ThenIncludeExpressions);
+    }
+
+    [Fact]
+    public async Task FindAsync_WithFluentSpecificationBuilder_NestedIncludesWithNullable_WorksCorrectly()
+    {
+        // Arrange
+        await SeedTestData();
+
+        // Test nested includes with nullable types at multiple levels
+        var builder = new FluentSpecificationBuilder<TestProduct>()
+            .Where(p => p.IsActive)
+            .Include(p => p.Reviews)
+            .ThenInclude<TestProductReview, TestProduct?>(r => r.Product) // Nullable Product
+            .Build();
+        var spec = ((FluentSpecificationBuilder<TestProduct>)builder).Build();
+
+        // Act
+        var results = await _repository.FindAsync(spec);
+        var resultsList = results.ToList();
+
+        // Assert
+        Assert.NotEmpty(resultsList);
+        Assert.Single(spec.IncludeChains);
+        var chain = spec.IncludeChains[0];
+        Assert.NotNull(chain.IncludeExpression);
+        Assert.Single(chain.ThenIncludeExpressions);
+        
+        // Verify the nested include works
+        var productWithReviews = resultsList.FirstOrDefault(p => p.Reviews.Any());
+        if (productWithReviews != null)
+        {
+            Assert.NotEmpty(productWithReviews.Reviews);
+            var review = productWithReviews.Reviews.First();
+            Assert.NotNull(review.Product);
+        }
+    }
+
+    [Fact]
+    public async Task FindAsync_WithFluentSpecificationBuilder_MultipleThenIncludeWithNullable_WorksCorrectly()
+    {
+        // Arrange
+        await SeedTestData();
+
+        // Test multiple ThenInclude calls with nullable types
+        var builder = new FluentSpecificationBuilder<TestProduct>()
+            .Where(p => p.IsActive)
+            .Include(p => p.Reviews)
+            .ThenInclude(r => r.Product) // First nullable
+            .ThenInclude<TestProduct, ICollection<TestProductReview>?>(p => p.Reviews) // Second nullable collection
+            .Build();
+        var spec = ((FluentSpecificationBuilder<TestProduct>)builder).Build();
+
+        // Act
+        var results = await _repository.FindAsync(spec);
+        var resultsList = results.ToList();
+
+        // Assert
+        Assert.NotEmpty(resultsList);
+        Assert.Single(spec.IncludeChains);
+        var chain = spec.IncludeChains[0];
+        Assert.NotNull(chain.IncludeExpression);
+        Assert.Equal(2, chain.ThenIncludeExpressions.Count);
+    }
+
+    [Fact]
+    public async Task FindAsync_WithFluentSpecificationBuilder_NullableIncludeWithCriteriaAndSorting_WorksCorrectly()
+    {
+        // Arrange
+        await SeedTestData();
+
+        // Test nullable includes combined with criteria and sorting
+        var builder = new FluentSpecificationBuilder<TestProduct>()
+            .Where(p => p.IsActive)
+            .Where(p => p.Category == "Electronics")
+            .Include(p => p.Reviews) // Include accepts nullable signature
+            .ThenInclude<TestProductReview, TestProduct>(r => r.Product) // ThenInclude accepts nullable signature
+            .Build();
+        var spec = ((FluentSpecificationBuilder<TestProduct>)builder).Build();
+        
+        // Build the final spec and add sorting separately
+        var builder2 = new FluentSpecificationBuilder<TestProduct>()
+            .Where(p => p.IsActive)
+            .Where(p => p.Category == "Electronics")
+            .Include(p => p.Reviews)
+            .ThenInclude<TestProductReview, TestProduct>(r => r.Product);
+        
+        var buildResult = builder2.Build();
+        var fluentBuilder = (FluentSpecificationBuilder<TestProduct>)buildResult;
+        spec = fluentBuilder
+            .OrderBy(p => p.Price)
+            .Build();
+
+        // Act
+        var results = await _repository.FindAsync(spec);
+        var resultsList = results.ToList();
+
+        // Assert
+        Assert.NotEmpty(resultsList);
+        Assert.All(resultsList, p =>
+        {
+            Assert.True(p.IsActive);
+            Assert.Equal("Electronics", p.Category);
+        });
+        Assert.Single(spec.IncludeChains);
+        
+        // Verify sorting
+        if (resultsList.Count >= 2)
+        {
+            for (int i = 0; i < resultsList.Count - 1; i++)
+            {
+                Assert.True(resultsList[i].Price <= resultsList[i + 1].Price);
+            }
+        }
+    }
+
+    [Fact]
+    public async Task FindAsync_WithFluentSpecificationBuilder_NullableIncludeWithPagination_WorksCorrectly()
+    {
+        // Arrange
+        await SeedTestData();
+
+        // Test nullable includes with pagination
+        var builder = new FluentSpecificationBuilder<TestProduct>()
+            .Where(p => p.IsActive)
+            .Include(p => p.Reviews) // Include accepts nullable signature
+            .ThenInclude<TestProductReview, TestProduct>(r => r.Product); // ThenInclude accepts nullable signature
+        
+        var buildResult = builder.Build();
+        var fluentBuilder = (FluentSpecificationBuilder<TestProduct>)buildResult;
+        var spec = fluentBuilder
+            .Page(1, 5)
+            .Build();
+
+        // Act
+        var result = await _repository.GetPaginatedAsync(1, 5, spec);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(1, result.PageNumber);
+        Assert.Equal(5, result.PageSize);
+        Assert.True(result.Items.Count() <= 5);
+        Assert.Single(spec.IncludeChains);
+        
+        // Verify includes are loaded
+        var firstItem = result.Items.First();
+        Assert.NotNull(firstItem.Reviews);
+    }
+
+    [Fact]
+    public void FluentSpecificationBuilder_IncludeWithNullExpression_ThrowsArgumentNullException()
+    {
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() =>
+        {
+            var spec = new FluentSpecificationBuilder<TestProduct>()
+                .Include((Expression<Func<TestProduct, object?>>)null!)
+                .Build();
+        });
+    }
+
+    [Fact]
+    public void FluentSpecificationBuilder_ThenIncludeWithNullExpression_ThrowsArgumentNullException()
+    {
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() =>
+        {
+            var spec = new FluentSpecificationBuilder<TestProduct>()
+                .Include(p => p.Reviews)
+                .ThenInclude<TestProductReview, TestProduct?>(null!)
+                .Build();
+        });
+    }
+
+    #endregion
 }
 
 /// <summary>
@@ -2737,3 +2593,5 @@ public sealed class TestDatabaseFixture : IDisposable
     }
 }
 
+
+                 
