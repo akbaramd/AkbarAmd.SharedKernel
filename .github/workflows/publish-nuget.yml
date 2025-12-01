@@ -29,6 +29,22 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Verify NuGet API Key
+        shell: pwsh
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:NUGET_API_KEY)) {
+            Write-Host "ERROR: NUGET_API_KEY environment variable is not set!" -ForegroundColor Red
+            Write-Host "Please create a secret named 'NugetKey' in GitHub:" -ForegroundColor Yellow
+            Write-Host "  1. Go to: Settings → Secrets and variables → Actions" -ForegroundColor Yellow
+            Write-Host "  2. Click 'New repository secret'" -ForegroundColor Yellow
+            Write-Host "  3. Name: NugetKey" -ForegroundColor Yellow
+            Write-Host "  4. Value: Your NuGet.org API key" -ForegroundColor Yellow
+            Write-Host "  5. Click 'Add secret'" -ForegroundColor Yellow
+            exit 1
+          } else {
+            Write-Host "✓ NUGET_API_KEY is set (length: $($env:NUGET_API_KEY.Length) characters)" -ForegroundColor Green
+          }
+
       - name: Run Publish-Packages script
         shell: pwsh
         run: |
