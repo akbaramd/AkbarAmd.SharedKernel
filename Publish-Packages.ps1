@@ -36,16 +36,21 @@ function Pack-DotnetProject {
         dotnet clean -c Release | Out-Null
         
         Write-Host "      Restoring packages..." -ForegroundColor Gray
-        dotnet restore | Out-Null
+        $restoreOutput = dotnet restore 2>&1 | Out-String
         if ($LASTEXITCODE -ne 0) { 
+            Write-Host $restoreOutput -ForegroundColor Red
             throw "dotnet restore failed" 
         }
         
         Write-Host "      Building..." -ForegroundColor Gray
-        $buildOutput = dotnet build -c Release --no-restore 2>&1 | Out-String
+        $buildOutput = dotnet build -c Release --no-restore 2>&1
+        $buildOutputString = $buildOutput | Out-String
         if ($LASTEXITCODE -ne 0) { 
-            Write-Host $buildOutput -ForegroundColor Red
-            throw "dotnet build failed" 
+            Write-Host "" -ForegroundColor Red
+            Write-Host "      BUILD ERRORS:" -ForegroundColor Red
+            Write-Host $buildOutputString -ForegroundColor Red
+            Write-Host "" -ForegroundColor Red
+            throw "dotnet build failed for $projectName" 
         }
         
         Write-Host "      Packing..." -ForegroundColor Gray
@@ -182,6 +187,16 @@ function Publish-PackageToNuGet {
 
 # Main script execution
 $scriptRoot = Get-Location
+
+# Debug: Check environment variables (only in CI)
+if ($PublishToNuGet) {
+    Write-Host ""
+    Write-Host "=== Environment Check ===" -ForegroundColor Cyan
+    Write-Host "NUGETKEY env var: $(if ($env:NUGETKEY) { "SET (length: $($env:NUGETKEY.Length))" } else { "NOT SET" })" -ForegroundColor $(if ($env:NUGETKEY) { "Green" } else { "Yellow" })
+    Write-Host "NUGET_API_KEY env var: $(if ($env:NUGET_API_KEY) { "SET (length: $($env:NUGET_API_KEY.Length))" } else { "NOT SET" })" -ForegroundColor $(if ($env:NUGET_API_KEY) { "Green" } else { "Gray" })
+    Write-Host "NuGetApiKey parameter: $(if ($NuGetApiKey) { "SET (length: $($NuGetApiKey.Length))" } else { "NOT SET" })" -ForegroundColor $(if ($NuGetApiKey) { "Green" } else { "Yellow" })
+    Write-Host ""
+}
 
 # Run tests first - ALL TESTS MUST PASS before packaging
 $testsPassed = Run-Tests -basePath $scriptRoot
