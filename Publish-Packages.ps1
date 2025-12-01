@@ -42,8 +42,9 @@ function Pack-DotnetProject {
         }
         
         Write-Host "      Building..." -ForegroundColor Gray
-        dotnet build -c Release --no-restore | Out-Null
+        $buildOutput = dotnet build -c Release --no-restore 2>&1 | Out-String
         if ($LASTEXITCODE -ne 0) { 
+            Write-Host $buildOutput -ForegroundColor Red
             throw "dotnet build failed" 
         }
         

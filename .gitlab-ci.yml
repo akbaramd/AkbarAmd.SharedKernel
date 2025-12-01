@@ -1,7 +1,7 @@
 # GitLab CI/CD - Runs PowerShell script only
 # GitLab CI/CD variable (set in GitLab UI: Settings → CI/CD → Variables)
-# Variable name in GitLab: NugetKey
-# Environment variable name: NUGETKEY
+# IMPORTANT: Set the variable name in GitLab as "NUGETKEY" (all uppercase)
+# The variable will be available as $NUGETKEY in the environment
 
 publish-nuget:
   image: mcr.microsoft.com/dotnet/sdk:8.0
@@ -12,6 +12,25 @@ publish-nuget:
     - dpkg -i packages-microsoft-prod.deb
     - apt-get update && apt-get install -y powershell
   script:
+    # Export NUGETKEY to environment (GitLab CI variables are case-sensitive)
+    # If your GitLab variable is named "NugetKey", change $NUGETKEY to $NugetKey below
+    - |
+      if [ -z "$NUGETKEY" ]; then
+        echo "Warning: NUGETKEY environment variable is not set. Trying alternative names..."
+        # Try alternative variable names (case variations)
+        if [ -n "$NugetKey" ]; then
+          export NUGETKEY=$NugetKey
+          echo "Using NugetKey variable"
+        elif [ -n "$NUGET_API_KEY" ]; then
+          export NUGETKEY=$NUGET_API_KEY
+          echo "Using NUGET_API_KEY variable"
+        else
+          echo "ERROR: No NuGet API key found. Please set NUGETKEY in GitLab CI/CD Variables."
+          exit 1
+        fi
+      else
+        echo "NUGETKEY is set (length: ${#NUGETKEY} characters)"
+      fi
     - pwsh -File ./Publish-Packages.ps1 -PublishToNuGet -SkipConfirmation
   artifacts:
     paths:
