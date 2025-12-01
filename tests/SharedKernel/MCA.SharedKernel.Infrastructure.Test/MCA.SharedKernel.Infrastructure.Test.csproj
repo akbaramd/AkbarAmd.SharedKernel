@@ -23,7 +23,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\src\SharedKernel\AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore\AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.csproj" />
-      <ProjectReference Include="..\..\..\Src\SharedKernel\AkbarAmd.SharedKernel.Domain\AkbarAmd.SharedKernel.Domain.csproj" />
+      <ProjectReference Include="..\..\..\src\SharedKernel\AkbarAmd.SharedKernel.Domain\AkbarAmd.SharedKernel.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>

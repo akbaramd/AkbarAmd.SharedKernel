@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "yTliYi8h+NA=",
+  "dgSpecHash": "qTKcpuSUJm4=",
   "success": true,
-  "projectFilePath": "E:\\projects\\CleanArchitecture\\Src\\SharedKernel\\AkbarAmd.SharedKernel.Domain\\AkbarAmd.SharedKernel.Domain.csproj",
+  "projectFilePath": "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\AkbarAmd.SharedKernel.Domain\\AkbarAmd.SharedKernel.Domain.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\akbar\\.nuget\\packages\\autofac\\8.1.1\\autofac.8.1.1.nupkg.sha512",
     "C:\\Users\\akbar\\.nuget\\packages\\autofac.extensions.dependencyinjection\\10.0.0\\autofac.extensions.dependencyinjection.10.0.0.nupkg.sha512",

@@ -7,7 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7CF9EFFF-DC2
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedKernel", "SharedKernel", "{2004280F-37AA-46C1-96B3-43E5BDA72124}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkbarAmd.SharedKernel.Domain", "Src\SharedKernel\AkbarAmd.SharedKernel.Domain\AkbarAmd.SharedKernel.Domain.csproj", "{9ED3105D-C30B-41BB-843E-1D85C2B27DF2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkbarAmd.SharedKernel.Domain", "src\SharedKernel\AkbarAmd.SharedKernel.Domain\AkbarAmd.SharedKernel.Domain.csproj", "{9ED3105D-C30B-41BB-843E-1D85C2B27DF2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkbarAmd.SharedKernel.Application", "src\SharedKernel\AkbarAmd.SharedKernel.Application\AkbarAmd.SharedKernel.Application.csproj", "{FC16CC00-C871-4130-85F8-3AC912704FCF}"
 EndProject

@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Src\SharedKernel\AkbarAmd.SharedKernel.Domain\AkbarAmd.SharedKernel.Domain.csproj" />
+      <ProjectReference Include="..\..\..\src\SharedKernel\AkbarAmd.SharedKernel.Domain\AkbarAmd.SharedKernel.Domain.csproj" />
     </ItemGroup>
 
 

@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyDescriptionAttribute(("Clean Architecture Domain Layer - Core Domain Models, Entities, Value Objects, an" +
     "d Domain Events"))]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.20.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.20+050a5cfefd6f06c9a473a4761dde22cf482744b8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.20+f0b715bf3ad770f8b27ea693a61f61c0a99a19d1")]
 [assembly: System.Reflection.AssemblyProductAttribute("AkbarAmd.SharedKernel.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AkbarAmd.SharedKernel.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.20.0")]
