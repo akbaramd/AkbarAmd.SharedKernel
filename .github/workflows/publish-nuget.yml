@@ -14,8 +14,11 @@ jobs:
     runs-on: ubuntu-latest   # or windows-latest if you prefer
 
     env:
-      # This will be visible inside the script as $env:NUGET_API_KEY
+      # NuGet API key from GitHub secrets (set in: Settings → Secrets and variables → Actions)
+      # Create a secret named "NugetKey" with your NuGet.org API key
       NUGET_API_KEY: ${{ secrets.NugetKey }}
+      # GITHUB_TOKEN is automatically available - no need to set it as a secret
+      # It's available as ${{ secrets.GITHUB_TOKEN }} if needed for GitHub API calls
 
     steps:
       - name: Checkout repository
