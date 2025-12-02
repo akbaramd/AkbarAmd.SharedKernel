@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>AkbarAmd.SharedKernel.Application</PackageId>
-        <Version>1.0.24</Version>
-        <AssemblyVersion>1.0.24.0</AssemblyVersion>
-        <FileVersion>1.0.24.0</FileVersion>
+        <Version>1.0.25</Version>
+        <AssemblyVersion>1.0.25.0</AssemblyVersion>
+        <FileVersion>1.0.25.0</FileVersion>
         <Authors>Akbar Ahmadi Saray</Authors>
         <Company>AkbarAhmadi</Company>
         <Description>Clean Architecture Application Layer - CQRS, MediatR, Validation, and Application Services</Description>
@@ -20,7 +20,11 @@
         <RepositoryUrl>https://github.com/akbaramd/AkbarAmd.SharedKernel.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>clean-architecture;application;cqrs;mediatr;validation;fluent-validation;auto-mapper</PackageTags>
-        <PackageReleaseNotes>Version 1.0.24:
+        <PackageReleaseNotes>Version 1.0.25:
+- Removed IConcurrentAudit interface and all related concurrency audit functionality
+- Updated ConfigureFullAuditableEntity methods to remove IConcurrentAudit constraint
+
+Version 1.0.24:
 - Updated .gitignore to exclude all build artifacts
 
 Version 1.0.23: 
