@@ -24,8 +24,33 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
+# .NET build artifacts
+**/bin/
+**/obj/
+**/out/
+*.dll
+*.exe
+*.pdb
+*.cache
+*.tmp
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
 # Visual Studio cache/options directory
 .vs/
+*.vsidx
+*.vspscc
+*.vssscc
+*.sdf
+*.opensdf
+*.db-shm
+*.db-wal
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
 
 # Visual Studio Code
 .vscode/
@@ -49,6 +74,13 @@ bld/
 project.lock.json
 project.fragment.lock.json
 artifacts/
+**/project.assets.json
+**/project.nuget.cache
+**/project.packagespec.json
+**/*.nuget.dgspec.json
+**/*.nuget.g.props
+**/*.nuget.g.targets
+**/rider.project.restore.info
 
 # Node.js
 node_modules/
@@ -80,12 +112,35 @@ TestResults/
 *.coverage
 *.coveragexml
 
-# Build results
+# Additional build artifacts (already covered above, but explicit)
 *.dll
 *.exe
 *.pdb
 *.cache
 *.tmp
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
 
 # Documentation build outputs
 docs/_book/
