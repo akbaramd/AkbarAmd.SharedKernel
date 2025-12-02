@@ -50,7 +50,7 @@ Version 1.0.18:
 - Renamed LastModifiedAt to ModifiedAt and LastModifiedBy to ModifiedBy in IModifiableAudit interface
 - Updated all aggregate root implementations and DTOs to use ModifiedAt/ModifiedBy naming
 - Updated Entity Framework Core configurations to reflect property name changes
-- Breaking change: Aggregate roots no longer support version-based optimistic concurrency control (RowVersion still available via IConcurrentAudit)
+- Removed IConcurrentAudit interface and all related concurrency audit functionality
 - Breaking change: IModifiableAudit properties renamed from LastModifiedAt/LastModifiedBy to ModifiedAt/ModifiedBy</PackageReleaseNotes>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>

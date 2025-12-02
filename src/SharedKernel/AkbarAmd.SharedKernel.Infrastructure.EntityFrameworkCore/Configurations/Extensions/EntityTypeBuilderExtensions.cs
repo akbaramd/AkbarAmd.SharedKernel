@@ -113,38 +113,6 @@ namespace AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Configuration
             return builder;
         }
 
-        /// <summary>
-        /// Configures concurrent audit properties for entities implementing IConcurrentAudit.
-        /// </summary>
-        /// <typeparam name="TEntity">The entity type implementing IConcurrentAudit.</typeparam>
-        /// <param name="builder">The EntityTypeBuilder instance.</param>
-        /// <returns>The EntityTypeBuilder instance for method chaining.</returns>
-        public static EntityTypeBuilder<TEntity> ConfigureConcurrentAudit<TEntity>(this EntityTypeBuilder<TEntity> builder)
-            where TEntity : class, IConcurrentAudit
-        {
-            builder.Property(e => e.RowVersion)
-                .IsRequired()
-                .IsRowVersion()
-                .ValueGeneratedOnAddOrUpdate();
-
-            return builder;
-        }
-
-        /// <summary>
-        /// Configures full audit trail for entities implementing IConcurrentAudit (all audit properties).
-        /// </summary>
-        /// <typeparam name="TEntity">The entity type implementing IConcurrentAudit.</typeparam>
-        /// <param name="builder">The EntityTypeBuilder instance.</param>
-        /// <returns>The EntityTypeBuilder instance for method chaining.</returns>
-        public static EntityTypeBuilder<TEntity> ConfigureFullAudit<TEntity>(this EntityTypeBuilder<TEntity> builder)
-            where TEntity : class, IConcurrentAudit,ICreatableAudit,ISoftDeletableAudit,IModifiableAudit
-        {
-            return builder
-                .ConfigureCreationAudit()
-                .ConfigureModificationAudit()
-                .ConfigureSoftDeleteAudit()
-                .ConfigureConcurrentAudit();
-        }
 
         /// <summary>
         /// Configures a string property with common settings.
@@ -336,20 +304,18 @@ namespace AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Configuration
         }
 
         /// <summary>
-        /// Configures an entity that implements IEntity and IConcurrentAudit.
-        /// Sets up entity configuration with full audit trail (creation, modification, soft delete, and concurrency).
+        /// Configures an entity with full audit trail (creation, modification, and soft delete).
         /// </summary>
-        /// <typeparam name="TEntity">The entity type implementing IEntity and IConcurrentAudit.</typeparam>
+        /// <typeparam name="TEntity">The entity type implementing ICreatableAudit, IModifiableAudit, and ISoftDeletableAudit.</typeparam>
         /// <param name="builder">The EntityTypeBuilder instance.</param>
         /// <returns>The EntityTypeBuilder instance for method chaining.</returns>
         public static EntityTypeBuilder<TEntity> ConfigureFullAuditableEntity<TEntity>(this EntityTypeBuilder<TEntity> builder)
-            where TEntity : class, IConcurrentAudit,ICreatableAudit,IModifiableAudit,ISoftDeletableAudit
+            where TEntity : class, ICreatableAudit, IModifiableAudit, ISoftDeletableAudit
         {
             return builder
                 .ConfigureCreationAudit()
                 .ConfigureModificationAudit()
-                .ConfigureSoftDeleteAudit()
-                .ConfigureConcurrentAudit();
+                .ConfigureSoftDeleteAudit();
         }
 
         /// <summary>
@@ -409,15 +375,14 @@ namespace AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Configuration
         }
 
         /// <summary>
-        /// Configures an entity with typed Id that implements IEntity&lt;TId&gt; and IConcurrentAudit.
-        /// Sets up entity configuration with full audit trail (creation, modification, soft delete, and concurrency) and typed primary key.
+        /// Configures an entity with typed Id and full audit trail (creation, modification, and soft delete).
         /// </summary>
-        /// <typeparam name="TEntity">The entity type implementing IEntity&lt;TId&gt; and IConcurrentAudit.</typeparam>
+        /// <typeparam name="TEntity">The entity type implementing IEntity&lt;TId&gt;, ICreatableAudit, IModifiableAudit, and ISoftDeletableAudit.</typeparam>
         /// <typeparam name="TId">The type of the entity's identifier.</typeparam>
         /// <param name="builder">The EntityTypeBuilder instance.</param>
         /// <returns>The EntityTypeBuilder instance for method chaining.</returns>
         public static EntityTypeBuilder<TEntity> ConfigureFullAuditableEntity<TEntity, TId>(this EntityTypeBuilder<TEntity> builder)
-            where TEntity : class, IEntity<TId>, IConcurrentAudit,ISoftDeletableAudit,ICreatableAudit,IModifiableAudit
+            where TEntity : class, IEntity<TId>, ISoftDeletableAudit, ICreatableAudit, IModifiableAudit
             where TId : IEquatable<TId>
         {
             builder.HasKey(e => e.Id);
@@ -426,8 +391,7 @@ namespace AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Configuration
             return builder
                 .ConfigureCreationAudit()
                 .ConfigureModificationAudit()
-                .ConfigureSoftDeleteAudit()
-                .ConfigureConcurrentAudit();
+                .ConfigureSoftDeleteAudit();
         }
 
         #endregion

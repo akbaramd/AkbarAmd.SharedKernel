@@ -5,7 +5,7 @@
   },
   "projects": {
     "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\AkbarAmd.SharedKernel.Application\\AkbarAmd.SharedKernel.Application.csproj": {
-      "version": "1.0.20",
+      "version": "1.0.24",
       "restore": {
         "projectUniqueName": "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\AkbarAmd.SharedKernel.Application\\AkbarAmd.SharedKernel.Application.csproj",
         "projectName": "AkbarAmd.SharedKernel.Application",
@@ -77,11 +77,11 @@
             },
             "Microsoft.Extensions.Caching.Memory": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[8.0.1, )"
             },
             "Microsoft.Extensions.Logging.Abstractions": {
               "target": "Package",
-              "version": "[9.0.0, )"
+              "version": "[8.0.3, )"
             }
           },
           "imports": [
@@ -105,7 +105,7 @@
       }
     },
     "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\AkbarAmd.SharedKernel.Domain\\AkbarAmd.SharedKernel.Domain.csproj": {
-      "version": "1.0.21",
+      "version": "1.0.24",
       "restore": {
         "projectUniqueName": "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\AkbarAmd.SharedKernel.Domain\\AkbarAmd.SharedKernel.Domain.csproj",
         "projectName": "AkbarAmd.SharedKernel.Domain",

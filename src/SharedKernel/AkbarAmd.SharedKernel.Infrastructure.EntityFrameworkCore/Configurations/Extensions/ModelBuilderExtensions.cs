@@ -50,11 +50,6 @@ namespace AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Configuration
                 {
                     ConfigureSoftDeletableAudit(modelBuilder, clrType);
                 }
-
-                if (typeof(IConcurrentAudit).IsAssignableFrom(clrType))
-                {
-                    ConfigureConcurrentAudit(modelBuilder, clrType);
-                }
             }
 
             return modelBuilder;
@@ -231,19 +226,6 @@ namespace AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Configuration
                 .HasIndex("DeletedBy")
                 .HasDatabaseName($"IX_{entityType.Name}_DeletedBy")
                 .HasFilter("[DeletedBy] IS NOT NULL");
-        }
-
-        private static void ConfigureConcurrentAudit(ModelBuilder modelBuilder, Type entityType)
-        {
-            modelBuilder.Entity(entityType)
-                .Property("ConcurrencyStamp")
-                .IsRequired()
-                .HasMaxLength(36)
-                .HasDefaultValueSql("NEWID()");
-
-            modelBuilder.Entity(entityType)
-                .HasIndex("ConcurrencyStamp")
-                .HasDatabaseName($"IX_{entityType.Name}_ConcurrencyStamp");
         }
 
         private static void SetSoftDeleteFilter<TEntity>(ModelBuilder modelBuilder)

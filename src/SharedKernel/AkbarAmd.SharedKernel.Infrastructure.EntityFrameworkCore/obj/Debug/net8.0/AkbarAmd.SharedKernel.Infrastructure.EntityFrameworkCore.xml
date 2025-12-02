@@ -38,22 +38,6 @@
             <param name="builder">The EntityTypeBuilder instance.</param>
             <returns>The EntityTypeBuilder instance for method chaining.</returns>
         </member>
-        <member name="M:AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureConcurrentAudit``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
-            <summary>
-            Configures concurrent audit properties for entities implementing IConcurrentAudit.
-            </summary>
-            <typeparam name="TEntity">The entity type implementing IConcurrentAudit.</typeparam>
-            <param name="builder">The EntityTypeBuilder instance.</param>
-            <returns>The EntityTypeBuilder instance for method chaining.</returns>
-        </member>
-        <member name="M:AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureFullAudit``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
-            <summary>
-            Configures full audit trail for entities implementing IConcurrentAudit (all audit properties).
-            </summary>
-            <typeparam name="TEntity">The entity type implementing IConcurrentAudit.</typeparam>
-            <param name="builder">The EntityTypeBuilder instance.</param>
-            <returns>The EntityTypeBuilder instance for method chaining.</returns>
-        </member>
         <member name="M:AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureStringProperty``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0},System.Linq.Expressions.Expression{System.Func{``0,System.String}},System.Int32,System.Boolean,System.Boolean)">
             <summary>
             Configures a string property with common settings.
@@ -150,10 +134,9 @@
         </member>
         <member name="M:AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureFullAuditableEntity``1(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
             <summary>
-            Configures an entity that implements IEntity and IConcurrentAudit.
-            Sets up entity configuration with full audit trail (creation, modification, soft delete, and concurrency).
+            Configures an entity with full audit trail (creation, modification, and soft delete).
             </summary>
-            <typeparam name="TEntity">The entity type implementing IEntity and IConcurrentAudit.</typeparam>
+            <typeparam name="TEntity">The entity type implementing ICreatableAudit, IModifiableAudit, and ISoftDeletableAudit.</typeparam>
             <param name="builder">The EntityTypeBuilder instance.</param>
             <returns>The EntityTypeBuilder instance for method chaining.</returns>
         </member>
@@ -189,10 +172,9 @@
         </member>
         <member name="M:AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Configurations.Extensions.EntityTypeBuilderExtensions.ConfigureFullAuditableEntity``2(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder{``0})">
             <summary>
-            Configures an entity with typed Id that implements IEntity&lt;TId&gt; and IConcurrentAudit.
-            Sets up entity configuration with full audit trail (creation, modification, soft delete, and concurrency) and typed primary key.
+            Configures an entity with typed Id and full audit trail (creation, modification, and soft delete).
             </summary>
-            <typeparam name="TEntity">The entity type implementing IEntity&lt;TId&gt; and IConcurrentAudit.</typeparam>
+            <typeparam name="TEntity">The entity type implementing IEntity&lt;TId&gt;, ICreatableAudit, IModifiableAudit, and ISoftDeletableAudit.</typeparam>
             <typeparam name="TId">The type of the entity's identifier.</typeparam>
             <param name="builder">The EntityTypeBuilder instance.</param>
             <returns>The EntityTypeBuilder instance for method chaining.</returns>

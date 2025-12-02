@@ -284,16 +284,6 @@
             </summary>
             <returns>A string that represents the current business rule.</returns>
         </member>
-        <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Audits.IConcurrentAudit">
-            <summary>
-            Contract for entities that require concurrency audit control
-            </summary>
-        </member>
-        <member name="P:AkbarAmd.SharedKernel.Domain.Contracts.Audits.IConcurrentAudit.RowVersion">
-            <summary>
-            Row version for optimistic concurrency control (required)
-            </summary>
-        </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Audits.ICreatableAudit">
             <summary>
             Contract for entities that require creation audit tracking
