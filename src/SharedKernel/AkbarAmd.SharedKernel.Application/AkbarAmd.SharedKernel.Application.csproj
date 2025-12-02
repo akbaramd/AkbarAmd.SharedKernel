@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>AkbarAmd.SharedKernel.Application</PackageId>
-        <Version>1.0.22</Version>
-        <AssemblyVersion>1.0.22.0</AssemblyVersion>
-        <FileVersion>1.0.22.0</FileVersion>
+        <Version>1.0.23</Version>
+        <AssemblyVersion>1.0.23.0</AssemblyVersion>
+        <FileVersion>1.0.23.0</FileVersion>
         <Authors>Akbar Ahmadi Saray</Authors>
         <Company>AkbarAhmadi</Company>
         <Description>Clean Architecture Application Layer - CQRS, MediatR, Validation, and Application Services</Description>
@@ -20,11 +20,15 @@
         <RepositoryUrl>https://github.com/akbaramd/AkbarAmd.SharedKernel.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>clean-architecture;application;cqrs;mediatr;validation;fluent-validation;auto-mapper</PackageTags>
-        <PackageReleaseNotes>Version 1.0.22: 
+        <PackageReleaseNotes>Version 1.0.23: 
 - Restored cache functionality in MediatRMediator Query method
 - Cache support for queries with automatic configuration discovery from handlers
 - Fixed test issues with command and event verification
 - All tests passing
+
+Version 1.0.22: 
+- Simplified MediatRMediator to remove retry and timeout features from query/command handling
+- Fixed test issues with command and event verification
 
 Version 1.0.21: 
 - Added ICqrsMediator interface and MediatRMediator implementation with caching support
