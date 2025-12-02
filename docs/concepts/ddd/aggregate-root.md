@@ -15,7 +15,8 @@ dotnet add package AkbarAmd.SharedKernel.Domain
 
 Aggregate Roots:
 - Act as the single entry point to an aggregate
-- Enforce business invariants and consistency rules
+- Enforce business invariants and consistency rules using business rules
+- Business rule validation via inherited `CheckRule(IBusinessRule rule)` method from Entity base class
 - Manage domain events
 - Control access to entities within the aggregate
 - Handle optimistic concurrency control
@@ -96,9 +97,12 @@ public abstract class FullAggregateRoot<TKey> : SoftDeletableAggregateRoot<TKey>
 
 ## Usage Examples
 
-### Basic Aggregate Root
+### Basic Aggregate Root with Business Rules
 
 ```csharp
+using AkbarAmd.SharedKernel.Domain.AggregateRoots;
+using AkbarAmd.SharedKernel.Domain.BusinessRules;
+
 public class User : AggregateRoot<Guid>
 {
     public string Email { get; private set; }
@@ -110,11 +114,16 @@ public class User : AggregateRoot<Guid>
     public User(string email, string name)
     {
         Id = Guid.NewGuid();
+        
+        // Business rule validation - inherited from Entity base class
+        CheckRule(new EmailCannotBeEmptyRule(email));
+        CheckRule(new NameCannotBeEmptyRule(name));
+        
         Email = email;
         Name = name;
         IsActive = true;
         
-        RaiseDomainEvent(new UserCreatedEvent(Id, Email));
+        AddDomainEvent(new UserCreatedEvent(Id, Email));
     }
 
     public void UpdateName(string newName)
@@ -286,4 +295,3 @@ public class ChangeEmailCommandHandler : CommandHandler<ChangeEmailCommand>
 - [Value Objects](value-objects.md) - Use value objects in aggregate roots
 - [DDD Overview](index.md) - Learn about DDD concepts
 - [Domain Module](../../modules/domain.md) - See all aggregate root base classes
-

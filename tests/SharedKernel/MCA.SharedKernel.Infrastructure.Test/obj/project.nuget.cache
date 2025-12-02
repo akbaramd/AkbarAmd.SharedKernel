@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "VMdIiAhs/Us=",
+  "dgSpecHash": "JcvYoHx033c=",
   "success": true,
   "projectFilePath": "E:\\projects\\CleanArchitecture\\tests\\SharedKernel\\MCA.SharedKernel.Infrastructure.Test\\MCA.SharedKernel.Infrastructure.Test.csproj",
   "expectedPackageFiles": [
@@ -198,7 +198,9 @@
     "C:\\Users\\akbar\\.nuget\\packages\\xunit.core\\2.5.3\\xunit.core.2.5.3.nupkg.sha512",
     "C:\\Users\\akbar\\.nuget\\packages\\xunit.extensibility.core\\2.5.3\\xunit.extensibility.core.2.5.3.nupkg.sha512",
     "C:\\Users\\akbar\\.nuget\\packages\\xunit.extensibility.execution\\2.5.3\\xunit.extensibility.execution.2.5.3.nupkg.sha512",
-    "C:\\Users\\akbar\\.nuget\\packages\\xunit.runner.visualstudio\\2.5.3\\xunit.runner.visualstudio.2.5.3.nupkg.sha512"
+    "C:\\Users\\akbar\\.nuget\\packages\\xunit.runner.visualstudio\\2.5.3\\xunit.runner.visualstudio.2.5.3.nupkg.sha512",
+    "C:\\Users\\akbar\\.nuget\\packages\\akbaramd.sharedkernel.domain\\1.0.21\\akbaramd.sharedkernel.domain.1.0.21.nupkg.sha512",
+    "C:\\Users\\akbar\\.nuget\\packages\\akbaramd.sharedkernel.infrastructure.entityframeworkcore\\1.0.20\\akbaramd.sharedkernel.infrastructure.entityframeworkcore.1.0.20.nupkg.sha512"
   ],
   "logs": []
 }

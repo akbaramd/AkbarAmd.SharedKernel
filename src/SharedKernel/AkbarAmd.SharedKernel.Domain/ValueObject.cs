@@ -188,12 +188,19 @@ namespace AkbarAmd.SharedKernel.Domain
         /// <summary>
         /// Checks a business rule and throws if broken.
         /// </summary>
-        protected static void CheckRule(IBusinessRule rule, [CallerMemberName] string caller = null)
+        /// <typeparam name="TEntity">The type of entity being validated</typeparam>
+        /// <param name="rule">The business rule to check.</param>
+        /// <param name="entity">The entity to validate against the rule.</param>
+        /// <param name="caller">The name of the calling method (automatically provided).</param>
+        /// <exception cref="DomainBusinessRuleValidationException">Thrown when the business rule is violated.</exception>
+        protected static void CheckRule<TEntity>(IBusinessRule<TEntity> rule, TEntity entity, [CallerMemberName] string caller = null)
+            where TEntity : class
         {
             if (rule == null) throw new ArgumentNullException(nameof(rule));
+            if (entity == null) throw new ArgumentNullException(nameof(entity));
 
-            if (!rule.IsSatisfied())
-                throw new DomainBusinessRuleValidationException(rule);
+            if (!rule.IsSatisfiedBy(entity))
+                throw DomainBusinessRuleValidationException.Create(rule);
         }
 
         #endregion

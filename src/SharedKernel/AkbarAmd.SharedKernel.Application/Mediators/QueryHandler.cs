@@ -17,9 +17,38 @@ namespace AkbarAmd.SharedKernel.Application.Mediators;
 /// </summary>
 /// <typeparam name="TQuery">The type of query to handle.</typeparam>
 /// <typeparam name="TResult">The type of result returned by the query.</typeparam>
-public abstract class QueryHandler<TQuery, TResult> : IRequestHandler<TQuery, TResult> 
+public abstract class QueryHandler<TQuery, TResult> : IRequestHandler<TQuery, TResult>, IQueryHandlerConfiguration, IHandlerBehaviorConfiguration
     where TQuery : IQuery<TResult>
 {
+    /// <summary>
+    /// Protected field for cache configuration. Can be configured using EnableCache/DisableCache methods.
+    /// </summary>
+    protected QueryCacheConfiguration CacheConfiguration { get; private set; }
+
+    /// <summary>
+    /// Protected field for behavior configuration. Can be configured using behavior methods.
+    /// </summary>
+    protected HandlerBehaviorConfiguration BehaviorConfiguration { get; private set; }
+
+    /// <summary>
+    /// Internal method to get cache configuration for mediator access.
+    /// </summary>
+    QueryCacheConfiguration IQueryHandlerConfiguration.GetCacheConfiguration() => CacheConfiguration;
+
+    /// <summary>
+    /// Internal method to get behavior configuration for mediator access.
+    /// </summary>
+    HandlerBehaviorConfiguration IHandlerBehaviorConfiguration.GetBehaviorConfiguration() => BehaviorConfiguration;
+
+    /// <summary>
+    /// Initializes a new instance of the QueryHandler class.
+    /// </summary>
+    protected QueryHandler()
+    {
+        CacheConfiguration = QueryCacheConfiguration.Disable();
+        BehaviorConfiguration = HandlerBehaviorConfiguration.Default();
+    }
+
     /// <summary>
     /// Protected method for processing the query asynchronously and returning a result.
     /// Override this method to implement specific query handling logic.
@@ -50,19 +79,25 @@ public abstract class QueryHandler<TQuery, TResult> : IRequestHandler<TQuery, TR
             // Validate query
             await ValidateQuery(request);
 
-            // Check cache (if applicable)
-            var cachedResult = await TryGetFromCache(request);
-            if (cachedResult != null)
+            // Check cache (if enabled via configuration)
+            if (CacheConfiguration.Enabled)
             {
-                await OnQueryProcessedFromCache(request, cachedResult);
-                return cachedResult;
+                var cachedResult = await TryGetFromCache(request);
+                if (cachedResult != null)
+                {
+                    await OnQueryProcessedFromCache(request, cachedResult);
+                    return cachedResult;
+                }
             }
 
             // Process the query using protected method
             var result = await ProcessAsync(request, cancellationToken);
 
-            // Cache result (if applicable)
-            await CacheResult(request, result);
+            // Cache result (if enabled via configuration)
+            if (CacheConfiguration.Enabled)
+            {
+                await CacheResult(request, result);
+            }
 
             // Log query processed successfully
             await OnQueryProcessed(request, result);
@@ -167,38 +202,177 @@ public abstract class QueryHandler<TQuery, TResult> : IRequestHandler<TQuery, TR
 
     /// <summary>
     /// Gets a cache key for the query.
-    /// Override to implement custom cache key generation.
+    /// Uses the configured cache key generator if available, otherwise generates a default key.
     /// </summary>
     /// <param name="request">The query to generate a cache key for.</param>
     /// <returns>A cache key string.</returns>
     protected virtual string GetCacheKey(TQuery request)
     {
+        if (CacheConfiguration.CacheKeyGenerator != null)
+        {
+            return CacheConfiguration.CacheKeyGenerator(request);
+        }
+
         // Default implementation - use query type and hash
         return $"{typeof(TQuery).Name}_{request.GetHashCode()}";
     }
 
     /// <summary>
-    /// Determines if the query result should be cached.
-    /// Override to implement custom caching logic.
+    /// Gets the cache duration for the query result from configuration.
     /// </summary>
-    /// <param name="request">The query to check.</param>
-    /// <returns>True if the result should be cached, otherwise false.</returns>
-    protected virtual bool ShouldCache(TQuery request)
+    /// <returns>The cache duration in minutes.</returns>
+    protected int GetCacheDurationMinutes()
     {
-        // Default implementation - no caching
-        return false;
+        return CacheConfiguration.DurationMinutes;
     }
 
     /// <summary>
-    /// Gets the cache duration for the query result.
-    /// Override to implement custom cache duration logic.
+    /// Enables caching for this query handler.
+    /// Call this method in the constructor of derived classes to enable caching.
     /// </summary>
-    /// <param name="request">The query to get cache duration for.</param>
-    /// <returns>The cache duration in minutes.</returns>
-    protected virtual int GetCacheDurationMinutes(TQuery request)
+    /// <param name="durationMinutes">The cache duration in minutes. Default is 5 minutes.</param>
+    /// <param name="cacheKeyGenerator">Optional custom cache key generator function.</param>
+    protected void EnableCache(int durationMinutes = 5, Func<object, string>? cacheKeyGenerator = null)
     {
-        // Default implementation - 5 minutes
-        return 5;
+        CacheConfiguration = QueryCacheConfiguration.Enable(durationMinutes, cacheKeyGenerator);
     }
+
+    /// <summary>
+    /// Disables caching for this query handler.
+    /// Call this method in the constructor of derived classes to disable caching.
+    /// </summary>
+    protected void DisableCache()
+    {
+        CacheConfiguration = QueryCacheConfiguration.Disable();
+    }
+
+    /// <summary>
+    /// Sets a custom cache key generator for this query handler.
+    /// </summary>
+    /// <param name="cacheKeyGenerator">The function to generate cache keys from query objects.</param>
+    protected void SetCacheKeyGenerator(Func<object, string> cacheKeyGenerator)
+    {
+        if (cacheKeyGenerator == null)
+            throw new ArgumentNullException(nameof(cacheKeyGenerator));
+
+        if (CacheConfiguration.Enabled)
+        {
+            CacheConfiguration = QueryCacheConfiguration.Enable(
+                CacheConfiguration.DurationMinutes,
+                cacheKeyGenerator);
+        }
+        else
+        {
+            // If caching is disabled, enable it with the custom key generator
+            CacheConfiguration = QueryCacheConfiguration.Enable(5, cacheKeyGenerator);
+        }
+    }
+
+    /// <summary>
+    /// Sets the cache duration for this query handler.
+    /// </summary>
+    /// <param name="durationMinutes">The cache duration in minutes.</param>
+    protected void SetCacheDuration(int durationMinutes)
+    {
+        if (durationMinutes <= 0)
+            throw new ArgumentException("Cache duration must be greater than zero.", nameof(durationMinutes));
+
+        if (CacheConfiguration.Enabled)
+        {
+            CacheConfiguration = QueryCacheConfiguration.Enable(
+                durationMinutes,
+                CacheConfiguration.CacheKeyGenerator);
+        }
+        else
+        {
+            // If caching is disabled, enable it with the specified duration
+            CacheConfiguration = QueryCacheConfiguration.Enable(durationMinutes);
+        }
+    }
+
+    #region Behavior Configuration Methods
+
+    /// <summary>
+    /// Enables detailed logging for this query handler.
+    /// </summary>
+    protected void EnableDetailedLogging()
+    {
+        BehaviorConfiguration.EnableDetailedLogging = true;
+    }
+
+    /// <summary>
+    /// Enables performance tracking for this query handler.
+    /// </summary>
+    protected void EnablePerformanceTracking()
+    {
+        BehaviorConfiguration.EnablePerformanceTracking = true;
+    }
+
+    /// <summary>
+    /// Enables retry policy for this query handler.
+    /// </summary>
+    /// <param name="maxAttempts">Maximum number of retry attempts. Default is 3.</param>
+    /// <param name="delayMs">Delay between retries in milliseconds. Default is 1000ms.</param>
+    protected void EnableRetryPolicy(int maxAttempts = 3, int delayMs = 1000)
+    {
+        BehaviorConfiguration.EnableRetryPolicy = true;
+        BehaviorConfiguration.MaxRetryAttempts = maxAttempts;
+        BehaviorConfiguration.RetryDelayMs = delayMs;
+    }
+
+    /// <summary>
+    /// Sets a timeout for query execution.
+    /// </summary>
+    /// <param name="timeoutSeconds">Timeout in seconds.</param>
+    protected void SetTimeout(int timeoutSeconds)
+    {
+        if (timeoutSeconds <= 0)
+            throw new ArgumentException("Timeout must be greater than zero.", nameof(timeoutSeconds));
+        
+        BehaviorConfiguration.TimeoutSeconds = timeoutSeconds;
+    }
+
+    /// <summary>
+    /// Configures behavior settings using a configuration object.
+    /// </summary>
+    /// <param name="configuration">The behavior configuration.</param>
+    protected void ConfigureBehavior(HandlerBehaviorConfiguration configuration)
+    {
+        BehaviorConfiguration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+    }
+
+    #endregion
+
+    #region Internal Cache Management Methods
+
+    /// <summary>
+    /// Internal method to check if caching is enabled for this handler.
+    /// Used by the mediator to determine if caching should be applied.
+    /// </summary>
+    /// <returns>True if caching is enabled, otherwise false.</returns>
+    internal bool IsCacheEnabled() => CacheConfiguration.Enabled;
+
+    /// <summary>
+    /// Internal method to get the cache duration in minutes.
+    /// Used by the mediator for cache configuration.
+    /// </summary>
+    /// <returns>The cache duration in minutes.</returns>
+    internal int GetCacheDuration() => CacheConfiguration.DurationMinutes;
+
+    /// <summary>
+    /// Internal method to get the cache key generator function.
+    /// Used by the mediator for generating cache keys.
+    /// </summary>
+    /// <returns>The cache key generator function, or null if not set.</returns>
+    internal Func<object, string>? GetCacheKeyGenerator() => CacheConfiguration.CacheKeyGenerator;
+
+    /// <summary>
+    /// Internal method to get behavior configuration.
+    /// Used by the mediator for applying behaviors.
+    /// </summary>
+    /// <returns>The behavior configuration.</returns>
+    internal HandlerBehaviorConfiguration GetBehaviorConfiguration() => BehaviorConfiguration;
+
+    #endregion
 }
 

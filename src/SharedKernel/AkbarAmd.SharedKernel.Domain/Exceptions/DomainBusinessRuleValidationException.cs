@@ -18,14 +18,29 @@ namespace AkbarAmd.SharedKernel.Domain.Exceptions
         /// <summary>
         /// Gets the business rule that was violated.
         /// </summary>
-        public IBusinessRule BrokenRule { get; }
+        public object BrokenRule { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DomainBusinessRuleValidationException"/> class.
         /// </summary>
+        /// <typeparam name="TEntity">The type of entity that violated the rule</typeparam>
         /// <param name="brokenRule">The business rule that was violated.</param>
-        public DomainBusinessRuleValidationException(IBusinessRule brokenRule)
-            : base(brokenRule.Message)
+        public static DomainBusinessRuleValidationException Create<TEntity>(IBusinessRule<TEntity> brokenRule)
+            where TEntity : class
+        {
+            if (brokenRule == null)
+                throw new ArgumentNullException(nameof(brokenRule));
+                
+            return new DomainBusinessRuleValidationException(brokenRule.Message, brokenRule);
+        }
+        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DomainBusinessRuleValidationException"/> class.
+        /// </summary>
+        /// <param name="message">The error message</param>
+        /// <param name="brokenRule">The business rule that was violated.</param>
+        private DomainBusinessRuleValidationException(string message, object brokenRule)
+            : base(message)
         {
             BrokenRule = brokenRule;
         }
@@ -36,7 +51,7 @@ namespace AkbarAmd.SharedKernel.Domain.Exceptions
         /// <returns>A string that represents the current exception.</returns>
         public override string ToString()
         {
-            return $"{BrokenRule.GetType().Name}: {BrokenRule.Message}";
+            return $"{BrokenRule.GetType().Name}: {Message}";
         }
     }
 }

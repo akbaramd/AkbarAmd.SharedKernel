@@ -5,7 +5,7 @@
   },
   "projects": {
     "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\AkbarAmd.SharedKernel.Domain\\AkbarAmd.SharedKernel.Domain.csproj": {
-      "version": "1.0.20",
+      "version": "1.0.21",
       "restore": {
         "projectUniqueName": "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\AkbarAmd.SharedKernel.Domain\\AkbarAmd.SharedKernel.Domain.csproj",
         "projectName": "AkbarAmd.SharedKernel.Domain",

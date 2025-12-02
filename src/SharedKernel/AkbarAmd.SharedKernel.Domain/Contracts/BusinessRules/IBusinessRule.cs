@@ -18,15 +18,18 @@ namespace AkbarAmd.SharedKernel.Domain.Contracts.BusinessRules;
 /// - Provides clear error messages for violations
 /// - Used for fail-fast validation during entity construction and state transitions
 /// </summary>
-public interface IBusinessRule
+/// <typeparam name="TEntity">The type of entity this business rule validates</typeparam>
+public interface IBusinessRule<in TEntity>
+    where TEntity : class
 {
     /// <summary>
-    /// Evaluates the business rule.
+    /// Evaluates the business rule against the specified entity.
     /// </summary>
+    /// <param name="entity">The entity to validate</param>
     /// <returns>
     /// <c>true</c> if the rule is satisfied; otherwise, <c>false</c>.
     /// </returns>
-    bool IsSatisfied();
+    bool IsSatisfiedBy(TEntity entity);
 
     /// <summary>
     /// Gets the message describing the rule or reason for failure.

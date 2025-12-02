@@ -2424,7 +2424,7 @@
           }
         }
       },
-      "AkbarAmd.SharedKernel.Domain/1.0.20": {
+      "AkbarAmd.SharedKernel.Domain/1.0.21": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
@@ -6191,7 +6191,7 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "AkbarAmd.SharedKernel.Domain/1.0.20": {
+    "AkbarAmd.SharedKernel.Domain/1.0.21": {
       "type": "project",
       "path": "../AkbarAmd.SharedKernel.Domain/AkbarAmd.SharedKernel.Domain.csproj",
       "msbuildProject": "../AkbarAmd.SharedKernel.Domain/AkbarAmd.SharedKernel.Domain.csproj"
@@ -6199,7 +6199,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
-      "AkbarAmd.SharedKernel.Domain >= 1.0.20",
+      "AkbarAmd.SharedKernel.Domain >= 1.0.21",
       "Bonyan >= 1.5.6",
       "Microsoft.AspNetCore.Authorization >= 8.0.18",
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 8.0.18",

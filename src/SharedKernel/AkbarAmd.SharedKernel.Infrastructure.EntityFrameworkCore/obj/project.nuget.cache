@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "DRd6d0ORxoY=",
+  "dgSpecHash": "sqX3aONPGFM=",
   "success": true,
   "projectFilePath": "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore\\AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.csproj",
   "expectedPackageFiles": [
@@ -129,7 +129,8 @@
     "C:\\Users\\akbar\\.nuget\\packages\\system.text.json\\4.7.2\\system.text.json.4.7.2.nupkg.sha512",
     "C:\\Users\\akbar\\.nuget\\packages\\system.threading.channels\\6.0.0\\system.threading.channels.6.0.0.nupkg.sha512",
     "C:\\Users\\akbar\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512",
-    "C:\\Users\\akbar\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512"
+    "C:\\Users\\akbar\\.nuget\\packages\\system.windows.extensions\\6.0.0\\system.windows.extensions.6.0.0.nupkg.sha512",
+    "C:\\Users\\akbar\\.nuget\\packages\\akbaramd.sharedkernel.domain\\1.0.21\\akbaramd.sharedkernel.domain.1.0.21.nupkg.sha512"
   ],
   "logs": []
 }

@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>AkbarAmd.SharedKernel.Application</PackageId>
-        <Version>1.0.20</Version>
-        <AssemblyVersion>1.0.20.0</AssemblyVersion>
-        <FileVersion>1.0.20.0</FileVersion>
+        <Version>1.0.21</Version>
+        <AssemblyVersion>1.0.21.0</AssemblyVersion>
+        <FileVersion>1.0.21.0</FileVersion>
         <Authors>Akbar Ahmadi Saray</Authors>
         <Company>AkbarAhmadi</Company>
         <Description>Clean Architecture Application Layer - CQRS, MediatR, Validation, and Application Services</Description>
@@ -20,7 +20,18 @@
         <RepositoryUrl>https://github.com/akbaramd/AkbarAmd.SharedKernel.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>clean-architecture;application;cqrs;mediatr;validation;fluent-validation;auto-mapper</PackageTags>
-        <PackageReleaseNotes>Version 1.0.19: 
+        <PackageReleaseNotes>Version 1.0.21: 
+- Added ICqrsMediator interface and MediatRMediator implementation with caching support
+- Added QueryCacheConfiguration for query result caching
+- Added HandlerBehaviorConfiguration for handler behaviors (retry, timeout, performance tracking, logging)
+- Added protected configuration methods to QueryHandler, CommandHandler, and EventHandler base classes
+- Added automatic behavior discovery and application in MediatRMediator
+- Added comprehensive test suite for mediator functionality
+
+Version 1.0.20: 
+- Added InternalsVisibleTo attribute for test project access
+
+Version 1.0.19: 
 - Updated to support nested includes from Domain layer
 - Enhanced application layer compatibility with new IncludeChain functionality
 
@@ -34,6 +45,12 @@ Version 1.0.18:
         <AssemblyName>AkbarAmd.SharedKernel.Application</AssemblyName>
         <RootNamespace>AkbarAmd.SharedKernel.Application</RootNamespace>
     </PropertyGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+            <_Parameter1>MCA.SharedKernel.Application.Test</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
     
     <ItemGroup>
         <PackageReference Include="Bonyan" Version="1.5.6" />
@@ -42,7 +59,8 @@ Version 1.0.18:
         <PackageReference Include="MediatR" Version="12.5.0" />
         <PackageReference Include="FluentValidation" Version="11.5.0" />
         <PackageReference Include="AutoMapper" Version="12.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.0" />
     </ItemGroup>
 
     <ItemGroup>

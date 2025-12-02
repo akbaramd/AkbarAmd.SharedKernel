@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCA.SharedKernel.Domain.Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCA.SharedKernel.Infrastructure.Test", "tests\SharedKernel\MCA.SharedKernel.Infrastructure.Test\MCA.SharedKernel.Infrastructure.Test.csproj", "{8CDE5330-0F0C-406C-A624-85E73690A7D4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCA.SharedKernel.Application.Test", "tests\SharedKernel\MCA.SharedKernel.Application.Test\MCA.SharedKernel.Application.Test.csproj", "{2115FDDB-358A-489D-918B-F92AF740943B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,10 @@ Global
 		{8CDE5330-0F0C-406C-A624-85E73690A7D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8CDE5330-0F0C-406C-A624-85E73690A7D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8CDE5330-0F0C-406C-A624-85E73690A7D4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2115FDDB-358A-489D-918B-F92AF740943B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2115FDDB-358A-489D-918B-F92AF740943B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2115FDDB-358A-489D-918B-F92AF740943B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2115FDDB-358A-489D-918B-F92AF740943B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2004280F-37AA-46C1-96B3-43E5BDA72124} = {7CF9EFFF-DC24-4810-8936-85B7392D73D2}
@@ -59,5 +65,6 @@ Global
 		{EADCB2FF-71BD-4AC1-B884-FE76452CF167} = {EF92E92A-C2EB-4F2B-8D59-2E58D0BA72E4}
 		{C22189CB-D84F-4C1F-9739-95FB8536BAD6} = {EADCB2FF-71BD-4AC1-B884-FE76452CF167}
 		{8CDE5330-0F0C-406C-A624-85E73690A7D4} = {EADCB2FF-71BD-4AC1-B884-FE76452CF167}
+		{2115FDDB-358A-489D-918B-F92AF740943B} = {EADCB2FF-71BD-4AC1-B884-FE76452CF167}
 	EndGlobalSection
 EndGlobal

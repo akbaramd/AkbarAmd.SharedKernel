@@ -15,9 +15,26 @@ namespace AkbarAmd.SharedKernel.Application.Mediators;
 /// within the application layer following CQRS principles.
 /// </summary>
 /// <typeparam name="TCommand">The type of command to handle.</typeparam>
-public abstract class CommandHandler<TCommand> : IRequestHandler<TCommand> 
+public abstract class CommandHandler<TCommand> : IRequestHandler<TCommand>, IHandlerBehaviorConfiguration
     where TCommand : IRequest
 {
+    /// <summary>
+    /// Protected field for behavior configuration. Can be configured using behavior methods.
+    /// </summary>
+    protected HandlerBehaviorConfiguration BehaviorConfiguration { get; private set; }
+
+    /// <summary>
+    /// Internal method to get behavior configuration for mediator access.
+    /// </summary>
+    HandlerBehaviorConfiguration IHandlerBehaviorConfiguration.GetBehaviorConfiguration() => BehaviorConfiguration;
+
+    /// <summary>
+    /// Initializes a new instance of the CommandHandler class.
+    /// </summary>
+    protected CommandHandler()
+    {
+        BehaviorConfiguration = HandlerBehaviorConfiguration.Default();
+    }
     /// <summary>
     /// Protected method for processing the command asynchronously.
     /// Override this method to implement specific command handling logic.
@@ -110,6 +127,67 @@ public abstract class CommandHandler<TCommand> : IRequestHandler<TCommand>
         // Default implementation - can be overridden for custom error handling
         return Task.CompletedTask;
     }
+
+    #region Behavior Configuration Methods
+
+    /// <summary>
+    /// Enables detailed logging for this command handler.
+    /// </summary>
+    protected void EnableDetailedLogging()
+    {
+        BehaviorConfiguration.EnableDetailedLogging = true;
+    }
+
+    /// <summary>
+    /// Enables performance tracking for this command handler.
+    /// </summary>
+    protected void EnablePerformanceTracking()
+    {
+        BehaviorConfiguration.EnablePerformanceTracking = true;
+    }
+
+    /// <summary>
+    /// Enables retry policy for this command handler.
+    /// </summary>
+    /// <param name="maxAttempts">Maximum number of retry attempts. Default is 3.</param>
+    /// <param name="delayMs">Delay between retries in milliseconds. Default is 1000ms.</param>
+    protected void EnableRetryPolicy(int maxAttempts = 3, int delayMs = 1000)
+    {
+        BehaviorConfiguration.EnableRetryPolicy = true;
+        BehaviorConfiguration.MaxRetryAttempts = maxAttempts;
+        BehaviorConfiguration.RetryDelayMs = delayMs;
+    }
+
+    /// <summary>
+    /// Enables transaction management for this command handler.
+    /// </summary>
+    protected void EnableTransaction()
+    {
+        BehaviorConfiguration.EnableTransaction = true;
+    }
+
+    /// <summary>
+    /// Sets a timeout for command execution.
+    /// </summary>
+    /// <param name="timeoutSeconds">Timeout in seconds.</param>
+    protected void SetTimeout(int timeoutSeconds)
+    {
+        if (timeoutSeconds <= 0)
+            throw new ArgumentException("Timeout must be greater than zero.", nameof(timeoutSeconds));
+        
+        BehaviorConfiguration.TimeoutSeconds = timeoutSeconds;
+    }
+
+    /// <summary>
+    /// Configures behavior settings using a configuration object.
+    /// </summary>
+    /// <param name="configuration">The behavior configuration.</param>
+    protected void ConfigureBehavior(HandlerBehaviorConfiguration configuration)
+    {
+        BehaviorConfiguration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+    }
+
+    #endregion
 }
 
 /// <summary>
@@ -119,9 +197,26 @@ public abstract class CommandHandler<TCommand> : IRequestHandler<TCommand>
 /// </summary>
 /// <typeparam name="TCommand">The type of command to handle.</typeparam>
 /// <typeparam name="TResult">The type of result returned by the command.</typeparam>
-public abstract class CommandHandler<TCommand, TResult> : IRequestHandler<TCommand, TResult> 
+public abstract class CommandHandler<TCommand, TResult> : IRequestHandler<TCommand, TResult>, IHandlerBehaviorConfiguration
     where TCommand : IRequest<TResult>
 {
+    /// <summary>
+    /// Protected field for behavior configuration. Can be configured using behavior methods.
+    /// </summary>
+    protected HandlerBehaviorConfiguration BehaviorConfiguration { get; private set; }
+
+    /// <summary>
+    /// Internal method to get behavior configuration for mediator access.
+    /// </summary>
+    HandlerBehaviorConfiguration IHandlerBehaviorConfiguration.GetBehaviorConfiguration() => BehaviorConfiguration;
+
+    /// <summary>
+    /// Initializes a new instance of the CommandHandler class.
+    /// </summary>
+    protected CommandHandler()
+    {
+        BehaviorConfiguration = HandlerBehaviorConfiguration.Default();
+    }
     /// <summary>
     /// Protected method for processing the command asynchronously and returning a result.
     /// Override this method to implement specific command handling logic.
@@ -217,4 +312,65 @@ public abstract class CommandHandler<TCommand, TResult> : IRequestHandler<TComma
         // Default implementation - can be overridden for custom error handling
         return Task.CompletedTask;
     }
+
+    #region Behavior Configuration Methods
+
+    /// <summary>
+    /// Enables detailed logging for this command handler.
+    /// </summary>
+    protected void EnableDetailedLogging()
+    {
+        BehaviorConfiguration.EnableDetailedLogging = true;
+    }
+
+    /// <summary>
+    /// Enables performance tracking for this command handler.
+    /// </summary>
+    protected void EnablePerformanceTracking()
+    {
+        BehaviorConfiguration.EnablePerformanceTracking = true;
+    }
+
+    /// <summary>
+    /// Enables retry policy for this command handler.
+    /// </summary>
+    /// <param name="maxAttempts">Maximum number of retry attempts. Default is 3.</param>
+    /// <param name="delayMs">Delay between retries in milliseconds. Default is 1000ms.</param>
+    protected void EnableRetryPolicy(int maxAttempts = 3, int delayMs = 1000)
+    {
+        BehaviorConfiguration.EnableRetryPolicy = true;
+        BehaviorConfiguration.MaxRetryAttempts = maxAttempts;
+        BehaviorConfiguration.RetryDelayMs = delayMs;
+    }
+
+    /// <summary>
+    /// Enables transaction management for this command handler.
+    /// </summary>
+    protected void EnableTransaction()
+    {
+        BehaviorConfiguration.EnableTransaction = true;
+    }
+
+    /// <summary>
+    /// Sets a timeout for command execution.
+    /// </summary>
+    /// <param name="timeoutSeconds">Timeout in seconds.</param>
+    protected void SetTimeout(int timeoutSeconds)
+    {
+        if (timeoutSeconds <= 0)
+            throw new ArgumentException("Timeout must be greater than zero.", nameof(timeoutSeconds));
+        
+        BehaviorConfiguration.TimeoutSeconds = timeoutSeconds;
+    }
+
+    /// <summary>
+    /// Configures behavior settings using a configuration object.
+    /// </summary>
+    /// <param name="configuration">The behavior configuration.</param>
+    protected void ConfigureBehavior(HandlerBehaviorConfiguration configuration)
+    {
+        BehaviorConfiguration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+    }
+
+    #endregion
 }

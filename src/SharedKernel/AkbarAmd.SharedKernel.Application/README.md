@@ -28,7 +28,6 @@ This layer defines:
 - `CommandHandler<TCommand, TResult>`: Base class for command handlers with return values
 - `QueryHandler<TQuery, TResult>`: Base class for query handlers
 - `EventHandler<TEvent>`: Base class for event handlers
-- `DomainEventHandler<TEvent>`: Base class for domain event handlers
 
 ### Service Results
 - `ServiceResult`: Result model for operations without return data

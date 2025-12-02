@@ -19,16 +19,19 @@ namespace AkbarAmd.SharedKernel.Domain.BusinessRules;
 /// - Supports immutable rule evaluation
 /// - Aligns with SOLID principles (SRP, OCP)
 /// </summary>
-public abstract class BaseBusinessRule : IBusinessRule
+/// <typeparam name="TEntity">The type of entity this business rule validates</typeparam>
+public abstract class BaseBusinessRule<TEntity> : IBusinessRule<TEntity>
+    where TEntity : class
 {
     /// <summary>
-    /// Evaluates the business rule.
+    /// Evaluates the business rule against the specified entity.
     /// Derived classes must implement this method to provide the rule logic.
     /// </summary>
+    /// <param name="entity">The entity to validate</param>
     /// <returns>
     /// <c>true</c> if the rule is satisfied; otherwise, <c>false</c>.
     /// </returns>
-    public abstract bool IsSatisfied();
+    public abstract bool IsSatisfiedBy(TEntity entity);
 
     /// <summary>
     /// Gets the message describing the rule or reason for failure.

@@ -16,9 +16,26 @@ namespace AkbarAmd.SharedKernel.Application.Mediators;
 /// and external system integration after business operations are completed.
 /// </summary>
 /// <typeparam name="TEvent">The type of integration event to handle.</typeparam>
-public abstract class EventHandler<TEvent> : INotificationHandler<TEvent> 
+public abstract class EventHandler<TEvent> : INotificationHandler<TEvent>, IHandlerBehaviorConfiguration
     where TEvent : IEvent
 {
+    /// <summary>
+    /// Protected field for behavior configuration. Can be configured using behavior methods.
+    /// </summary>
+    protected HandlerBehaviorConfiguration BehaviorConfiguration { get; private set; }
+
+    /// <summary>
+    /// Internal method to get behavior configuration for mediator access.
+    /// </summary>
+    HandlerBehaviorConfiguration IHandlerBehaviorConfiguration.GetBehaviorConfiguration() => BehaviorConfiguration;
+
+    /// <summary>
+    /// Initializes a new instance of the EventHandler class.
+    /// </summary>
+    protected EventHandler()
+    {
+        BehaviorConfiguration = HandlerBehaviorConfiguration.Default();
+    }
     /// <summary>
     /// Protected method for handling the integration event asynchronously.
     /// Override this method to implement specific event handling logic.
@@ -111,5 +128,58 @@ public abstract class EventHandler<TEvent> : INotificationHandler<TEvent>
         // Default implementation - can be overridden for custom error handling
         return Task.CompletedTask;
     }
+
+    #region Behavior Configuration Methods
+
+    /// <summary>
+    /// Enables detailed logging for this event handler.
+    /// </summary>
+    protected void EnableDetailedLogging()
+    {
+        BehaviorConfiguration.EnableDetailedLogging = true;
+    }
+
+    /// <summary>
+    /// Enables performance tracking for this event handler.
+    /// </summary>
+    protected void EnablePerformanceTracking()
+    {
+        BehaviorConfiguration.EnablePerformanceTracking = true;
+    }
+
+    /// <summary>
+    /// Enables retry policy for this event handler.
+    /// </summary>
+    /// <param name="maxAttempts">Maximum number of retry attempts. Default is 3.</param>
+    /// <param name="delayMs">Delay between retries in milliseconds. Default is 1000ms.</param>
+    protected void EnableRetryPolicy(int maxAttempts = 3, int delayMs = 1000)
+    {
+        BehaviorConfiguration.EnableRetryPolicy = true;
+        BehaviorConfiguration.MaxRetryAttempts = maxAttempts;
+        BehaviorConfiguration.RetryDelayMs = delayMs;
+    }
+
+    /// <summary>
+    /// Sets a timeout for event processing.
+    /// </summary>
+    /// <param name="timeoutSeconds">Timeout in seconds.</param>
+    protected void SetTimeout(int timeoutSeconds)
+    {
+        if (timeoutSeconds <= 0)
+            throw new ArgumentException("Timeout must be greater than zero.", nameof(timeoutSeconds));
+        
+        BehaviorConfiguration.TimeoutSeconds = timeoutSeconds;
+    }
+
+    /// <summary>
+    /// Configures behavior settings using a configuration object.
+    /// </summary>
+    /// <param name="configuration">The behavior configuration.</param>
+    protected void ConfigureBehavior(HandlerBehaviorConfiguration configuration)
+    {
+        BehaviorConfiguration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+    }
+
+    #endregion
 }
 

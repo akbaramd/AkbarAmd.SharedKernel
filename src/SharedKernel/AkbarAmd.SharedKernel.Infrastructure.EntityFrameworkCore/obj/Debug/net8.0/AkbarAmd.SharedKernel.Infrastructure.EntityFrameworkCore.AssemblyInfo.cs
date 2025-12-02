@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyDescriptionAttribute(("Clean Architecture Infrastructure Layer - EF Core Integration, Repository Impleme" +
     "ntations, and Data Access"))]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.20.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.20+242201497ec95469a62bac08647620dab486fc44")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.20+0532ffd5897e553bffc94be932d40dd0231af06a")]
 [assembly: System.Reflection.AssemblyProductAttribute("AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.20.0")]

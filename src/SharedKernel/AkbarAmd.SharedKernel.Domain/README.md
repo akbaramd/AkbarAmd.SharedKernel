@@ -74,9 +74,12 @@ dotnet add package AkbarAmd.SharedKernel.Domain
 
 ## Usage Examples
 
-### Creating an Aggregate Root
+### Creating an Aggregate Root with Business Rules
 
 ```csharp
+using AkbarAmd.SharedKernel.Domain.AggregateRoots;
+using AkbarAmd.SharedKernel.Domain.BusinessRules;
+
 public class User : AggregateRoot<Guid>
 {
     public string Email { get; private set; }
@@ -87,18 +90,31 @@ public class User : AggregateRoot<Guid>
     public User(string email, string name)
     {
         Id = Guid.NewGuid();
+        
+        // Business rule validation - CheckRule is inherited from Entity base class
+        CheckRule(new EmailCannotBeEmptyRule(email));
+        CheckRule(new NameCannotBeEmptyRule(name));
+        
         Email = email;
         Name = name;
         
         // Raise domain event
-        RaiseDomainEvent(new UserCreatedEvent(Id, Email));
+        AddDomainEvent(new UserCreatedEvent(Id, Email));
     }
 
     public void UpdateName(string newName)
     {
+        // Business rule validation
         CheckRule(new NameCannotBeEmptyRule(newName));
         Name = newName;
-        RaiseDomainEvent(new UserNameChangedEvent(Id, newName));
+        AddDomainEvent(new UserNameChangedEvent(Id, newName));
+    }
+    
+    public void Deactivate()
+    {
+        CheckRule(new UserCanBeDeactivatedRule(IsActive));
+        IsActive = false;
+        AddDomainEvent(new UserDeactivatedEvent(Id));
     }
 }
 
