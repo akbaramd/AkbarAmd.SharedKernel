@@ -72,7 +72,43 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
         if (query == null)
             throw new ArgumentNullException(nameof(query));
 
-        return await _mediator.Send(query, cancellationToken);
+        var queryType = query.GetType();
+        var cacheConfig = GetCacheConfiguration(queryType);
+
+        // If caching is not enabled, directly send the query
+        if (!cacheConfig.Enabled)
+        {
+            return await _mediator.Send(query, cancellationToken);
+        }
+
+        // Generate cache key
+        var cacheKey = GenerateCacheKey(query, cacheConfig);
+
+        // Try to get from cache
+        if (_cache.TryGetValue(cacheKey, out TResult? cachedResult) && cachedResult != null)
+        {
+            _logger?.LogDebug("Cache hit for query type {QueryType} with key {CacheKey}", queryType.Name, cacheKey);
+            return cachedResult;
+        }
+
+        // Execute query
+        _logger?.LogDebug("Cache miss for query type {QueryType} with key {CacheKey}. Executing query.", queryType.Name, cacheKey);
+        var result = await _mediator.Send(query, cancellationToken);
+
+        // Cache the result
+        if (result != null)
+        {
+            var cacheOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cacheConfig.DurationMinutes)
+            };
+
+            _cache.Set(cacheKey, result, cacheOptions);
+            _logger?.LogDebug("Cached result for query type {QueryType} with key {CacheKey} for {Duration} minutes", 
+                queryType.Name, cacheKey, cacheConfig.DurationMinutes);
+        }
+
+        return result;
     }
 
     /// <inheritdoc />
