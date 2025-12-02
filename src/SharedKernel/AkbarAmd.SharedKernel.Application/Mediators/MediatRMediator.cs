@@ -54,14 +54,7 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
         if (command == null)
             throw new ArgumentNullException(nameof(command));
 
-        var commandType = command.GetType();
-        var behaviorConfig = GetBehaviorConfiguration(commandType);
-
-        return await ExecuteWithBehaviors(
-            async () => await _mediator.Send(command, cancellationToken),
-            commandType.Name,
-            behaviorConfig,
-            cancellationToken);
+        return await _mediator.Send(command, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -70,14 +63,7 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
         if (command == null)
             throw new ArgumentNullException(nameof(command));
 
-        var commandType = command.GetType();
-        var behaviorConfig = GetBehaviorConfiguration(commandType);
-
-        await ExecuteWithBehaviors(
-            async () => await _mediator.Send(command, cancellationToken),
-            commandType.Name,
-            behaviorConfig,
-            cancellationToken);
+        await _mediator.Send(command, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -86,48 +72,7 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
         if (query == null)
             throw new ArgumentNullException(nameof(query));
 
-        var queryType = query.GetType();
-        var cacheConfig = GetCacheConfiguration(queryType);
-
-        // If caching is not enabled, directly send the query
-        if (!cacheConfig.Enabled)
-        {
-            return await _mediator.Send(query, cancellationToken);
-        }
-
-        // Generate cache key
-        var cacheKey = GenerateCacheKey(query, cacheConfig);
-
-        // Try to get from cache
-        if (_cache.TryGetValue(cacheKey, out TResult? cachedResult) && cachedResult != null)
-        {
-            _logger?.LogDebug("Cache hit for query type {QueryType} with key {CacheKey}", queryType.Name, cacheKey);
-            return cachedResult;
-        }
-
-        // Execute query with behaviors
-        _logger?.LogDebug("Cache miss for query type {QueryType} with key {CacheKey}. Executing query.", queryType.Name, cacheKey);
-        var behaviorConfig = GetBehaviorConfiguration(queryType);
-        var result = await ExecuteWithBehaviors(
-            async () => await _mediator.Send(query, cancellationToken),
-            queryType.Name,
-            behaviorConfig,
-            cancellationToken);
-
-        // Cache the result
-        if (result != null)
-        {
-            var cacheOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(cacheConfig.DurationMinutes)
-            };
-
-            _cache.Set(cacheKey, result, cacheOptions);
-            _logger?.LogDebug("Cached result for query type {QueryType} with key {CacheKey} for {Duration} minutes", 
-                queryType.Name, cacheKey, cacheConfig.DurationMinutes);
-        }
-
-        return result;
+        return await _mediator.Send(query, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -136,20 +81,14 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
         if (@event == null)
             throw new ArgumentNullException(nameof(@event));
 
-        var eventType = @event.GetType();
-        var behaviorConfig = GetBehaviorConfiguration(eventType);
-
-        await ExecuteWithBehaviors(
-            async () => await _mediator.Publish(@event, cancellationToken),
-            eventType.Name,
-            behaviorConfig,
-            cancellationToken);
+        await _mediator.Publish(@event, cancellationToken);
     }
 
     /// <summary>
     /// Registers a cache configuration for a specific query type.
     /// </summary>
     /// <typeparam name="TQuery">The type of query.</typeparam>
+    /// <typeparam name="TResult">The type of query result.</typeparam>
     /// <param name="configuration">The cache configuration.</param>
     public void RegisterCacheConfiguration<TQuery, TResult>(QueryCacheConfiguration configuration) where TQuery : IQuery<TResult>
     {
@@ -179,6 +118,12 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
             // Get the handler type for this query
             var handlerType = typeof(IRequestHandler<,>).MakeGenericType(queryType, GetQueryResultType(queryType));
             var handler = _serviceProvider.GetService(handlerType);
+            
+            if (handler == null)
+            {
+                _logger?.LogDebug("Handler not found for query type {QueryType} with handler type {HandlerType}", queryType.Name, handlerType.Name);
+                return QueryCacheConfiguration.Disable();
+            }
             
             if (handler is IQueryHandlerConfiguration handlerConfig)
             {
@@ -225,8 +170,17 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
 
         // Default cache key generation: query type name + serialized query parameters
         var queryType = query.GetType();
-        var queryHash = JsonSerializer.Serialize(query).GetHashCode();
-        return $"Query:{queryType.Name}:{queryHash}";
+        var options = new JsonSerializerOptions 
+        { 
+            WriteIndented = false,
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+        };
+        var serialized = JsonSerializer.Serialize(query, options);
+        // Use a stable hash of the serialized string for cache keys
+        // Convert to base64 to ensure same query content produces same cache key
+        var bytes = System.Text.Encoding.UTF8.GetBytes(serialized);
+        var hash = Convert.ToBase64String(bytes).Replace("/", "_").Replace("+", "-").TrimEnd('=');
+        return $"Query:{queryType.Name}:{hash}";
     }
 
     /// <summary>
@@ -250,7 +204,7 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
                 var handlerType = typeof(IRequestHandler<,>).MakeGenericType(requestType, resultType);
                 var handler = _serviceProvider.GetService(handlerType);
                 
-                if (handler is IHandlerBehaviorConfiguration behaviorConfig)
+                if (handler != null && handler is IHandlerBehaviorConfiguration behaviorConfig)
                 {
                     return behaviorConfig.GetBehaviorConfiguration();
                 }
@@ -264,19 +218,20 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
                 var handlerType = typeof(IRequestHandler<,>).MakeGenericType(requestType, resultType);
                 var handler = _serviceProvider.GetService(handlerType);
                 
-                if (handler is IHandlerBehaviorConfiguration behaviorConfig)
+                if (handler != null && handler is IHandlerBehaviorConfiguration behaviorConfig)
                 {
                     return behaviorConfig.GetBehaviorConfiguration();
                 }
             }
             
             // Check if it's a command without result
-            if (interfaces.Any(i => i == typeof(ICommand)))
+            // ICommand is a class, not an interface, so check if the type inherits from it
+            if (typeof(ICommand).IsAssignableFrom(requestType))
             {
                 var handlerType = typeof(IRequestHandler<>).MakeGenericType(requestType);
                 var handler = _serviceProvider.GetService(handlerType);
                 
-                if (handler is IHandlerBehaviorConfiguration behaviorConfig)
+                if (handler != null && handler is IHandlerBehaviorConfiguration behaviorConfig)
                 {
                     return behaviorConfig.GetBehaviorConfiguration();
                 }
@@ -288,7 +243,7 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
                 var handlerType = typeof(INotificationHandler<>).MakeGenericType(requestType);
                 var handler = _serviceProvider.GetService(handlerType);
                 
-                if (handler is IHandlerBehaviorConfiguration behaviorConfig)
+                if (handler != null && handler is IHandlerBehaviorConfiguration behaviorConfig)
                 {
                     return behaviorConfig.GetBehaviorConfiguration();
                 }
@@ -312,7 +267,7 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The result of the operation.</returns>
     private async Task<TResult> ExecuteWithBehaviors<TResult>(
-        Func<Task<TResult>> operation,
+        Func<CancellationToken, Task<TResult>> operation,
         string operationName,
         HandlerBehaviorConfiguration behaviorConfig,
         CancellationToken cancellationToken)
@@ -350,7 +305,7 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
             {
                 try
                 {
-                    var result = await operation();
+                    var result = await operation(effectiveCancellationToken);
                     
                     if (behaviorConfig.EnablePerformanceTracking && startTime.HasValue)
                     {
@@ -366,16 +321,24 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
                     
                     return result;
                 }
-                catch (Exception ex) when (attempt < behaviorConfig.MaxRetryAttempts)
+                catch (Exception ex)
                 {
                     lastException = ex;
-                    if (behaviorConfig.EnableDetailedLogging)
+                    if (attempt < behaviorConfig.MaxRetryAttempts)
                     {
-                        _logger?.LogWarning(ex, "{OperationName} failed on attempt {Attempt}/{MaxAttempts}. Retrying in {Delay}ms...",
-                            operationName, attempt, behaviorConfig.MaxRetryAttempts, behaviorConfig.RetryDelayMs);
+                        if (behaviorConfig.EnableDetailedLogging)
+                        {
+                            _logger?.LogWarning(ex, "{OperationName} failed on attempt {Attempt}/{MaxAttempts}. Retrying in {Delay}ms...",
+                                operationName, attempt, behaviorConfig.MaxRetryAttempts, behaviorConfig.RetryDelayMs);
+                        }
+                        
+                        await Task.Delay(behaviorConfig.RetryDelayMs, effectiveCancellationToken);
                     }
-                    
-                    await Task.Delay(behaviorConfig.RetryDelayMs, effectiveCancellationToken);
+                    else
+                    {
+                        // Last attempt failed, break out of loop
+                        break;
+                    }
                 }
             }
             
@@ -392,7 +355,7 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
             // No retry - execute once
             try
             {
-                var result = await operation();
+                var result = await operation(effectiveCancellationToken);
                 
                 if (behaviorConfig.EnablePerformanceTracking && startTime.HasValue)
                 {
@@ -423,7 +386,7 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     private async Task ExecuteWithBehaviors(
-        Func<Task> operation,
+        Func<CancellationToken, Task> operation,
         string operationName,
         HandlerBehaviorConfiguration behaviorConfig,
         CancellationToken cancellationToken)
@@ -461,7 +424,7 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
             {
                 try
                 {
-                    await operation();
+                    await operation(effectiveCancellationToken);
                     
                     if (behaviorConfig.EnablePerformanceTracking && startTime.HasValue)
                     {
@@ -477,16 +440,24 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
                     
                     return;
                 }
-                catch (Exception ex) when (attempt < behaviorConfig.MaxRetryAttempts)
+                catch (Exception ex)
                 {
                     lastException = ex;
-                    if (behaviorConfig.EnableDetailedLogging)
+                    if (attempt < behaviorConfig.MaxRetryAttempts)
                     {
-                        _logger?.LogWarning(ex, "{OperationName} failed on attempt {Attempt}/{MaxAttempts}. Retrying in {Delay}ms...",
-                            operationName, attempt, behaviorConfig.MaxRetryAttempts, behaviorConfig.RetryDelayMs);
+                        if (behaviorConfig.EnableDetailedLogging)
+                        {
+                            _logger?.LogWarning(ex, "{OperationName} failed on attempt {Attempt}/{MaxAttempts}. Retrying in {Delay}ms...",
+                                operationName, attempt, behaviorConfig.MaxRetryAttempts, behaviorConfig.RetryDelayMs);
+                        }
+                        
+                        await Task.Delay(behaviorConfig.RetryDelayMs, effectiveCancellationToken);
                     }
-                    
-                    await Task.Delay(behaviorConfig.RetryDelayMs, effectiveCancellationToken);
+                    else
+                    {
+                        // Last attempt failed, break out of loop
+                        break;
+                    }
                 }
             }
             
@@ -503,7 +474,7 @@ public sealed class MediatRMediator : Contracts.ICqrsMediator
             // No retry - execute once
             try
             {
-                await operation();
+                await operation(effectiveCancellationToken);
                 
                 if (behaviorConfig.EnablePerformanceTracking && startTime.HasValue)
                 {
