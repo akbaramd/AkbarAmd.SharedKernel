@@ -24,6 +24,11 @@ bld/
 [Ll]og/
 [Ll]ogs/
 
+/obj/
+/bin/
+/out/
+
+
 # .NET build artifacts
 **/bin/
 **/obj/
