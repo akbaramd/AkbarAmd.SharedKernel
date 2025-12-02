@@ -16,7 +16,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyDescriptionAttribute(("Clean Architecture Application Layer - CQRS, MediatR, Validation, and Application" +
     " Services"))]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.20.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.20+bb2ff294a66a8c98c3aa24eb2908630b390b9d43")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.20+242201497ec95469a62bac08647620dab486fc44")]
 [assembly: System.Reflection.AssemblyProductAttribute("AkbarAmd.SharedKernel.Application")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AkbarAmd.SharedKernel.Application")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.20.0")]

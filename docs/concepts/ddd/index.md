@@ -7,7 +7,8 @@ Domain-Driven Design (DDD) is an approach to software development that centers t
 This section covers the core DDD concepts and patterns implemented in the Shared Kernel modules:
 
 - **[Repository](repository.md)** - Abstraction layer for data access
-- **[Specifications](specifications.md)** - Encapsulate business rules and query logic
+- **[Business Rules vs Specifications](business-rules-vs-specifications.md)** - Understand when to use business rules vs specifications
+- **[Specifications](specifications.md)** - Encapsulate query logic and reusable predicates
 - **[Aggregate Root](aggregate-root.md)** - Consistency boundaries and domain entities
 - **[Domain Events](domain-events.md)** - Communicate changes between aggregates
 - **[Value Objects](value-objects.md)** - Immutable domain concepts
@@ -33,9 +34,10 @@ dotnet add package AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore
 
 1. Start with [Aggregate Root](aggregate-root.md) to understand domain entities
 2. Learn about [Value Objects](value-objects.md) for domain concepts
-3. Use [Repository](repository.md) pattern for data access
-4. Build complex queries with [Specifications](specifications.md)
-5. Communicate changes with [Domain Events](domain-events.md)
+3. Understand [Business Rules vs Specifications](business-rules-vs-specifications.md) for validation and querying
+4. Use [Repository](repository.md) pattern for data access
+5. Build complex queries with [Specifications](specifications.md)
+6. Communicate changes with [Domain Events](domain-events.md)
 
 ## Related Topics
 

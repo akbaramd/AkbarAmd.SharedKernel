@@ -10,6 +10,7 @@ The Domain layer is the core of Clean Architecture, containing business logic, d
 
 This layer defines:
 - **Business entities** and their relationships
+- **Business rules** for domain invariants and validation
 - **Domain rules** and business invariants
 - **Value objects** for domain concepts
 - **Domain events** for domain state changes
@@ -35,9 +36,15 @@ This layer defines:
 - Built-in domain event management within aggregate roots
 - Thread-safe domain event collection
 
+### Business Rules
+- `IBusinessRule`: Interface for domain business rules and invariants
+- `BaseBusinessRule`: Base class for implementing business rules
+- `DomainBusinessRuleValidationException`: Exception thrown when business rules are violated
+
 ### Specifications
 - `ISpecification<T>`: Specification pattern interface
-- `CriteriaBuilder<T>`: Fluent API for building query criteria
+- `BaseSpecification<T>`: Base class for building specifications
+- `FluentSpecificationBuilder<T>`: Fluent API for building query criteria
 - `CriteriaChain<T>`: Chain multiple criteria together
 
 ### Outbox Pattern
@@ -89,12 +96,26 @@ public class User : AggregateRoot<Guid>
 
     public void UpdateName(string newName)
     {
-        if (string.IsNullOrWhiteSpace(newName))
-            throw new DomainBusinessRuleValidationException("Name cannot be empty");
-            
+        CheckRule(new NameCannotBeEmptyRule(newName));
         Name = newName;
         RaiseDomainEvent(new UserNameChangedEvent(Id, newName));
     }
+}
+
+// Business Rule Implementation
+using AkbarAmd.SharedKernel.Domain.BusinessRules;
+
+public class NameCannotBeEmptyRule : BaseBusinessRule
+{
+    private readonly string _name;
+    
+    public NameCannotBeEmptyRule(string name)
+    {
+        _name = name;
+    }
+    
+    public override bool IsSatisfied() => !string.IsNullOrWhiteSpace(_name);
+    public override string Message => "Name cannot be empty";
 }
 ```
 

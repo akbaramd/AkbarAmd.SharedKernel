@@ -238,6 +238,39 @@
             
             </summary>
         </member>
+        <member name="T:AkbarAmd.SharedKernel.Domain.BusinessRules.BaseBusinessRule">
+            <summary>
+            Base implementation of IBusinessRule that provides common functionality
+            for building domain business rules with consistent structure.
+            
+            This base class follows DDD principles:
+            - Encapsulates domain invariants
+            - Provides consistent error message handling
+            - Supports immutable rule evaluation
+            - Aligns with SOLID principles (SRP, OCP)
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.BusinessRules.BaseBusinessRule.IsSatisfied">
+            <summary>
+            Evaluates the business rule.
+            Derived classes must implement this method to provide the rule logic.
+            </summary>
+            <returns>
+            <c>true</c> if the rule is satisfied; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Domain.BusinessRules.BaseBusinessRule.Message">
+            <summary>
+            Gets the message describing the rule or reason for failure.
+            Derived classes must provide a meaningful error message.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.BusinessRules.BaseBusinessRule.ToString">
+            <summary>
+            Returns a string representation of the business rule.
+            </summary>
+            <returns>A string that represents the current business rule.</returns>
+        </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Audits.IConcurrentAudit">
             <summary>
             Contract for entities that require concurrency audit control
@@ -298,6 +331,33 @@
             Who deleted the entity (nullable)
             </summary>
         </member>
+        <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.BusinessRules.IBusinessRule">
+            <summary>
+            Defines a contract for a business rule within the domain.
+            Business rules encapsulate domain-specific validations or constraints
+            that must be satisfied to ensure the integrity of domain entities or operations.
+            
+            This interface aligns with DDD principles:
+            - Encapsulates domain invariants and constraints
+            - Enforces business rules at the domain level
+            - Provides clear error messages for violations
+            - Used for fail-fast validation during entity construction and state transitions
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.BusinessRules.IBusinessRule.IsSatisfied">
+            <summary>
+            Evaluates the business rule.
+            </summary>
+            <returns>
+            <c>true</c> if the rule is satisfied; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Domain.Contracts.BusinessRules.IBusinessRule.Message">
+            <summary>
+            Gets the message describing the rule or reason for failure.
+            This message is intended to be user-friendly or useful for logging purposes.
+            </summary>
+        </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.IAggregateRoot">
             <summary>
             Base contract for all aggregate roots without generic constraints.
@@ -325,27 +385,6 @@
             Extends base aggregate functionality with identity management.
             </summary>
             <typeparam name="TId">Identifier type implementing IEquatable.</typeparam>
-        </member>
-        <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.IBusinessRule">
-            <summary>
-            Defines a contract for a business rule within the domain.
-            Business rules encapsulate domain-specific validations or constraints
-            that must be satisfied to ensure the integrity of domain entities or operations.
-            </summary>
-        </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.IBusinessRule.IsSatisfied">
-            <summary>
-            Evaluates the business rule.
-            </summary>
-            <returns>
-            <c>true</c> if the rule is satisfied; otherwise, <c>false</c>.
-            </returns>
-        </member>
-        <member name="P:AkbarAmd.SharedKernel.Domain.Contracts.IBusinessRule.Message">
-            <summary>
-            Gets the message describing the rule or reason for failure.
-            This message is intended to be user-friendly or useful for logging purposes.
-            </summary>
         </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.IEntity">
             <summary>
@@ -1034,7 +1073,7 @@
             <param name="right">Right entity.</param>
             <returns>True if entities are not equal; otherwise, false.</returns>
         </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Entity.CheckRule(AkbarAmd.SharedKernel.Domain.Contracts.IBusinessRule,System.String)">
+        <member name="M:AkbarAmd.SharedKernel.Domain.Entity.CheckRule(AkbarAmd.SharedKernel.Domain.Contracts.BusinessRules.IBusinessRule,System.String)">
             <summary>
             Checks a business rule and throws if broken.
             </summary>
@@ -1894,6 +1933,29 @@
             <param name="snapshotVersion">The version of the snapshot that was restored.</param>
             <param name="restoredBy">Identifier of the user/system that restored the snapshot.</param>
         </member>
+        <member name="T:AkbarAmd.SharedKernel.Domain.Exceptions.DomainBusinessRuleValidationException">
+            <summary>
+            Exception thrown when a domain business rule is violated.
+            This exception encapsulates the broken rule to provide context about the violation.
+            </summary>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Domain.Exceptions.DomainBusinessRuleValidationException.BrokenRule">
+            <summary>
+            Gets the business rule that was violated.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Exceptions.DomainBusinessRuleValidationException.#ctor(AkbarAmd.SharedKernel.Domain.Contracts.BusinessRules.IBusinessRule)">
+            <summary>
+            Initializes a new instance of the <see cref="T:AkbarAmd.SharedKernel.Domain.Exceptions.DomainBusinessRuleValidationException"/> class.
+            </summary>
+            <param name="brokenRule">The business rule that was violated.</param>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Exceptions.DomainBusinessRuleValidationException.ToString">
+            <summary>
+            Returns a string representation of the exception, including the rule name and message.
+            </summary>
+            <returns>A string that represents the current exception.</returns>
+        </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Outbox.Events.OutboxMessageContentUpdatedEvent">
             <summary>
             Domain event raised when an OutboxMessage content is updated.
@@ -2283,7 +2345,7 @@
             Helper for empty string check.
             </summary>
         </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.ValueObject.CheckRule(AkbarAmd.SharedKernel.Domain.Contracts.IBusinessRule,System.String)">
+        <member name="M:AkbarAmd.SharedKernel.Domain.ValueObject.CheckRule(AkbarAmd.SharedKernel.Domain.Contracts.BusinessRules.IBusinessRule,System.String)">
             <summary>
             Checks a business rule and throws if broken.
             </summary>

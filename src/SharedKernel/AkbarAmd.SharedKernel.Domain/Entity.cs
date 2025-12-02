@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using AkbarAmd.SharedKernel.Domain.Contracts;
+using AkbarAmd.SharedKernel.Domain.Contracts.BusinessRules;
 using AkbarAmd.SharedKernel.Domain.Exceptions;
 
 namespace AkbarAmd.SharedKernel.Domain

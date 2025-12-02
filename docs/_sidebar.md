@@ -9,6 +9,7 @@
   * [DDD Overview](concepts/ddd/index.md)
   * [Repository](concepts/ddd/repository.md)
   * [Specifications](concepts/ddd/specifications.md)
+  * [Business Rules vs Specifications](concepts/ddd/business-rules-vs-specifications.md)
   * [Aggregate Root](concepts/ddd/aggregate-root.md)
   * [Domain Events](concepts/ddd/domain-events.md)
   * [Value Objects](concepts/ddd/value-objects.md)

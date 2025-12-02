@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>AkbarAmd.SharedKernel.Domain</PackageId>
-        <Version>1.0.20</Version>
-        <AssemblyVersion>1.0.20.0</AssemblyVersion>
-        <FileVersion>1.0.20.0</FileVersion>
+        <Version>1.0.21</Version>
+        <AssemblyVersion>1.0.21.0</AssemblyVersion>
+        <FileVersion>1.0.21.0</FileVersion>
         <Authors>Akbar Ahmadi Saray</Authors>
         <Company>AkbarAhmadi</Company>
         <Description>Clean Architecture Domain Layer - Core Domain Models, Entities, Value Objects, and Domain Events</Description>
@@ -20,7 +20,18 @@
         <RepositoryUrl>https://github.com/akbaramd/AkbarAmd.SharedKernel.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>clean-architecture;ddd;domain-driven-design;entities;value-objects;domain-events;aggregate-roots</PackageTags>
-        <PackageReleaseNotes>Version 1.0.19: 
+        <PackageReleaseNotes>Version 1.0.21:
+- Reorganized Business Rules structure to align with DDD principles
+- Moved IBusinessRule to Contracts/BusinessRules namespace
+- Added BaseBusinessRule abstract class for consistent rule implementation
+- Updated Entity and ValueObject to use new BusinessRules namespace
+- Enhanced documentation with Business Rules vs Specifications guide
+- Improved namespace organization matching Specifications pattern structure
+
+Version 1.0.20:
+- Minor updates and bug fixes
+
+Version 1.0.19: 
 - Added comprehensive nested includes support with IncludeChain and ThenInclude functionality
 - Enhanced FluentSpecificationBuilder with IncludeChain method for nested include chains
 - Added IncludeChainBuilder for fluent API support of nested includes

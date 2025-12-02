@@ -5,20 +5,35 @@
  * Year: 2025
  */
 
-using AkbarAmd.SharedKernel.Domain.Contracts;
+using AkbarAmd.SharedKernel.Domain.Contracts.BusinessRules;
 
 namespace AkbarAmd.SharedKernel.Domain.Exceptions
 {
+    /// <summary>
+    /// Exception thrown when a domain business rule is violated.
+    /// This exception encapsulates the broken rule to provide context about the violation.
+    /// </summary>
     public class DomainBusinessRuleValidationException : Exception
     {
+        /// <summary>
+        /// Gets the business rule that was violated.
+        /// </summary>
         public IBusinessRule BrokenRule { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DomainBusinessRuleValidationException"/> class.
+        /// </summary>
+        /// <param name="brokenRule">The business rule that was violated.</param>
         public DomainBusinessRuleValidationException(IBusinessRule brokenRule)
             : base(brokenRule.Message)
         {
             BrokenRule = brokenRule;
         }
 
+        /// <summary>
+        /// Returns a string representation of the exception, including the rule name and message.
+        /// </summary>
+        /// <returns>A string that represents the current exception.</returns>
         public override string ToString()
         {
             return $"{BrokenRule.GetType().Name}: {BrokenRule.Message}";

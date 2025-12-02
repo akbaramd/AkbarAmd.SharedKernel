@@ -119,12 +119,26 @@ public class User : AggregateRoot<Guid>
 
     public void UpdateName(string newName)
     {
-        if (string.IsNullOrWhiteSpace(newName))
-            throw new DomainBusinessRuleValidationException("Name cannot be empty");
-            
+        CheckRule(new NameCannotBeEmptyRule(newName));
         Name = newName;
         RaiseDomainEvent(new UserNameChangedEvent(Id, newName));
     }
+}
+
+// Business Rule Implementation
+using AkbarAmd.SharedKernel.Domain.BusinessRules;
+
+public class NameCannotBeEmptyRule : BaseBusinessRule
+{
+    private readonly string _name;
+    
+    public NameCannotBeEmptyRule(string name)
+    {
+        _name = name;
+    }
+    
+    public override bool IsSatisfied() => !string.IsNullOrWhiteSpace(_name);
+    public override string Message => "Name cannot be empty";
 
     public void Deactivate()
     {
@@ -158,9 +172,7 @@ public class Order : FullAggregateRoot<Guid>
 
     public void AddItem(Product product, int quantity)
     {
-        if (Status != OrderStatus.Draft)
-            throw new DomainBusinessRuleValidationException("Cannot modify confirmed order");
-            
+        CheckRule(new OrderCanBeModifiedRule(Status));
         var item = new OrderItem(product.Id, product.Price, quantity);
         _items.Add(item);
         TotalAmount = _items.Sum(i => i.Subtotal);
@@ -170,12 +182,52 @@ public class Order : FullAggregateRoot<Guid>
 
     public void Confirm()
     {
-        if (_items.Count == 0)
-            throw new DomainBusinessRuleValidationException("Cannot confirm empty order");
-            
+        CheckRule(new OrderCannotBeEmptyRule(_items.Count));
         Status = OrderStatus.Confirmed;
         RaiseDomainEvent(new OrderConfirmedEvent(Id, TotalAmount));
     }
+}
+
+// Business Rule Implementations
+using AkbarAmd.SharedKernel.Domain.BusinessRules;
+
+public class OrderCanBeModifiedRule : BaseBusinessRule
+{
+    private readonly OrderStatus _status;
+    
+    public OrderCanBeModifiedRule(OrderStatus status)
+    {
+        _status = status;
+    }
+    
+    public override bool IsSatisfied() => _status == OrderStatus.Draft;
+    public override string Message => "Cannot modify confirmed order";
+}
+
+public class OrderCannotBeEmptyRule : BaseBusinessRule
+{
+    private readonly int _itemCount;
+    
+    public OrderCannotBeEmptyRule(int itemCount)
+    {
+        _itemCount = itemCount;
+    }
+    
+    public override bool IsSatisfied() => _itemCount > 0;
+    public override string Message => "Cannot confirm empty order";
+}
+
+public class EmailCannotBeEmptyRule : BaseBusinessRule
+{
+    private readonly string _email;
+    
+    public EmailCannotBeEmptyRule(string email)
+    {
+        _email = email;
+    }
+    
+    public override bool IsSatisfied() => !string.IsNullOrWhiteSpace(_email);
+    public override string Message => "Email cannot be empty";
 }
 ```
 
@@ -186,9 +238,7 @@ public class User : AggregateRoot<Guid>
 {
     public void ChangeEmail(string newEmail)
     {
-        if (string.IsNullOrWhiteSpace(newEmail))
-            throw new DomainBusinessRuleValidationException("Email cannot be empty");
-            
+        CheckRule(new EmailCannotBeEmptyRule(newEmail));
         var oldEmail = Email;
         Email = newEmail;
         

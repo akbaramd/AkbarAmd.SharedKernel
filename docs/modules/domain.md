@@ -6,6 +6,7 @@ The Domain layer is the core of the Shared Kernel, containing business logic, do
 
 This module defines:
 - **Business entities** and their relationships
+- **Business rules** for domain invariants and validation
 - **Domain rules** and business invariants
 - **Value objects** for domain concepts
 - **Domain events** for domain state changes
@@ -34,10 +35,17 @@ This module defines:
 - Built-in domain event management within aggregate roots
 - Thread-safe domain event collection
 
+### Business Rules
+
+- `IBusinessRule`: Interface for domain business rules and invariants
+- `BaseBusinessRule`: Base class for implementing business rules
+- `DomainBusinessRuleValidationException`: Exception thrown when business rules are violated
+
 ### Specifications
 
 - `ISpecification<T>`: Specification pattern interface
-- `CriteriaBuilder<T>`: Fluent API for building query criteria
+- `BaseSpecification<T>`: Base class for building specifications
+- `FluentSpecificationBuilder<T>`: Fluent API for building query criteria
 - `CriteriaChain<T>`: Chain multiple criteria together
 
 ### Outbox Pattern
@@ -91,22 +99,37 @@ public class User : AggregateRoot<Guid>
 
     public void UpdateName(string newName)
     {
-        if (string.IsNullOrWhiteSpace(newName))
-            throw new DomainBusinessRuleValidationException("Name cannot be empty");
-            
+        CheckRule(new NameCannotBeEmptyRule(newName));
         Name = newName;
         RaiseDomainEvent(new UserNameChangedEvent(Id, newName));
     }
+}
+
+// Business Rule Implementation
+using AkbarAmd.SharedKernel.Domain.BusinessRules;
+
+public class NameCannotBeEmptyRule : BaseBusinessRule
+{
+    private readonly string _name;
+    
+    public NameCannotBeEmptyRule(string name)
+    {
+        _name = name;
+    }
+    
+    public override bool IsSatisfied() => !string.IsNullOrWhiteSpace(_name);
+    public override string Message => "Name cannot be empty";
 }
 ```
 
 ## Related Concepts
 
-- [Aggregate Root](concepts/aggregate-root.md) - Learn about aggregate roots
-- [Domain Events](concepts/domain-events.md) - Understand domain events
-- [Value Objects](concepts/value-objects.md) - See how value objects work
-- [Specifications](concepts/specifications.md) - Build complex queries
-- [Repository](concepts/repository.md) - Use repositories with domain entities
+- [Aggregate Root](concepts/ddd/aggregate-root.md) - Learn about aggregate roots
+- [Domain Events](concepts/ddd/domain-events.md) - Understand domain events
+- [Value Objects](concepts/ddd/value-objects.md) - See how value objects work
+- [Business Rules vs Specifications](concepts/ddd/business-rules-vs-specifications.md) - Understand when to use business rules vs specifications
+- [Specifications](concepts/ddd/specifications.md) - Build complex queries
+- [Repository](concepts/ddd/repository.md) - Use repositories with domain entities
 
 ## Dependencies
 
