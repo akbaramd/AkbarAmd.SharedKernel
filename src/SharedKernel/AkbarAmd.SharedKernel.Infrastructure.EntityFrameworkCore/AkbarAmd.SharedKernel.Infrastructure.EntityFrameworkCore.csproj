@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore</PackageId>
-        <Version>1.0.20</Version>
-        <AssemblyVersion>1.0.20.0</AssemblyVersion>
-        <FileVersion>1.0.20.0</FileVersion>
+        <Version>1.0.23</Version>
+        <AssemblyVersion>1.0.23.0</AssemblyVersion>
+        <FileVersion>1.0.23.0</FileVersion>
         <Authors>Akbar Ahmadi Saray</Authors>
         <Company>AkbarAhmadi</Company>
         <Description>Clean Architecture Infrastructure Layer - EF Core Integration, Repository Implementations, and Data Access</Description>
@@ -20,7 +20,10 @@
         <RepositoryUrl>https://github.com/akbaramd/AkbarAmd.SharedKernel.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>clean-architecture;infrastructure;ef-core;entity-framework;repositories;data-access;specifications</PackageTags>
-        <PackageReleaseNotes>Version 1.0.19: 
+        <PackageReleaseNotes>Version 1.0.23:
+- Synchronized version with Domain and Application layers
+
+Version 1.0.19: 
 - Enhanced EfCoreSpecificationEvaluator with full support for nested include chains
 - Added automatic handling of nullable navigation properties in ThenInclude chains
 - Improved include chain evaluation with proper type resolution
