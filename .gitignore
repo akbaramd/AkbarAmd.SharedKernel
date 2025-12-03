@@ -86,6 +86,17 @@ artifacts/
 **/*.nuget.g.props
 **/*.nuget.g.targets
 **/rider.project.restore.info
+**/*.AssemblyInfo.cs
+**/*.AssemblyInfoInputs.cache
+**/*.deps.json
+**/*.xml
+**/*.sourcelink.json
+**/ref/
+**/refint/
+**/*.GeneratedMSBuildEditorConfig.editorconfig
+**/*.assets.cache
+**/*.csproj.CoreCompileInputs.cache
+**/*.csproj.AssemblyReference.cache
 
 # Node.js
 node_modules/
