@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "qr1ZNMlcwOk=",
+  "dgSpecHash": "ANXhG9ExgsM=",
   "success": true,
   "projectFilePath": "E:\\projects\\CleanArchitecture\\src\\SharedKernel\\AkbarAmd.SharedKernel.Application\\AkbarAmd.SharedKernel.Application.csproj",
   "expectedPackageFiles": [
@@ -61,7 +61,8 @@
     "C:\\Users\\akbar\\.nuget\\packages\\system.collections.immutable\\1.7.1\\system.collections.immutable.1.7.1.nupkg.sha512",
     "C:\\Users\\akbar\\.nuget\\packages\\system.diagnostics.diagnosticsource\\8.0.1\\system.diagnostics.diagnosticsource.8.0.1.nupkg.sha512",
     "C:\\Users\\akbar\\.nuget\\packages\\system.diagnostics.eventlog\\8.0.1\\system.diagnostics.eventlog.8.0.1.nupkg.sha512",
-    "C:\\Users\\akbar\\.nuget\\packages\\system.linq.dynamic.core\\1.4.6\\system.linq.dynamic.core.1.4.6.nupkg.sha512"
+    "C:\\Users\\akbar\\.nuget\\packages\\system.linq.dynamic.core\\1.4.6\\system.linq.dynamic.core.1.4.6.nupkg.sha512",
+    "C:\\Users\\akbar\\.nuget\\packages\\akbaramd.sharedkernel.domain\\1.0.25\\akbaramd.sharedkernel.domain.1.0.25.nupkg.sha512"
   ],
   "logs": []
 }

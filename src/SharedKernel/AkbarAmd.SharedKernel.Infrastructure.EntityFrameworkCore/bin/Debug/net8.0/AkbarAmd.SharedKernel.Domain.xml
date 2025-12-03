@@ -488,65 +488,6 @@
             <param name="cancellationToken">Cancellation token</param>
             <returns>Number of entities deleted</returns>
         </member>
-        <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1">
-            <summary>
-            Base implementation of ISpecification that provides common functionality
-            for building domain specifications with criteria only.
-            Supports both legacy AddCriteria (AND-based) and new Where() fluent API for complex criteria.
-            Pure domain specification - no infrastructure concerns (includes, sorting, pagination).
-            </summary>
-        </member>
-        <member name="P:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.Criteria">
-            <summary>
-            Gets the criteria expression that defines the business rule or filter.
-            Combines legacy AddCriteria expressions with Where() fluent API expressions.
-            </summary>
-        </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.IsSatisfiedBy(`0)">
-            <summary>
-            Determines whether a candidate object satisfies the specification.
-            This is the classic DDD method for in-memory validation and domain checks.
-            Compiles the criteria expression and evaluates it against the candidate.
-            </summary>
-            <param name="candidate">The candidate object to evaluate.</param>
-            <returns>True if the candidate satisfies the specification; otherwise, false.</returns>
-        </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.ToExpression">
-            <summary>
-            Converts the specification to an expression tree for use in queries.
-            This is an alias for the Criteria property, provided for clarity and API consistency.
-            </summary>
-            <returns>The criteria expression, or null if no criteria are defined.</returns>
-        </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.AddCriteria(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
-            <summary>
-            Legacy API: Adds a criteria expression that will be combined with AND.
-            This is backward-compatible. For complex criteria with OR/NOT, use the Where() method.
-            </summary>
-        </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.Where(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
-            <summary>
-            Entry point for fluent API: Starts a criteria chain with an initial expression.
-            Example: Where(p => p.IsActive).And(p => p.Category == "Electronics").Or(p => p.Price > 100)
-            </summary>
-        </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.Where(System.Func{AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain{`0},AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain{`0}})">
-            <summary>
-            Entry point for fluent API: Starts a criteria chain using a builder function.
-            Example: Where(b => b.And(p => p.IsActive).Or(p => p.Stock > 0))
-            </summary>
-        </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.MergeIntoTree(AkbarAmd.SharedKernel.Domain.Specifications.Internal.ICriteriaNode{`0},System.Boolean)">
-            <summary>
-            Merges a new subtree into the criteria tree.
-            </summary>
-        </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification`1.ReplaceInTree(AkbarAmd.SharedKernel.Domain.Specifications.Internal.ICriteriaNode{`0},AkbarAmd.SharedKernel.Domain.Specifications.Internal.ICriteriaNode{`0})">
-            <summary>
-            Replaces an old subtree with a new one in the criteria tree.
-            Used when a chain's root is updated (e.g., when Or/And is called).
-            </summary>
-        </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.AndSpecification`1">
             <summary>
             Composite specification that combines two specifications with AND logic.
@@ -718,8 +659,15 @@
         </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain`1">
             <summary>
-            Fluent interface for chaining criteria operations (AND, OR, NOT, Group, OrGroup).
+            Fluent interface for chaining criteria operations (Where, AND, OR, AndGroup, OrGroup).
             Returned by Where() method to enable fluent API.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain`1.Where(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            Starts a criteria chain with an initial expression.
+            Required as the first operation in AndGroup/OrGroup contexts.
+            Example: AndGroup(g => g.Where(x => x.IsActive).Or(x => x.IsPublished))
             </summary>
         </member>
         <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain`1.And(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
@@ -732,21 +680,18 @@
             Adds an OR condition to the criteria chain.
             </summary>
         </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain`1.Not(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain`1.AndGroup(System.Func{AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain{`0},AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain{`0}})">
             <summary>
-            Adds a NOT condition to the criteria chain.
-            </summary>
-        </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain`1.Group(System.Func{AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain{`0},AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain{`0}})">
-            <summary>
-            Groups multiple conditions with AND and combines the group with the current root using AND.
-            Example: Group(g => g.And(A).And(B)) creates (A AND B) AND (existing root)
+            Groups multiple conditions and combines the group with the current root using AND.
+            Groups must start with Where(), then can use And() or Or().
+            Example: AndGroup(g => g.Where(A).And(B).Or(C)) creates (A AND B OR C) AND (existing root)
             </summary>
         </member>
         <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain`1.OrGroup(System.Func{AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain{`0},AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain{`0}})">
             <summary>
-            Groups multiple conditions with AND and combines the group with the current root using OR.
-            Example: OrGroup(g => g.And(A).And(B)) creates (A AND B) OR (existing root)
+            Groups multiple conditions and combines the group with the current root using OR.
+            Groups must start with Where(), then can use And() or Or().
+            Example: OrGroup(g => g.Where(A).And(B).Or(C)) creates (A AND B OR C) OR (existing root)
             </summary>
         </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ISpecification`1">
@@ -827,6 +772,77 @@
             <param name="options">Optional evaluation options.</param>
             <returns>The count of matching items.</returns>
         </member>
+        <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereBuilder`1">
+            <summary>
+            Fluent interface for Where(builder) context.
+            Does NOT allow Where() to be called inside - only And, Or, Not, Group, OrGroup.
+            Groups inside can call Where() to start their chain.
+            </summary>
+            <typeparam name="T">The entity type for the specification.</typeparam>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereBuilder`1.And(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            Adds an AND condition to the criteria chain.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereBuilder`1.Or(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            Adds an OR condition to the criteria chain.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereBuilder`1.AndGroup(System.Func{AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain{`0},AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain{`0}})">
+            <summary>
+            Groups multiple conditions and combines the group with the current root using AND.
+            Groups must start with Where(), then can use And() or Or().
+            Example: AndGroup(g => g.Where(A).And(B).Or(C)) creates (A AND B OR C) AND (existing root)
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereBuilder`1.OrGroup(System.Func{AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain{`0},AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain{`0}})">
+            <summary>
+            Groups multiple conditions and combines the group with the current root using OR.
+            Groups must start with Where(), then can use And() or Or().
+            Example: OrGroup(g => g.Where(A).And(B).Or(C)) creates (A AND B OR C) OR (existing root)
+            </summary>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereChain`1">
+            <summary>
+            Fluent interface returned by Where() method that allows chaining And, Or, AndGroup, OrGroup operations.
+            Enforces that all criteria chains must start with Where().
+            </summary>
+            <typeparam name="T">The entity type for the specification.</typeparam>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereChain`1.Where(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            Starts a criteria chain with an initial expression (required for groups).
+            Groups must start with Where() before using And/Or/Not.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereChain`1.And(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            Adds an AND condition to the criteria chain.
+            Can only be used after Where().
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereChain`1.Or(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            Adds an OR condition to the criteria chain.
+            Can only be used after Where().
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereChain`1.AndGroup(System.Func{AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereChain{`0},AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereChain{`0}})">
+            <summary>
+            Groups multiple conditions and combines the group with the current root using AND.
+            Groups must start with Where(), then can use And() or Or().
+            Example: AndGroup(g => g.Where(A).And(B).Or(C)) creates (A AND B OR C) AND (existing root)
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereChain`1.OrGroup(System.Func{AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereChain{`0},AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereChain{`0}})">
+            <summary>
+            Groups multiple conditions and combines the group with the current root using OR.
+            Groups must start with Where(), then can use And() or Or().
+            Example: OrGroup(g => g.Where(A).And(B).Or(C)) creates (A AND B OR C) OR (existing root)
+            </summary>
+        </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.NullSort">
             <summary>
             Specifies how null values should be ordered in sorting operations.
@@ -850,6 +866,70 @@
         <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.SortDirection">
             <summary>
             Sorting direction used by sortable specifications.
+            </summary>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.Specification`1">
+            <summary>
+            Base implementation of ISpecification that provides common functionality
+            for building domain specifications with criteria only.
+            Supports both legacy AddCriteria (AND-based) and new Where() fluent API for complex criteria.
+            Pure domain specification - no infrastructure concerns (includes, sorting, pagination).
+            </summary>
+        </member>
+        <member name="P:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.Specification`1.Criteria">
+            <summary>
+            Gets the criteria expression that defines the business rule or filter.
+            Combines legacy AddCriteria expressions with Where() fluent API expressions.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.Specification`1.IsSatisfiedBy(`0)">
+            <summary>
+            Determines whether a candidate object satisfies the specification.
+            This is the classic DDD method for in-memory validation and domain checks.
+            Compiles the criteria expression and evaluates it against the candidate.
+            </summary>
+            <param name="candidate">The candidate object to evaluate.</param>
+            <returns>True if the candidate satisfies the specification; otherwise, false.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.Specification`1.ToExpression">
+            <summary>
+            Converts the specification to an expression tree for use in queries.
+            This is an alias for the Criteria property, provided for clarity and API consistency.
+            </summary>
+            <returns>The criteria expression, or null if no criteria are defined.</returns>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.Specification`1.AddCriteria(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            Legacy API: Adds a criteria expression that will be combined with AND.
+            This is backward-compatible. For complex criteria with OR/NOT, use the Where() method.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.Specification`1.Where(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            Entry point for fluent API: Starts a criteria chain with an initial expression.
+            Example: Where(p => p.IsActive).And(p => p.Category == "Electronics").Or(p => p.Price > 100)
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.Specification`1.Where(System.Func{AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereBuilder{`0},AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereBuilder{`0}})">
+            <summary>
+            Entry point for fluent API: Starts a criteria chain using a builder function.
+            The builder can start with And(), Or() - but NOT Where().
+            Use ! operator in expressions for negation: .And(p => !p.IsDeleted)
+            Groups inside can call Where() to start their chain.
+            Example: Where(b => b.And(p => p.IsActive).Or(p => p.Stock > 0))
+            Example: Where(b => b.And(p => !(p.Price == 0)).And(p => p.IsActive))
+            Example: Where(b => b.AndGroup(g => g.Where(p => p.IsActive).And(p => p.Price > 100)))
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.Specification`1.MergeIntoTree(AkbarAmd.SharedKernel.Domain.Specifications.Internal.ICriteriaNode{`0},System.Boolean)">
+            <summary>
+            Merges a new subtree into the criteria tree.
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.Specification`1.ReplaceInTree(AkbarAmd.SharedKernel.Domain.Specifications.Internal.ICriteriaNode{`0},AkbarAmd.SharedKernel.Domain.Specifications.Internal.ICriteriaNode{`0})">
+            <summary>
+            Replaces an old subtree with a new one in the criteria tree.
+            Used when a chain's root is updated (e.g., when Or/And is called).
             </summary>
         </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Contracts.Specifications.SpecificationEvaluationOptions">
@@ -2216,44 +2296,33 @@
         </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaBuilder`1">
             <summary>
-            Fluent builder for constructing complex criteria expressions with AND, OR, NOT operations
-            and grouping support for parentheses.
+            Fluent builder for constructing complex criteria expressions.
+            All criteria chains must start with Where() - And/Or/Group can only be used after Where().
             </summary>
         </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaBuilder`1.And(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaBuilder`1.Where(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
             <summary>
-            Adds an AND condition to the criteria tree.
-            If no root exists, this becomes the root. Otherwise, it's combined with AND.
+            Starts a criteria chain with an initial expression.
+            This is the required entry point - all criteria must start with Where().
+            After Where(), you can chain And(), Or(), AndGroup(), OrGroup().
+            Use ! operator in expressions for negation: .And(p => !p.IsDeleted)
             </summary>
-        </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaBuilder`1.Or(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
-            <summary>
-            Adds an OR condition to the criteria tree.
-            If no root exists, this becomes the root. Otherwise, it's combined with OR.
-            </summary>
-        </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaBuilder`1.Not(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
-            <summary>
-            Adds a NOT condition to the criteria tree.
-            If no root exists, this becomes the root. Otherwise, it's combined with AND.
-            </summary>
-        </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaBuilder`1.Group(System.Func{AkbarAmd.SharedKernel.Domain.Specifications.CriteriaBuilder{`0},AkbarAmd.SharedKernel.Domain.Specifications.CriteriaBuilder{`0}})">
-            <summary>
-            Groups multiple conditions with AND and combines the group with the root using AND.
-            Example: Group(g => g.And(A).And(B)) creates (A AND B) AND (existing root)
-            </summary>
-        </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaBuilder`1.OrGroup(System.Func{AkbarAmd.SharedKernel.Domain.Specifications.CriteriaBuilder{`0},AkbarAmd.SharedKernel.Domain.Specifications.CriteriaBuilder{`0}})">
-            <summary>
-            Groups multiple conditions with AND and combines the group with the root using OR.
-            Example: OrGroup(g => g.And(A).And(B)) creates (A AND B) OR (existing root)
-            </summary>
+            <example>
+            <code>
+            var builder = new CriteriaBuilder&lt;Product&gt;();
+            var expr = builder
+                .Where(p => p.IsActive)
+                .And(p => p.Price > 100m)
+                .Or(p => p.Category == "Electronics")
+                .And(p => !p.IsDeleted)
+                .Build();
+            </code>
+            </example>
         </member>
         <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaBuilder`1.Build">
             <summary>
             Builds the final expression from the criteria tree.
-            Returns null if no criteria were added.
+            Returns null if no criteria were added (Where() was never called).
             </summary>
         </member>
         <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaBuilder`1.BuildNode">
@@ -2262,18 +2331,28 @@
             Used by BaseSpecification for lazy evaluation.
             </summary>
         </member>
+        <member name="T:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaBuilder`1.WhereChain">
+            <summary>
+            Internal implementation of IWhereChain for CriteriaBuilder.
+            </summary>
+        </member>
+        <member name="T:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaBuilder`1.GroupWhereChain">
+            <summary>
+            Special implementation of IWhereChain for groups that enforces Where() first.
+            </summary>
+        </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaChain`1">
             <summary>
             Implementation of ICriteriaChain that manages criteria building with fluent API.
             Supports both attached mode (connected to BaseSpecification) and detached mode (for groups).
             </summary>
         </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaChain`1.StartAttached(AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification{`0},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},System.Boolean)">
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaChain`1.StartAttached(AkbarAmd.SharedKernel.Domain.Contracts.Specifications.Specification{`0},System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},System.Boolean)">
             <summary>
             Starts a chain attached to a specification with an initial expression.
             </summary>
         </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaChain`1.AttachOnExisting(AkbarAmd.SharedKernel.Domain.Contracts.Specifications.BaseSpecification{`0})">
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaChain`1.AttachOnExisting(AkbarAmd.SharedKernel.Domain.Contracts.Specifications.Specification{`0})">
             <summary>
             Attaches to an existing specification's criteria tree.
             Used when Where(builder) is called without an initial expression.
@@ -2282,6 +2361,13 @@
         <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaChain`1.StartDetached">
             <summary>
             Starts a detached chain for use in Group/OrGroup.
+            Detached groups must start with Where().
+            </summary>
+        </member>
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.CriteriaChain`1.StartAttachedForBuilder(AkbarAmd.SharedKernel.Domain.Contracts.Specifications.Specification{`0})">
+            <summary>
+            Starts an attached chain for use in Where(builder) context.
+            Allows And/Or/Not as first operations, but NOT Where().
             </summary>
         </member>
         <member name="T:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1">
@@ -2297,9 +2383,11 @@
             Adds a criteria expression using the fluent Where API.
             </summary>
         </member>
-        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.Where(System.Func{AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain{`0},AkbarAmd.SharedKernel.Domain.Contracts.Specifications.ICriteriaChain{`0}})">
+        <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.Where(System.Func{AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereBuilder{`0},AkbarAmd.SharedKernel.Domain.Contracts.Specifications.IWhereBuilder{`0}})">
             <summary>
             Adds complex criteria using a builder function.
+            The builder can start with And(), Or(), Not() - but NOT Where().
+            Groups inside can call Where() to start their chain.
             </summary>
         </member>
         <member name="M:AkbarAmd.SharedKernel.Domain.Specifications.FluentSpecificationBuilder`1.Build">
