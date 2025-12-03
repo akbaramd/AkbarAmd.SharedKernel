@@ -10,7 +10,7 @@ namespace AkbarAmd.SharedKernel.Domain.Contracts.Specifications;
 /// Supports both legacy AddCriteria (AND-based) and new Where() fluent API for complex criteria.
 /// Pure domain specification - no infrastructure concerns (includes, sorting, pagination).
 /// </summary>
-public abstract class BaseSpecification<T> : ISpecification<T>
+public abstract class Specification<T> : ISpecification<T>
 {
     // Legacy AND-based criteria list for backward compatibility
     private readonly List<Expression<Func<T, bool>>> _criteriaAnd = new();
@@ -90,21 +90,28 @@ public abstract class BaseSpecification<T> : ISpecification<T>
 
     /// <summary>
     /// Entry point for fluent API: Starts a criteria chain using a builder function.
+    /// The builder can start with And(), Or() - but NOT Where().
+    /// Use ! operator in expressions for negation: .And(p => !p.IsDeleted)
+    /// Groups inside can call Where() to start their chain.
     /// Example: Where(b => b.And(p => p.IsActive).Or(p => p.Stock > 0))
+    /// Example: Where(b => b.And(p => !(p.Price == 0)).And(p => p.IsActive))
+    /// Example: Where(b => b.AndGroup(g => g.Where(p => p.IsActive).And(p => p.Price > 100)))
     /// </summary>
-    protected ICriteriaChain<T> Where(Func<ICriteriaChain<T>, ICriteriaChain<T>> builder)
+    protected ICriteriaChain<T> Where(Func<IWhereBuilder<T>, IWhereBuilder<T>> builder)
     {
         if (builder is null)
             throw new ArgumentNullException(nameof(builder));
 
-        var detached = CriteriaChain<T>.StartDetached();
-        var built = builder(detached) as CriteriaChain<T>
-                    ?? throw new InvalidOperationException("Invalid group builder.");
+        // Create an attached chain in builder context (not detached) so And/Or/Not can be used as first operations
+        // But Where() is NOT allowed in this context
+        var chain = CriteriaChain<T>.StartAttachedForBuilder(this);
+        var built = builder(chain) as CriteriaChain<T>
+                    ?? throw new InvalidOperationException("Invalid builder.");
 
         if (built.Root is null)
             throw new InvalidOperationException("Where clause cannot be empty. At least one condition must be added.");
 
-        MergeIntoTree(built.Root, combineAsOr: false);
+        // Root is already merged into the tree through the attached chain
         return CriteriaChain<T>.AttachOnExisting(this);
     }
 

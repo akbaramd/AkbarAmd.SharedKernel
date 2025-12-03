@@ -11,7 +11,7 @@ namespace AkbarAmd.SharedKernel.Domain.Specifications;
 /// <typeparam name="T">The entity type for the specification.</typeparam>
 public sealed class FluentSpecificationBuilder<T>
 {
-    private sealed class AdHocSpecification : BaseSpecification<T>
+    private sealed class AdHocSpecification : Specification<T>
     {
         // Public wrapper methods to expose protected BaseSpecification methods
         // We ignore the return value since we're building through FluentSpecificationBuilder
@@ -20,7 +20,7 @@ public sealed class FluentSpecificationBuilder<T>
             _ = base.Where(start);
         }
 
-        public void AddWhere(Func<ICriteriaChain<T>, ICriteriaChain<T>> builder)
+        public void AddWhere(Func<IWhereBuilder<T>, IWhereBuilder<T>> builder)
         {
             _ = base.Where(builder);
         }
@@ -42,8 +42,10 @@ public sealed class FluentSpecificationBuilder<T>
 
     /// <summary>
     /// Adds complex criteria using a builder function.
+    /// The builder can start with And(), Or(), Not() - but NOT Where().
+    /// Groups inside can call Where() to start their chain.
     /// </summary>
-    public FluentSpecificationBuilder<T> Where(Func<ICriteriaChain<T>, ICriteriaChain<T>> builder)
+    public FluentSpecificationBuilder<T> Where(Func<IWhereBuilder<T>, IWhereBuilder<T>> builder)
     {
         if (builder is null)
             throw new ArgumentNullException(nameof(builder));

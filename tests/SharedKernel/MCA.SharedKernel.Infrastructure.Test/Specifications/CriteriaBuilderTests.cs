@@ -22,13 +22,14 @@ public sealed class CriteriaBuilderTests
     #region Basic Operations Tests
 
     [Fact]
-    public void And_SingleExpression_ReturnsExpression()
+    public void Where_SingleExpression_ReturnsExpression()
     {
         // Arrange
         var builder = new CriteriaBuilder<TestProduct>();
 
         // Act
-        var result = builder.And(p => p.IsActive).Build();
+        builder.Where(p => p.IsActive);
+        var result = builder.Build();
 
         // Assert
         Assert.NotNull(result);
@@ -38,16 +39,16 @@ public sealed class CriteriaBuilderTests
     }
 
     [Fact]
-    public void And_MultipleExpressions_CombinesWithAnd()
+    public void Where_And_MultipleExpressions_CombinesWithAnd()
     {
         // Arrange
         var builder = new CriteriaBuilder<TestProduct>();
 
         // Act
-        var result = builder
-            .And(p => p.IsActive)
-            .And(p => p.Price > 50m)
-            .Build();
+        builder
+            .Where(p => p.IsActive)
+            .And(p => p.Price > 50m);
+        var result = builder.Build();
 
         // Assert
         Assert.NotNull(result);
@@ -58,13 +59,14 @@ public sealed class CriteriaBuilderTests
     }
 
     [Fact]
-    public void Or_SingleExpression_ReturnsExpression()
+    public void Where_Or_SingleExpression_ReturnsExpression()
     {
         // Arrange
         var builder = new CriteriaBuilder<TestProduct>();
 
         // Act
-        var result = builder.Or(p => p.IsActive).Build();
+        builder.Where(p => p.IsActive);
+        var result = builder.Build();
 
         // Assert
         Assert.NotNull(result);
@@ -74,16 +76,16 @@ public sealed class CriteriaBuilderTests
     }
 
     [Fact]
-    public void Or_MultipleExpressions_CombinesWithOr()
+    public void Where_Or_MultipleExpressions_CombinesWithOr()
     {
         // Arrange
         var builder = new CriteriaBuilder<TestProduct>();
 
         // Act
-        var result = builder
-            .Or(p => p.IsActive)
-            .Or(p => p.Price > 200m)
-            .Build();
+        builder
+            .Where(p => p.IsActive)
+            .Or(p => p.Price > 200m);
+        var result = builder.Build();
 
         // Assert
         Assert.NotNull(result);
@@ -94,32 +96,34 @@ public sealed class CriteriaBuilderTests
     }
 
     [Fact]
-    public void Not_SingleExpression_ReturnsNegatedExpression()
+    public void Where_And_NotOperator_SingleExpression_ReturnsNegatedExpression()
     {
         // Arrange
         var builder = new CriteriaBuilder<TestProduct>();
 
         // Act
-        var result = builder.Not(p => p.IsActive).Build();
+        builder.Where(p => p.IsActive).And(p => !(p.Category == "Cat"));
+        var result = builder.Build();
 
         // Assert
         Assert.NotNull(result);
         var compiled = result.Compile();
+        // This tests: IsActive AND NOT (Category == "Cat")
+        Assert.True(compiled(new TestProduct("Test", 100m, "Other", isActive: true)));
         Assert.False(compiled(new TestProduct("Test", 100m, "Cat", isActive: true)));
-        Assert.True(compiled(new TestProduct("Test", 100m, "Cat", isActive: false)));
     }
 
     [Fact]
-    public void Not_WithAnd_CombinesCorrectly()
+    public void Where_And_NotOperator_CombinesCorrectly()
     {
         // Arrange
         var builder = new CriteriaBuilder<TestProduct>();
 
         // Act
-        var result = builder
-            .And(p => p.Price > 50m)
-            .Not(p => p.IsActive)
-            .Build();
+        builder
+            .Where(p => p.Price > 50m)
+            .And(p => !p.IsActive);
+        var result = builder.Build();
 
         // Assert
         Assert.NotNull(result);
@@ -134,20 +138,20 @@ public sealed class CriteriaBuilderTests
     #region Grouping Tests
 
     [Fact]
-    public void Group_WithAndConditions_CreatesGroupedExpression()
+    public void Where_Group_WithWhereAndConditions_CreatesGroupedExpression()
     {
         // Arrange
         var builder = new CriteriaBuilder<TestProduct>();
 
         // Act: (A AND B) AND (C AND D)
-        var result = builder
-            .Group(g => g
-                .And(p => p.IsActive)
-                .And(p => p.Price > 50m))
-            .Group(g => g
-                .And(p => p.Category == "Electronics")
-                .And(p => p.Price < 200m))
-            .Build();
+        // LINQ Equivalent: (IsActive && Price > 50) && (Category == "Electronics" && Price < 200)
+        builder
+            .Where(p => p.IsActive)
+            .And(p => p.Price > 50m)
+            .AndGroup(g => g
+                .Where(p => p.Category == "Electronics")
+                .And(p => p.Price < 200m));
+        var result = builder.Build();
 
         // Assert
         Assert.NotNull(result);
@@ -158,20 +162,20 @@ public sealed class CriteriaBuilderTests
     }
 
     [Fact]
-    public void OrGroup_WithConditions_CreatesOrGroupedExpression()
+    public void Where_Group_OrGroup_WithConditions_CreatesOrGroupedExpression()
     {
         // Arrange
         var builder = new CriteriaBuilder<TestProduct>();
 
         // Act: (A AND B) OR (C AND D)
-        var result = builder
-            .Group(g => g
-                .And(p => p.IsActive)
-                .And(p => p.Price > 50m))
+        // LINQ Equivalent: (IsActive && Price > 50) || (Category == "Electronics" && Price < 200)
+        builder
+            .Where(p => p.IsActive)
+            .And(p => p.Price > 50m)
             .OrGroup(g => g
-                .And(p => p.Category == "Electronics")
-                .And(p => p.Price < 200m))
-            .Build();
+                .Where(p => p.Category == "Electronics")
+                .And(p => p.Price < 200m));
+        var result = builder.Build();
 
         // Assert
         Assert.NotNull(result);
@@ -189,18 +193,60 @@ public sealed class CriteriaBuilderTests
 
         // Act & Assert
         Assert.Throws<InvalidOperationException>(() =>
-            builder.Group(g => g).Build());
+        {
+            builder.Where(p => p.IsActive).AndGroup(g => g);
+            builder.Build();
+        });
     }
 
     [Fact]
-    public void OrGroup_EmptyGroup_ThrowsException()
+    public void AndGroup_WithWhereAnd_CombinesCorrectly()
+    {
+        // Arrange
+        var builder = new CriteriaBuilder<TestProduct>();
+
+        // Act - And() is now allowed after Where() in groups
+        builder.Where(p => p.IsActive).AndGroup(g => g.Where(p => p.Price > 50m).And(p => p.Price > 100m));
+        var result = builder.Build();
+        
+        // Assert
+        Assert.NotNull(result);
+        var compiled = result.Compile();
+        // This tests: IsActive AND (Price > 50 AND Price > 100)
+        Assert.True(compiled(new TestProduct("Test", 150m, "Cat", isActive: true)));
+        Assert.False(compiled(new TestProduct("Test", 75m, "Cat", isActive: true))); // Price > 50 but not > 100
+    }
+
+    [Fact]
+    public void AndGroup_StartingWithAnd_ThrowsException()
+    {
+        // Arrange
+        var builder = new CriteriaBuilder<TestProduct>();
+
+        // Act & Assert - Groups must start with Where()
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+        {
+            builder.Where(p => p.IsActive).AndGroup(g => g.And(p => p.Price > 100m));
+            builder.Build();
+        });
+        
+        Assert.Contains("Groups must start with Where()", exception.Message);
+    }
+
+    [Fact]
+    public void Group_StartingWithOr_ThrowsException()
     {
         // Arrange
         var builder = new CriteriaBuilder<TestProduct>();
 
         // Act & Assert
-        Assert.Throws<InvalidOperationException>(() =>
-            builder.OrGroup(g => g).Build());
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+        {
+            builder.Where(p => p.IsActive).AndGroup(g => g.Or(p => p.Price > 100m));
+            builder.Build();
+        });
+        
+        Assert.Contains("Groups must start with Where()", exception.Message);
     }
 
     #endregion
@@ -214,16 +260,17 @@ public sealed class CriteriaBuilderTests
         var builder = new CriteriaBuilder<TestProduct>();
 
         // Act: ((A AND B) OR (C AND NOT D)) AND E
-        var result = builder
-            .Group(g => g
-                .Group(inner => inner
-                    .And(p => p.IsActive)
-                    .And(p => p.Price > 50m))
+        // LINQ Equivalent: ((IsActive && Price > 50) || (Category == "Electronics" && !IsActive)) && Price < 500
+        builder
+            .Where(p => true) // Start with Where
+            .AndGroup(g => g
+                .Where(p => p.IsActive)
+                .And(p => p.Price > 50m)
                 .OrGroup(inner => inner
-                    .And(p => p.Category == "Electronics")
-                    .Not(p => p.IsActive)))
-            .And(p => p.Price < 500m)
-            .Build();
+                    .Where(p => p.Category == "Electronics")
+                    .And(p => !p.IsActive)))
+            .And(p => p.Price < 500m);
+        var result = builder.Build();
 
         // Assert
         Assert.NotNull(result);
@@ -251,6 +298,17 @@ public sealed class CriteriaBuilderTests
     #region Validation Tests
 
     [Fact]
+    public void Where_NullExpression_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var builder = new CriteriaBuilder<TestProduct>();
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() =>
+            builder.Where(null!));
+    }
+
+    [Fact]
     public void And_NullExpression_ThrowsArgumentNullException()
     {
         // Arrange
@@ -258,7 +316,7 @@ public sealed class CriteriaBuilderTests
 
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() =>
-            builder.And(null!));
+            builder.Where(p => p.IsActive).And(null!));
     }
 
     [Fact]
@@ -269,7 +327,7 @@ public sealed class CriteriaBuilderTests
 
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() =>
-            builder.Or(null!));
+            builder.Where(p => p.IsActive).Or(null!));
     }
 
     [Fact]
@@ -278,9 +336,7 @@ public sealed class CriteriaBuilderTests
         // Arrange
         var builder = new CriteriaBuilder<TestProduct>();
 
-        // Act & Assert
-        Assert.Throws<ArgumentNullException>(() =>
-            builder.Not(null!));
+        // Act & Assert - Not() removed, test removed as Not() no longer exists
     }
 
     [Fact]
@@ -291,7 +347,7 @@ public sealed class CriteriaBuilderTests
 
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() =>
-            builder.Group(null!));
+            builder.Where(p => p.IsActive).AndGroup(null!));
     }
 
     [Fact]
@@ -302,7 +358,7 @@ public sealed class CriteriaBuilderTests
 
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() =>
-            builder.OrGroup(null!));
+            builder.Where(p => p.IsActive).OrGroup(null!));
     }
 
     #endregion

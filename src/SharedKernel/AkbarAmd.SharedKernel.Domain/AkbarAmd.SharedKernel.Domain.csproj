@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>AkbarAmd.SharedKernel.Domain</PackageId>
-        <Version>1.0.25</Version>
-        <AssemblyVersion>1.0.25.0</AssemblyVersion>
-        <FileVersion>1.0.25.0</FileVersion>
+        <Version>1.0.26</Version>
+        <AssemblyVersion>1.0.26.0</AssemblyVersion>
+        <FileVersion>1.0.26.0</FileVersion>
         <Authors>Akbar Ahmadi Saray</Authors>
         <Company>AkbarAhmadi</Company>
         <Description>Clean Architecture Domain Layer - Core Domain Models, Entities, Value Objects, and Domain Events</Description>
@@ -20,7 +20,15 @@
         <RepositoryUrl>https://github.com/akbaramd/AkbarAmd.SharedKernel.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>clean-architecture;ddd;domain-driven-design;entities;value-objects;domain-events;aggregate-roots</PackageTags>
-        <PackageReleaseNotes>Version 1.0.25:
+        <PackageReleaseNotes>Version 1.0.26:
+- Redesigned specification fluent API with "Where-first" pattern
+- Renamed Group() to AndGroup() for better clarity
+- Removed Not() method from fluent chain (use ! operator instead)
+- Groups (AndGroup/OrGroup) must start with Where(), then can use And() or Or()
+- Enhanced CriteriaBuilder and CriteriaChain with improved structure
+- Updated all tests to reflect new fluent API patterns
+
+Version 1.0.25:
 - Removed IConcurrentAudit interface and all related concurrency audit functionality
 
 Version 1.0.24:

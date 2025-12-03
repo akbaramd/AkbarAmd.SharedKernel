@@ -864,10 +864,11 @@ public sealed class SpecificationIntegrationTests : IClassFixture<TestDatabaseFi
         // Arrange
         await SeedTestData();
 
+        // LINQ Equivalent: (IsActive && Price > 50) || Category == "Electronics"
         var spec = new FluentSpecificationBuilder<TestProduct>()
             .Where(b => b
-                .Group(g => g
-                    .And(p => p.IsActive)
+                .AndGroup(g => g
+                    .Where(p => p.IsActive)
                     .And(p => p.Price > 50m))
                 .Or(p => p.Category == "Electronics"))
             .Build();

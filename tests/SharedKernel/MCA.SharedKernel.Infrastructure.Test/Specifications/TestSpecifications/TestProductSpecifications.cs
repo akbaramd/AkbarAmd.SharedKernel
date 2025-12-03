@@ -8,7 +8,7 @@ namespace MCA.SharedKernel.Infrastructure.Test.Specifications.TestSpecifications
 /// Basic specification for active products.
 /// Pure domain specification - criteria only.
 /// </summary>
-public sealed class ActiveProductsSpecification : BaseSpecification<TestProduct>
+public sealed class ActiveProductsSpecification : Specification<TestProduct>
 {
     public ActiveProductsSpecification()
     {
@@ -20,7 +20,7 @@ public sealed class ActiveProductsSpecification : BaseSpecification<TestProduct>
 /// Specification for products by category.
 /// Pure domain specification - criteria only.
 /// </summary>
-public sealed class ProductsByCategorySpecification : BaseSpecification<TestProduct>
+public sealed class ProductsByCategorySpecification : Specification<TestProduct>
 {
     public ProductsByCategorySpecification(string category)
     {
@@ -35,7 +35,7 @@ public sealed class ProductsByCategorySpecification : BaseSpecification<TestProd
 /// Specification for products with price range.
 /// Pure domain specification - criteria only.
 /// </summary>
-public sealed class ProductsByPriceRangeSpecification : BaseSpecification<TestProduct>
+public sealed class ProductsByPriceRangeSpecification : Specification<TestProduct>
 {
     public ProductsByPriceRangeSpecification(decimal minPrice, decimal maxPrice)
     {
@@ -52,7 +52,7 @@ public sealed class ProductsByPriceRangeSpecification : BaseSpecification<TestPr
 /// Specification combining multiple criteria.
 /// Pure domain specification - criteria only.
 /// </summary>
-public sealed class ActiveProductsByCategoryAndPriceSpecification : BaseSpecification<TestProduct>
+public sealed class ActiveProductsByCategoryAndPriceSpecification : Specification<TestProduct>
 {
     public ActiveProductsByCategoryAndPriceSpecification(string category, decimal minPrice, decimal maxPrice)
     {
@@ -73,7 +73,7 @@ public sealed class ActiveProductsByCategoryAndPriceSpecification : BaseSpecific
 /// Specification demonstrating OR criteria - products in one category OR another.
 /// Pure domain specification - criteria only.
 /// </summary>
-public sealed class ProductsByCategoryOrSpecification : BaseSpecification<TestProduct>
+public sealed class ProductsByCategoryOrSpecification : Specification<TestProduct>
 {
     public ProductsByCategoryOrSpecification(string category1, string category2)
     {
@@ -92,7 +92,7 @@ public sealed class ProductsByCategoryOrSpecification : BaseSpecification<TestPr
 /// Specification demonstrating OR criteria - products with price in range OR specific category.
 /// Pure domain specification - criteria only.
 /// </summary>
-public sealed class ProductsByPriceRangeOrCategorySpecification : BaseSpecification<TestProduct>
+public sealed class ProductsByPriceRangeOrCategorySpecification : Specification<TestProduct>
 {
     public ProductsByPriceRangeOrCategorySpecification(decimal minPrice, decimal maxPrice, string category)
     {
@@ -113,7 +113,7 @@ public sealed class ProductsByPriceRangeOrCategorySpecification : BaseSpecificat
 /// Specification demonstrating complex AND with OR - active products AND (category1 OR category2).
 /// Pure domain specification - criteria only.
 /// </summary>
-public sealed class ActiveProductsByCategoryOrSpecification : BaseSpecification<TestProduct>
+public sealed class ActiveProductsByCategoryOrSpecification : Specification<TestProduct>
 {
     public ActiveProductsByCategoryOrSpecification(string category1, string category2)
     {
@@ -123,9 +123,10 @@ public sealed class ActiveProductsByCategoryOrSpecification : BaseSpecification<
             throw new ArgumentException("Category2 cannot be null or empty.", nameof(category2));
 
         // AND: IsActive AND (category1 OR category2)
+        // LINQ Equivalent: IsActive && (Category == category1 || Category == category2)
         Where(p => p.IsActive)
-            .Group(g => g
-                .Or(p => p.Category == category1)
+            .AndGroup(g => g
+                .Where(p => p.Category == category1)
                 .Or(p => p.Category == category2));
     }
 }
@@ -134,7 +135,7 @@ public sealed class ActiveProductsByCategoryOrSpecification : BaseSpecification<
 /// Specification demonstrating multiple AND criteria - active, price range, AND category.
 /// Pure domain specification - criteria only.
 /// </summary>
-public sealed class ActiveProductsByMultipleAndCriteriaSpecification : BaseSpecification<TestProduct>
+public sealed class ActiveProductsByMultipleAndCriteriaSpecification : Specification<TestProduct>
 {
     public ActiveProductsByMultipleAndCriteriaSpecification(string category, decimal minPrice, decimal maxPrice)
     {
@@ -157,7 +158,7 @@ public sealed class ActiveProductsByMultipleAndCriteriaSpecification : BaseSpeci
 /// Specification demonstrating complex OR with multiple conditions - (price < threshold OR category) AND active.
 /// Pure domain specification - criteria only.
 /// </summary>
-public sealed class ActiveProductsByComplexOrSpecification : BaseSpecification<TestProduct>
+public sealed class ActiveProductsByComplexOrSpecification : Specification<TestProduct>
 {
     public ActiveProductsByComplexOrSpecification(decimal priceThreshold, string category)
     {
@@ -167,9 +168,10 @@ public sealed class ActiveProductsByComplexOrSpecification : BaseSpecification<T
             throw new ArgumentException("Category cannot be null or empty.", nameof(category));
 
         // AND: IsActive AND (price < threshold OR category matches)
+        // LINQ Equivalent: IsActive && (Price < priceThreshold || Category == category)
         Where(p => p.IsActive)
-            .Group(g => g
-                .Or(p => p.Price < priceThreshold)
+            .AndGroup(g => g
+                .Where(p => p.Price < priceThreshold)
                 .Or(p => p.Category == category));
     }
 }
@@ -180,7 +182,7 @@ public sealed class ActiveProductsByComplexOrSpecification : BaseSpecification<T
 /// Specification using Fluent API with AND conditions.
 /// Pure domain specification - criteria only.
 /// </summary>
-public sealed class FluentAndSpecification : BaseSpecification<TestProduct>
+public sealed class FluentAndSpecification : Specification<TestProduct>
 {
     public FluentAndSpecification()
     {
@@ -193,7 +195,7 @@ public sealed class FluentAndSpecification : BaseSpecification<TestProduct>
 /// Specification using Fluent API with OR conditions.
 /// Pure domain specification - criteria only.
 /// </summary>
-public sealed class FluentOrSpecification : BaseSpecification<TestProduct>
+public sealed class FluentOrSpecification : Specification<TestProduct>
 {
     public FluentOrSpecification()
     {
@@ -204,13 +206,55 @@ public sealed class FluentOrSpecification : BaseSpecification<TestProduct>
 
 /// <summary>
 /// Specification using Fluent API with NOT condition.
+/// Demonstrates using Not() method to negate conditions.
 /// Pure domain specification - criteria only.
 /// </summary>
-public sealed class FluentNotSpecification : BaseSpecification<TestProduct>
+public sealed class FluentNotSpecification : Specification<TestProduct>
 {
     public FluentNotSpecification()
     {
-        Where(p => !p.IsActive);
+        // Example 1: Using ! operator to negate a condition
+        // LINQ Equivalent: p => !p.IsActive
+        Where(b => b
+            .And(p => !p.IsActive));
+    }
+}
+
+/// <summary>
+/// Specification for products with non-zero price using Not().
+/// Demonstrates: Products where Price is NOT zero.
+/// Pure domain specification - criteria only.
+/// </summary>
+public sealed class ProductsWithNonZeroPriceSpecification : Specification<TestProduct>
+{
+    public ProductsWithNonZeroPriceSpecification()
+    {
+        // Example: Get products where Price is NOT zero
+        // Using ! operator for negation
+        // LINQ Equivalent: p => p.Price != 0
+        Where(b => b
+            .And(p => !(p.Price == 0m)));
+        
+        // Alternative (more readable for simple != comparisons):
+        // Where(p => p.Price != 0m);
+    }
+}
+
+/// <summary>
+/// Specification for active products with non-zero price.
+/// Demonstrates combining Where, And, and Not.
+/// Pure domain specification - criteria only.
+/// </summary>
+public sealed class ActiveProductsWithNonZeroPriceSpecification : Specification<TestProduct>
+{
+    public ActiveProductsWithNonZeroPriceSpecification()
+    {
+        // Example: Active products AND Price is NOT zero
+        // LINQ Equivalent: p => p.IsActive && p.Price != 0
+        // Using ! operator for negation
+        Where(b => b
+            .And(p => p.IsActive)
+            .And(p => !(p.Price == 0m)));
     }
 }
 
@@ -218,16 +262,18 @@ public sealed class FluentNotSpecification : BaseSpecification<TestProduct>
 /// Specification using Fluent API with grouped conditions: (A AND B) OR (C AND D).
 /// Pure domain specification - criteria only.
 /// </summary>
-public sealed class FluentGroupedSpecification : BaseSpecification<TestProduct>
+public sealed class FluentGroupedSpecification : Specification<TestProduct>
 {
     public FluentGroupedSpecification()
     {
+        // Logic: (IsActive AND Price > 50) OR (Category == "Electronics" AND Price < 200)
+        // LINQ Equivalent: (IsActive && Price > 50) || (Category == "Electronics" && Price < 200)
         Where(p => p.IsActive)
-            .Group(g => g
-                .And(p => p.IsActive)
+            .AndGroup(g => g
+                .Where(p => p.IsActive)
                 .And(p => p.Price > 50m))
             .OrGroup(g => g
-                .And(p => p.Category == "Electronics")
+                .Where(p => p.Category == "Electronics")
                 .And(p => p.Price < 200m));
     }
 }
@@ -237,18 +283,19 @@ public sealed class FluentGroupedSpecification : BaseSpecification<TestProduct>
 /// Logic: ((IsActive AND Price > 50) OR (Category == "Electronics" AND NOT IsActive)) AND Price < 500
 /// Pure domain specification - criteria only.
 /// </summary>
-public sealed class FluentComplexNestedSpecification : BaseSpecification<TestProduct>
+public sealed class FluentComplexNestedSpecification : Specification<TestProduct>
 {
     public FluentComplexNestedSpecification()
     {
+        // Logic: ((IsActive AND Price > 50) OR (Category == "Electronics" AND NOT IsActive)) AND Price < 500
+        // LINQ Equivalent: ((IsActive && Price > 50) || (Category == "Electronics" && !IsActive)) && Price < 500
         Where(b => b
-            .Group(g => g
-                .Group(inner => inner
-                    .And(p => p.IsActive)
-                    .And(p => p.Price > 50m))
+            .AndGroup(g => g
+                .Where(p => p.IsActive)
+                .And(p => p.Price > 50m)
                 .OrGroup(inner => inner
-                    .And(p => p.Category == "Electronics")
-                    .Not(p => p.IsActive)))
+                    .Where(p => p.Category == "Electronics")
+                    .And(p => !p.IsActive)))
             .And(p => p.Price < 500m));
     }
 }
@@ -258,7 +305,7 @@ public sealed class FluentComplexNestedSpecification : BaseSpecification<TestPro
 /// Each Where is combined with AND.
 /// Pure domain specification - criteria only.
 /// </summary>
-public sealed class FluentAndLegacyCombinedSpecification : BaseSpecification<TestProduct>
+public sealed class FluentAndLegacyCombinedSpecification : Specification<TestProduct>
 {
     public FluentAndLegacyCombinedSpecification()
     {

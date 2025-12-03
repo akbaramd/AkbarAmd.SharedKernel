@@ -6,9 +6,9 @@
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore</PackageId>
-        <Version>1.0.25</Version>
-        <AssemblyVersion>1.0.25.0</AssemblyVersion>
-        <FileVersion>1.0.25.0</FileVersion>
+        <Version>1.0.26</Version>
+        <AssemblyVersion>1.0.26.0</AssemblyVersion>
+        <FileVersion>1.0.26.0</FileVersion>
         <Authors>Akbar Ahmadi Saray</Authors>
         <Company>AkbarAhmadi</Company>
         <Description>Clean Architecture Infrastructure Layer - EF Core Integration, Repository Implementations, and Data Access</Description>
@@ -20,7 +20,12 @@
         <RepositoryUrl>https://github.com/akbaramd/AkbarAmd.SharedKernel.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>clean-architecture;infrastructure;ef-core;entity-framework;repositories;data-access;specifications</PackageTags>
-        <PackageReleaseNotes>Version 1.0.25:
+        <PackageReleaseNotes>Version 1.0.26:
+- Updated to support new specification fluent API (Where-first pattern)
+- Compatible with AndGroup/OrGroup changes from Domain layer
+- All tests updated and passing
+
+Version 1.0.25:
 - Removed IConcurrentAudit interface and all related concurrency audit functionality
 - Updated ConfigureFullAuditableEntity methods to remove IConcurrentAudit constraint
 - Removed ConfigureConcurrentAudit methods from EntityTypeBuilderExtensions and ModelBuilderExtensions
