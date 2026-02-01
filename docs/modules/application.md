@@ -32,8 +32,13 @@ This module defines:
 
 - `ServiceResult`: Result model for operations without return data
 - `ServiceResult<T>`: Result model for operations with return data
-- `ValidationResult`: Validation error result model
-- `PaginatedResult<T>`: Paginated query result model
+- `ServiceBase`: Base class for service implementations with helper methods
+- `ServiceError`: Detailed error information with categories and targets
+- `ServiceResultPaged<T>`: Paginated query result model
+
+For detailed information, see:
+- [ServiceResult Pattern](concepts/application/service-result.md)
+- [ServiceBase](concepts/application/service-base.md)
 
 ### DTOs
 
@@ -91,9 +96,11 @@ public class CreateUserCommandHandler : CommandHandler<CreateUserCommand, Guid>
 
 ## Related Concepts
 
-- [CQRS](concepts/cqrs.md) - Learn about Command Query Responsibility Segregation
-- [Repository](concepts/repository.md) - Understand repository pattern usage
-- [Domain Events](concepts/domain-events.md) - See how domain events are handled
+- [ServiceResult](concepts/application/service-result.md) - Learn about the service result pattern
+- [ServiceBase](concepts/application/service-base.md) - Understand service base class usage
+- [CQRS](concepts/cqrs/cqrs.md) - Learn about Command Query Responsibility Segregation
+- [Repository](concepts/ddd/repository.md) - Understand repository pattern usage
+- [Domain Events](concepts/ddd/domain-events.md) - See how domain events are handled
 
 ## Dependencies
 

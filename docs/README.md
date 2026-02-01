@@ -14,6 +14,12 @@ Start by exploring the [Modules](modules/) section to understand what each modul
 
 ## Concepts
 
+### Application Patterns
+
+- **[Application Patterns Overview](concepts/application/index.md)** - Application layer patterns overview
+- **[ServiceResult](concepts/application/service-result.md)** - Service result pattern for operation outcomes
+- **[ServiceBase](concepts/application/service-base.md)** - Base class for service implementations
+
 ### DDD Concepts
 
 - **[DDD Overview](concepts/ddd/index.md)** - Domain-Driven Design concepts overview

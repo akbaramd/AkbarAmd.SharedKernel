@@ -14,6 +14,11 @@
   * [Domain Events](concepts/ddd/domain-events.md)
   * [Value Objects](concepts/ddd/value-objects.md)
 
+* **Application Patterns**
+  * [Application Patterns Overview](concepts/application/index.md)
+  * [ServiceResult](concepts/application/service-result.md)
+  * [ServiceBase](concepts/application/service-base.md)
+
 * **CQRS Concepts**
   * [CQRS Overview](concepts/cqrs/index.md)
   * [CQRS](concepts/cqrs/cqrs.md)

@@ -11,9 +11,6 @@ public class AkbarAmdSharedKernelApplicationModule : BonModule
         DependOn<AkbarAmdSharedKernelDomainModule>();
     }
 
+    
 
-    public override Task OnPostConfigureAsync(BonConfigurationContext context)
-    {
-        return base.OnPostConfigureAsync(context);
-    }
 }

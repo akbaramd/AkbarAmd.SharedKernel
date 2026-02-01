@@ -5,10 +5,15 @@
       &lt;TestId&gt;xUnit::8CDE5330-0F0C-406C-A624-85E73690A7D4::net8.0::MCA.SharedKernel.Infrastructure.Test.Specifications.FilterableContextTests&lt;/TestId&gt;&#xD;
       &lt;TestId&gt;xUnit::8CDE5330-0F0C-406C-A624-85E73690A7D4::net8.0::MCA.SharedKernel.Infrastructure.Test.ValueObject.ImprovedValueObjectTests&lt;/TestId&gt;&#xD;
       &lt;TestId&gt;xUnit::8CDE5330-0F0C-406C-A624-85E73690A7D4::net8.0::MCA.SharedKernel.Infrastructure.Test.Specifications.SpecificationIntegrationTests&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;xUnit::8CDE5330-0F0C-406C-A624-85E73690A7D4::net8.0::MCA.SharedKernel.Infrastructure.Test.Specifications.CriteriaBuilderTests.Where_And_And_OrGroup_ComplexTourReservation_CombinesCorrectly&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;xUnit::8CDE5330-0F0C-406C-A624-85E73690A7D4::net8.0::MCA.SharedKernel.Infrastructure.Test.Specifications.CriteriaBuilderTests.Where_And_And_OrGroup_ActiveReservationsForTour_CombinesCorrectly&lt;/TestId&gt;&#xD;
+      &lt;TestId&gt;xUnit::2115FDDB-358A-489D-918B-F92AF740943B::net8.0::AkbarAmd.SharedKernel.Tests.Application.Results.ServiceResult_AsyncConversions_Partial_Tests&lt;/TestId&gt;&#xD;
     &lt;/TestAncestor&gt;&#xD;
     &lt;ProjectFile&gt;8CDE5330-0F0C-406C-A624-85E73690A7D4/d:Specifications/f:EfSortableSpecificationContextTests.cs&lt;/ProjectFile&gt;&#xD;
     &lt;ProjectFile&gt;8CDE5330-0F0C-406C-A624-85E73690A7D4/d:Specifications/f:EfPaginableSpecificationContextTests.cs&lt;/ProjectFile&gt;&#xD;
     &lt;ProjectFile&gt;8CDE5330-0F0C-406C-A624-85E73690A7D4/d:Specifications/f:SpecificationCombinationTests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;ProjectFile&gt;2115FDDB-358A-489D-918B-F92AF740943B/f:ServiceResult.Conversions.Tests.cs&lt;/ProjectFile&gt;&#xD;
+    &lt;Project Location="E:\projects\CleanArchitecture\tests\SharedKernel\MCA.SharedKernel.Application.Test" Presentation="&amp;lt;tests&amp;gt;\&amp;lt;Sharedkernel&amp;gt;\&amp;lt;MCA.SharedKernel.Application.Test&amp;gt;" /&gt;&#xD;
   &lt;/Or&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	

@@ -7,8 +7,8 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>AkbarAmd.SharedKernel.Application</PackageId>
         <Version>1.0.26</Version>
-        <AssemblyVersion>1.0.26.0</AssemblyVersion>
-        <FileVersion>1.0.26.0</FileVersion>
+        <AssemblyVersion>1.0.27.0</AssemblyVersion>
+        <FileVersion>1.0.27.0</FileVersion>
         <Authors>Akbar Ahmadi Saray</Authors>
         <Company>AkbarAhmadi</Company>
         <Description>Clean Architecture Application Layer - CQRS, MediatR, Validation, and Application Services</Description>
@@ -74,7 +74,7 @@ Version 1.0.18:
     </ItemGroup>
     
     <ItemGroup>
-        <PackageReference Include="Bonyan" Version="1.5.6" />
+        <PackageReference Include="Bonyan" Version="1.5.7" />
  
         <!-- Application layer common dependencies -->
         <PackageReference Include="MediatR" Version="12.5.0" />

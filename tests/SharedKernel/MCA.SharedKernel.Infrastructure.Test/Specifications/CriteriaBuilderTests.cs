@@ -4,6 +4,7 @@ using AkbarAmd.SharedKernel.Domain.Contracts.Specifications;
 using AkbarAmd.SharedKernel.Domain.Specifications;
 using AkbarAmd.SharedKernel.Infrastructure.EntityFrameworkCore.Specifications;
 using MCA.SharedKernel.Infrastructure.Test.Specifications.TestEntities;
+using MCA.SharedKernel.Infrastructure.Test.Specifications.TestSpecifications;
 using Xunit;
 
 namespace MCA.SharedKernel.Infrastructure.Test.Specifications;
@@ -359,6 +360,126 @@ public sealed class CriteriaBuilderTests
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() =>
             builder.Where(p => p.IsActive).OrGroup(null!));
+    }
+
+    #endregion
+
+    #region Complex Real-World Scenario Tests
+
+    [Fact]
+    public void Where_And_And_OrGroup_ComplexTourReservation_CombinesCorrectly()
+    {
+        // Arrange
+        var restrictedTourIds = new[] { 1, 2, 3 };
+        var nationalNumber = "1234567890";
+
+        // Act - This matches the exact structure provided by the user
+        // Using Specification<T> directly (same pattern as RestrictedTourReservationsSpecification)
+        var spec = new RestrictedTourReservationsTestSpecification(restrictedTourIds, nationalNumber);
+        var result = spec.ToExpression();
+
+        // Assert
+        Assert.NotNull(result);
+        var compiled = result.Compile();
+
+        // Test case 1: Should match - restricted tour, has participant, status is Draft
+        var reservation1 = new TourReservation(1, TourReservationStatus.Draft);
+        reservation1.AddParticipant(nationalNumber, "Test User");
+        Assert.True(compiled(reservation1), "Should match: restricted tour, has participant, Draft status");
+
+        // Test case 2: Should match - restricted tour, has participant, status is Confirmed
+        var reservation2 = new TourReservation(2, TourReservationStatus.Confirmed);
+        reservation2.AddParticipant(nationalNumber, "Test User");
+        Assert.True(compiled(reservation2), "Should match: restricted tour, has participant, Confirmed status");
+
+        // Test case 3: Should match - restricted tour, has participant, status is OnHold with valid expiry
+        var reservation3 = new TourReservation(3, TourReservationStatus.OnHold, DateTime.UtcNow.AddDays(1));
+        reservation3.AddParticipant(nationalNumber, "Test User");
+        Assert.True(compiled(reservation3), "Should match: restricted tour, has participant, OnHold with valid expiry");
+
+        // Test case 4: Should match - restricted tour, has participant, status is Waitlisted with valid expiry
+        var reservation4 = new TourReservation(1, TourReservationStatus.Waitlisted, DateTime.UtcNow.AddDays(1));
+        reservation4.AddParticipant(nationalNumber, "Test User");
+        Assert.True(compiled(reservation4), "Should match: restricted tour, has participant, Waitlisted with valid expiry");
+
+        // Test case 5: Should NOT match - restricted tour but wrong participant
+        var reservation5 = new TourReservation(1, TourReservationStatus.Draft);
+        reservation5.AddParticipant("9999999999", "Other User");
+        // Verify the participant check works correctly
+        var hasCorrectParticipant = reservation5.Participants.Any(p => p.NationalNumber == nationalNumber);
+        Assert.False(hasCorrectParticipant, "Sanity check: reservation5 should not have the correct participant");
+        Assert.False(compiled(reservation5), "Should NOT match: restricted tour but wrong participant");
+
+        // Test case 6: Should NOT match - has participant but not restricted tour
+        var reservation6 = new TourReservation(99, TourReservationStatus.Draft);
+        reservation6.AddParticipant(nationalNumber, "Test User");
+        Assert.False(compiled(reservation6), "Should NOT match: has participant but not restricted tour");
+
+        // Test case 7: Should NOT match - restricted tour, has participant, but OnHold with expired date
+        var reservation7 = new TourReservation(1, TourReservationStatus.OnHold, DateTime.UtcNow.AddDays(-1));
+        reservation7.AddParticipant(nationalNumber, "Test User");
+        Assert.False(compiled(reservation7), "Should NOT match: OnHold with expired date");
+
+        // Test case 8: Should NOT match - restricted tour, has participant, but Waitlisted with expired date
+        var reservation8 = new TourReservation(1, TourReservationStatus.Waitlisted, DateTime.UtcNow.AddDays(-1));
+        reservation8.AddParticipant(nationalNumber, "Test User");
+        Assert.False(compiled(reservation8), "Should NOT match: Waitlisted with expired date");
+
+        // Test case 9: Should NOT match - restricted tour, has participant, but Cancelled status (not in OrGroup)
+        var reservation9 = new TourReservation(1, TourReservationStatus.Cancelled);
+        reservation9.AddParticipant(nationalNumber, "Test User");
+        Assert.False(compiled(reservation9), "Should NOT match: Cancelled status not in OrGroup");
+    }
+
+    [Fact]
+    public void Where_And_And_OrGroup_ActiveReservationsForTour_CombinesCorrectly()
+    {
+        // Arrange
+        var tourId = 5;
+        var nationalNumber = "1234567890";
+
+        // Act - This matches the exact structure provided by the user
+        var spec = new ActiveReservationsForTourTestSpecification(tourId, nationalNumber);
+        var result = spec.ToExpression();
+
+        // Assert
+        Assert.NotNull(result);
+        var compiled = result.Compile();
+
+        // Test case 1: Should match - correct tour, has participant, status is Draft
+        var reservation1 = new TourReservation(tourId, TourReservationStatus.Draft);
+        reservation1.AddParticipant(nationalNumber, "Test User");
+        Assert.True(compiled(reservation1), "Should match: correct tour, has participant, Draft status");
+
+        // Test case 2: Should match - correct tour, has participant, status is OnHold with valid expiry
+        var reservation2 = new TourReservation(tourId, TourReservationStatus.OnHold, DateTime.UtcNow.AddDays(1));
+        reservation2.AddParticipant(nationalNumber, "Test User");
+        Assert.True(compiled(reservation2), "Should match: correct tour, has participant, OnHold with valid expiry");
+
+        // Test case 3: Should NOT match - correct tour, has participant, but OnHold with expired date
+        var reservation3 = new TourReservation(tourId, TourReservationStatus.OnHold, DateTime.UtcNow.AddDays(-1));
+        reservation3.AddParticipant(nationalNumber, "Test User");
+        Assert.False(compiled(reservation3), "Should NOT match: OnHold with expired date");
+
+        // Test case 4: Should NOT match - correct tour but wrong participant
+        var reservation4 = new TourReservation(tourId, TourReservationStatus.Draft);
+        reservation4.AddParticipant("9999999999", "Other User");
+        Assert.False(compiled(reservation4), "Should NOT match: correct tour but wrong participant");
+
+        // Test case 5: Should NOT match - has participant but wrong tour
+        var reservation5 = new TourReservation(99, TourReservationStatus.Draft);
+        reservation5.AddParticipant(nationalNumber, "Test User");
+        Assert.False(compiled(reservation5), "Should NOT match: has participant but wrong tour");
+
+        // Test case 6: Should NOT match - correct tour, has participant, but Confirmed status (not in OrGroup)
+        var reservation6 = new TourReservation(tourId, TourReservationStatus.Confirmed);
+        reservation6.AddParticipant(nationalNumber, "Test User");
+        Assert.False(compiled(reservation6), "Should NOT match: Confirmed status not in OrGroup");
+
+        // Test case 7: Should NOT match - correct tour, has participant, but Waitlisted status (not in OrGroup)
+        var reservation7 = new TourReservation(tourId, TourReservationStatus.Waitlisted);
+        reservation7.AddParticipant(nationalNumber, "Test User");
+        Assert.False(compiled(reservation7), "Should NOT match: Waitlisted status not in OrGroup");
     }
 
     #endregion

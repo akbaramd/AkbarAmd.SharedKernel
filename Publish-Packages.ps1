@@ -7,7 +7,7 @@ param(
     [switch]$PublishToNuGet,
     [switch]$SkipConfirmation,
     # Default: read from environment variable NUGETKEY (GitLab) or NUGET_API_KEY (GitHub Actions)
-    [string]$NuGetApiKey = $env:NUGETKEY ?? $env:NUGET_API_KEY,
+    [string]$NuGetApiKey = $(if ($env:NUGETKEY) { $env:NUGETKEY } else { $env:NUGET_API_KEY }),
     [string]$Source = "https://api.nuget.org/v3/index.json"
 )
 

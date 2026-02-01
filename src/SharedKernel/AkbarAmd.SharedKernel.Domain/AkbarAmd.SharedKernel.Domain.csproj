@@ -7,8 +7,8 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>AkbarAmd.SharedKernel.Domain</PackageId>
         <Version>1.0.26</Version>
-        <AssemblyVersion>1.0.26.0</AssemblyVersion>
-        <FileVersion>1.0.26.0</FileVersion>
+        <AssemblyVersion>1.0.27.0</AssemblyVersion>
+        <FileVersion>1.0.27.0</FileVersion>
         <Authors>Akbar Ahmadi Saray</Authors>
         <Company>AkbarAhmadi</Company>
         <Description>Clean Architecture Domain Layer - Core Domain Models, Entities, Value Objects, and Domain Events</Description>
@@ -70,7 +70,7 @@ Version 1.0.18:
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Bonyan" Version="1.5.6" />
+      <PackageReference Include="Bonyan" Version="1.5.7" />
         <PackageReference Include="MediatR" Version="12.5.0" />
     </ItemGroup>
     <ItemGroup>
